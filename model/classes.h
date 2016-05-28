@@ -61,10 +61,12 @@ extern int volume, max_size ;
 #ifndef classes_already_defined
 #define classes_already_defined
 
-#ifdef __linux
+#ifdef __APPLE__
 typedef unsigned int DWORD ;
 typedef unsigned char BYTE ;
-#else 
+#elif __linux__
+typedef unsigned int DWORD ;
+typedef unsigned char BYTE ;
 #include <windows.h>
 #endif
 
