@@ -6,12 +6,8 @@ import time
 import os
 import json
 
-from BaseObjects import Tumor
-from Samplers import SphericalSampler
-import Statistics
 
 ## set of tools to analyze a sample
-
 
 class Pipeline(object):
 	def __init__(self, folder, modules=[], **kwargs):
@@ -22,7 +18,7 @@ class Pipeline(object):
 		self.event_sequence = 0 # for printing
 		self.FILES = {'specs':glob(self.folder+'/specs.json')[0]} # stores files in this pipeline
 		self.specs = {} # stores specifications of this pipeline
-		
+
 	def execute(self):
 		for module in self.modules:
 			try:
@@ -40,8 +36,10 @@ class Pipeline(object):
 		self.event_sequence += 1
 
 def open_files(pipeline):
+	"""
+		Opens files.
+	"""
 	try:
-		
 		pipeline.FILES.update({
 			'cells' : glob(pipeline.folder+'/cells*')[0],
 			'genotypes' : glob(pipeline.folder+'/genotypes*')[0],
@@ -52,6 +50,9 @@ def open_files(pipeline):
 	pipeline.print2('All files present')
 
 def create_output_directory(pipeline):
+	"""
+		Creates an output director
+	"""
 	time_info = '_'.join('_'.join(time.asctime().split(':')).split(' '))
 	try:
 		pipeline.FILES['out_directory'] = pipeline.folder+'/pipe_out_'+time_info

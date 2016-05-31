@@ -72,6 +72,7 @@ class Tumor(object):
 		self.number_of_cells = len(cells)
 		self.number_of_genotypes = len(genotypes)
 		self.COM = centre_of_mass(self.cells)
+		
 	def get_genotypes( self, genotype_indicies ):
 		"""
 			Returns a list of Genotype Objects based on the genotype_indicies

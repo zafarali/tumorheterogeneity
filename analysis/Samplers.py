@@ -1,5 +1,6 @@
 import numpy as np
 from BaseObjects import Tumor
+from Statistics import centre_of_mass
 
 class Sampler(object):
 	def __init__(self, tumor):
@@ -12,6 +13,7 @@ class Sampler(object):
 		self.cell_data = np.array(self.tumor.cells, dtype=np.float)
 		self.cell_positions = self.cell_data[:,0:3].astype(int)
 		self.cell_genotypes = self.cell_data[:,3].astype(int)
+
 	def all_cells(self, as_cells=False):
 		"""
 			Returns all the cells in the tumor
