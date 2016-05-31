@@ -1,3 +1,5 @@
+import numpy as np
+
 class Sampler(object):
 	def __init__(self, tumor):
 		"""
@@ -47,5 +49,23 @@ class EllipsoidSampler(Sampler):
 			return self.cell_data[sample_indicies,:]
 		else:
 			raise NotImplementedError('Not yet implemented')
-			
-	
+
+class SphericalSampler(EllipsoidSampler):
+	def __init__(self, tumor):
+		"""
+			Samples spheres from a Tumor
+			@params:
+				tumor: a Tumor object
+		"""
+		Sampler.__init__(self, tumor)
+
+	def sample(self, radius=1, centre=(0,0,0), as_cells=False):
+		"""
+			Samples a Sphere from the tumor
+			@params:
+				radius: the radius of the sphere
+				centre: the centre of the sphere
+				as_cells[=False]: returns cells rather than numpy array
+		"""
+		return super(SphericalSampler, self).sample(radii=(radius, )*3, centre=centre, as_cells=as_cells)
+
