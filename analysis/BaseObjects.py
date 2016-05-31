@@ -1,5 +1,6 @@
-import csv
+import numpy as np
 from collections import namedtuple
+import csv
 
 Cell_ = namedtuple('Cell', 'x y z genotype')
 Cell_.__new__.__defaults__ = ( 0, 0, 0, -1 )
@@ -58,4 +59,25 @@ class Genotype(Genotype_):
 					   int(n_driver), int(frequency), sequence ) )
 	return genotypes
 
-
+class Tumor(object):
+	def __init__( self, cells, genotypes ):
+		"""
+			Generic tumor object containing cells and genotypes.
+			@params:
+				cells: a list of cells
+				genotypes: a list of genotypes
+		"""
+		self.cells = cells
+		self.genotypes = genotypes
+		self.number_of_cells = len(cells)
+		self.number_of_genotypes = len(genotypes)
+	@staticmethod
+	def from_files( cell_file, genome_file ):
+		"""
+			Returns a tumor from cell and genotype data files
+			@params:
+				cell_file : file containing cell positions and genotypes
+				genome_file : file containing genome data
+		"""
+		return Tumor( Cell.load_cells( cell_file ), \
+					 Genotype.load_genotypes( genome_file ) )
