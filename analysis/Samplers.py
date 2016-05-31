@@ -52,7 +52,7 @@ class EllipsoidSampler(Sampler):
 		
 		if not as_cells:
 			if with_genotypes:
-				return self.cell_data[sample_indicies,:3], self.cell_genotypes[sample_indicies] 
+				return self.cell_data[sample_indicies,:3], self.tumor.get_genotypes(self.cell_genotypes[sample_indicies])
 			else:
 				return self.cell_data[sample_indicies,:]
 		else:

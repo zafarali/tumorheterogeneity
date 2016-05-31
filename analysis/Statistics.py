@@ -1,6 +1,8 @@
 import numpy as np
 from collections import Counter
 
+GAMMA = 0.5772156649015328606065120900824024310421
+
 def SNP_count(genotypes_list):
 	"""
 		returns the counts for SNPs in the sample
@@ -46,7 +48,7 @@ def number_of_singletons(SNP_counts):
 		@params:
 			SNP_counts returned from SNP_count function
 	"""
-	return np.sum(np.array(c.values()) == 1)
+	return np.sum(np.array(SNP_counts.values()) == 1)
 
 def centre_of_mass(sample):
 	"""
@@ -61,4 +63,20 @@ def centre_of_mass(sample):
 
 	return R_CM
 
+def harmonic_number(n):
+	"""
+		Returns the nth-harmonic number according to:
+		sum_{i=1, n-1} 1/i
+		implemented as https://en.wikipedia.org/wiki/Harmonic_number#Calculation
 
+	"""
+	return GAMMA + np.log(n) + 0.5/n - 1./(12*n**2) + 1./(120*n**4)
+
+def normalized_segregating_sites(SNP_counts, sample_size):
+	"""
+		Calculates the normalized number of segreating sites: S / H(n-1)
+		@params:
+			SNP_counts: returned from the SNP_count function
+			sample_size: the number of samples
+	"""
+	return number_of_segregating_sites(SNP_counts) / float(harmonic_number(sample_size-1))
