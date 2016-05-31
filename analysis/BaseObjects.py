@@ -1,4 +1,5 @@
 from collections import namedtuple
+from Statistics import centre_of_mass
 import csv
 
 Cell_ = namedtuple('Cell', 'x y z genotype')
@@ -70,6 +71,8 @@ class Tumor(object):
 		self.genotypes = genotypes
 		self.number_of_cells = len(cells)
 		self.number_of_genotypes = len(genotypes)
+		self.COM = centre_of_mass(self.cells)
+		
 	@staticmethod
 	def from_files( cell_file, genome_file ):
 		"""
