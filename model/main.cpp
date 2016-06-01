@@ -69,7 +69,8 @@ void save_positions(char *name, float dz)
     Lesion *ll=lesions[cells[i].lesion] ;
     Genotype *g=genotypes[cells[i].gen] ;
     // this value was initially 1e4.. 
-    if (abs(int(cells[i].z+ll->r.z))<dz || cells.size()<max_save_size) fprintf(data,"%d %d %d %u\n",int(cells[i].x+ll->r.x), int(cells[i].y+ll->r.y),int(cells[i].z+ll->r.z),genotypes[cells[i].gen]->index) ;
+    // if (abs(int(cells[i].z+ll->r.z))<dz || cells.size()<max_save_size) fprintf(data,"%d %d %d %u\n",int(cells[i].x+ll->r.x), int(cells[i].y+ll->r.y),int(cells[i].z+ll->r.z),genotypes[cells[i].gen]->index) ;
+    fprintf(data,"%d %d %d %u\n",int(cells[i].x+ll->r.x), int(cells[i].y+ll->r.y),int(cells[i].z+ll->r.z),genotypes[cells[i].gen]->index) ;
   }        
   fclose(data) ; 
 }
@@ -268,9 +269,9 @@ int main(int argc, char *argv[])
       // if you want to save more images in a single run, add new lines like this
       //       vecd li2(1,-1,-1) ; sprintf(name,"%s/2d_image2_%d.dat",NUM,max_size) ; density=save_2d_image(name,li2) ;
       sprintf(name,"%s/cells_%d.dat",NUM,max_size) ; save_positions(name,1./density) ; 
-      printf("attempting to create name 2");
+
       sprintf(name2,"%s/driver_SNPS_%d.dat", NUM, max_size) ; 
-      printf("created name 2");
+
       sprintf(name,"%s/genotypes_%d.dat",NUM,max_size) ; save_genotypes(name, name2) ;
       
       sprintf(name,"%s/most_abund_gens_%d.dat",NUM,max_size) ; save_most_abund_gens(name,most_abund) ;
