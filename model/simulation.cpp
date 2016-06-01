@@ -164,7 +164,9 @@ int start_clock ;
 int L=0 ; // total number of SNPs
 int volume ; // total volume of the tumor
 vector <int> drivers ; // vector of driver mutations
-// FILE *drivers_file = fopen("./drivers.dat","w");
+
+FILE *drivers_file = fopen("./drivers.dat","w");
+
 int treatment=0, cells_at_start ;
 FILE *times ; 
 extern int sample ;
@@ -208,7 +210,7 @@ Genotype::Genotype(Genotype *mother, int prevg, int no_snp) {
   death[1]=mother->death[1] ; growth[1]=mother->growth[1] ; m[1]=mother->m[1] ;
   prev_gen=prevg ;
   sequence=mother->sequence ; no_resistant=mother->no_resistant ; no_drivers=mother->no_drivers; 
-  drivers=mother->drivers;
+  // drivers=mother->drivers;
   for (int i=0;i<no_snp;i++) {
     if ((driver_adv>0 || driver_migr_adv>0) && _drand48()<driver_prob/gama) { 
       float q=_drand48() ;
@@ -223,8 +225,8 @@ Genotype::Genotype(Genotype *mother, int prevg, int no_snp) {
       // drivers decrease prob. of death or increase prob. of growth
       drivers.push_back(L) ; 
 
-      // save driver creation...
-      // fprintf(drivers_file,"%d ",L) ; fflush(drivers_file) ; 
+      // // save driver creation...
+      fprintf(drivers_file,"%d ",L) ; fflush(drivers_file) ; 
 
       sequence.push_back((L++)|DRIVER_PM) ; no_drivers++ ;
     } else {

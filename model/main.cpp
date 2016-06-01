@@ -147,19 +147,19 @@ void save_genotypes(char *name, char *name2)
 {
   FILE *data=fopen(name,"w") ; 
 
-  FILE *data2=fopen(name2,"w") ;
+  // FILE *data2=fopen(name2,"w") ;
   for (int i=0;i<genotypes.size();i++) {
     Genotype *g=genotypes[i] ;
     if (g!=NULL && g->number>0) {
       fprintf(data,"%d  %d  %d %d  %d\t",i, g->prev_gen,g->no_resistant,g->no_drivers, g->number) ;
       for (int j=0;j<g->sequence.size();j++) fprintf(data," %u",g->sequence[j]) ; 
-      for (int j=0;j<g->drivers.size();j++) fprintf(data2,"%u ",g->drivers[j]) ; 
+      // for (int j=0;j<g->drivers.size();j++) fprintf(data2,"%u ",g->drivers[j]) ; 
       fprintf(data,"\n") ;
-      fprintf(data2,"\n") ;
+      // fprintf(data2,"\n") ;
     } 
   }
   fclose(data) ;  
-  fclose(data2) ;  
+  // fclose(data2) ;  
 }
 
 void save_most_abund_gens(char *name, int *most_abund)
