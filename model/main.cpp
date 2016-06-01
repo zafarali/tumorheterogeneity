@@ -68,7 +68,8 @@ void save_positions(char *name, float dz)
   for (int i=0;i<cells.size();i++) {
     Lesion *ll=lesions[cells[i].lesion] ;
     Genotype *g=genotypes[cells[i].gen] ;
-    if (abs(int(cells[i].z+ll->r.z))<dz || cells.size()<1e4) fprintf(data,"%d %d %d %u\n",int(cells[i].x+ll->r.x), int(cells[i].y+ll->r.y),int(cells[i].z+ll->r.z),genotypes[cells[i].gen]->index) ;
+    // this value was initially 1e4.. 
+    if (abs(int(cells[i].z+ll->r.z))<dz || cells.size()<max_save_size) fprintf(data,"%d %d %d %u\n",int(cells[i].x+ll->r.x), int(cells[i].y+ll->r.y),int(cells[i].z+ll->r.z),genotypes[cells[i].gen]->index) ;
   }        
   fclose(data) ; 
 }
@@ -141,19 +142,23 @@ float save_2d_image(char *name, vecd li)
 }
   
 
-void save_genotypes(char *name)
+void save_genotypes(char *name, char *name2)
 {
-  FILE *data=fopen(name,"w") ;
+  FILE *data=fopen(name,"w") ; 
+
+  FILE *data2=fopen(name2,"w") ;
   for (int i=0;i<genotypes.size();i++) {
     Genotype *g=genotypes[i] ;
     if (g!=NULL && g->number>0) {
       fprintf(data,"%d  %d  %d %d  %d\t",i, g->prev_gen,g->no_resistant,g->no_drivers, g->number) ;
       for (int j=0;j<g->sequence.size();j++) fprintf(data," %u",g->sequence[j]) ; 
+      for (int j=0;j<g->drivers.size();j++) fprintf(data2,"%u ",g->drivers[j]) ; 
       fprintf(data,"\n") ;
+      fprintf(data2,"\n") ;
     } 
   }
-
   fclose(data) ;  
+  fclose(data2) ;  
 }
 
 void save_most_abund_gens(char *name, int *most_abund)
@@ -198,6 +203,7 @@ int main(int argc, char *argv[])
   _srand48(RAND) ;
   init();
   char name[256] ;
+  char name2[256] ;
   sprintf(name,"%s/each_run_%d.dat",NUM,max_size) ;
   FILE *er=fopen(name,"w") ; fclose(er) ;
   for (sample=0;sample<nsam;sample++) { 
@@ -262,7 +268,11 @@ int main(int argc, char *argv[])
       // if you want to save more images in a single run, add new lines like this
       //       vecd li2(1,-1,-1) ; sprintf(name,"%s/2d_image2_%d.dat",NUM,max_size) ; density=save_2d_image(name,li2) ;
       sprintf(name,"%s/cells_%d.dat",NUM,max_size) ; save_positions(name,1./density) ; 
-      sprintf(name,"%s/genotypes_%d.dat",NUM,max_size) ; save_genotypes(name) ;
+      printf("attempting to create name 2");
+      sprintf(name2,"%s/driver_SNPS_%d.dat", NUM, max_size) ; 
+      printf("created name 2");
+      sprintf(name,"%s/genotypes_%d.dat",NUM,max_size) ; save_genotypes(name, name2) ;
+      
       sprintf(name,"%s/most_abund_gens_%d.dat",NUM,max_size) ; save_most_abund_gens(name,most_abund) ;
     }
 #endif

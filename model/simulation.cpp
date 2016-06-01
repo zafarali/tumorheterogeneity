@@ -61,7 +61,14 @@ char *NUM ; // name given as 1st argument from the command line
 #include "params.h"
 #include "classes.h"
 
-#if defined __linux
+#if defined __APPLE__
+typedef unsigned int DWORD ;
+int memory_taken()
+{
+  return 0 ; // not implemented
+}
+#else
+// #if defined __linux
 #include <unistd.h>
 typedef unsigned int DWORD ;
 int memory_taken() // return memory available in MB
@@ -86,21 +93,21 @@ unsigned int freemem() // returns available memory in MB
   sysinfo(&s) ;
   return ((s.freeram)>>20) ;
 }
-#elif defined __APPLE__
-typedef unsigned int DWORD ;
-int memory_taken()
-{
-  return 0 ; // not implemented
-}
-#else
-#include <windows.h>
-#include <psapi.h>
-int memory_taken() // return memory available in MB
-{
-	PROCESS_MEMORY_COUNTERS info;
-	GetProcessMemoryInfo( GetCurrentProcess( ), &info, sizeof(info) );
-	return (int) (info.WorkingSetSize/(1<<20));
-}
+// #elif defined __APPLE__
+// typedef unsigned int DWORD ;
+// int memory_taken()
+// {
+//   return 0 ; // not implemented
+// }
+// #else
+// #include <windows.h>
+// #include <psapi.h>
+// int memory_taken() // return memory available in MB
+// {
+// 	PROCESS_MEMORY_COUNTERS info;
+// 	GetProcessMemoryInfo( GetCurrentProcess( ), &info, sizeof(info) );
+// 	return (int) (info.WorkingSetSize/(1<<20));
+// }
 #endif
 
 void err(char *reason)
@@ -157,7 +164,7 @@ int start_clock ;
 int L=0 ; // total number of SNPs
 int volume ; // total volume of the tumor
 vector <int> drivers ; // vector of driver mutations
-FILE *drivers_file ;
+// FILE *drivers_file = fopen("./drivers.dat","w");
 int treatment=0, cells_at_start ;
 FILE *times ; 
 extern int sample ;
@@ -201,6 +208,7 @@ Genotype::Genotype(Genotype *mother, int prevg, int no_snp) {
   death[1]=mother->death[1] ; growth[1]=mother->growth[1] ; m[1]=mother->m[1] ;
   prev_gen=prevg ;
   sequence=mother->sequence ; no_resistant=mother->no_resistant ; no_drivers=mother->no_drivers; 
+  drivers=mother->drivers;
   for (int i=0;i<no_snp;i++) {
     if ((driver_adv>0 || driver_migr_adv>0) && _drand48()<driver_prob/gama) { 
       float q=_drand48() ;
@@ -213,7 +221,11 @@ Genotype::Genotype(Genotype *mother, int prevg, int no_snp) {
         m[1]*=1+driver_migr_adv ; if (m[1]>max_migr) m[1]=max_migr ;
       }
       // drivers decrease prob. of death or increase prob. of growth
-      drivers.push_back(L) ; //fprintf(drivers_file,"%d ",L) ; fflush(drivers_file) ; 
+      drivers.push_back(L) ; 
+
+      // save driver creation...
+      // fprintf(drivers_file,"%d ",L) ; fflush(drivers_file) ; 
+
       sequence.push_back((L++)|DRIVER_PM) ; no_drivers++ ;
     } else {
       if (_drand48()<gama_res/gama) {  
@@ -226,7 +238,7 @@ Genotype::Genotype(Genotype *mother, int prevg, int no_snp) {
       else sequence.push_back(L++) ;
     }
   }
-  if (L>1e9) err("L too big") ;
+  if (L>1e15) err("L too big") ;
   number=1 ;
 }
 
@@ -631,6 +643,7 @@ int main_proc(int exit_size, int save_size, double max_time, double wait_time)
 {
   int i,j,k,n,l,in,jn,kn,ntot;  
   int cc=0, timeout=0 ;
+  // sprintf(name,"%s/drivers.dat");
   double tt_old=tt ;
 
   for(;;) {      // main loop 

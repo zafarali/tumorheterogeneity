@@ -79,7 +79,7 @@ const int driver_mode = 0 ; // 0== drivers affect bd only, 1==drivers affect sim
 
 const float cutoff=0.1 ;
 #ifdef __MAIN
-int max_size=int(1e6) ; // this is ignored when MAKE_TREATMENT_T is defined
+int max_size=int(1e5) ; // this is ignored when MAKE_TREATMENT_T is defined
 float time_to_treat=10*(365./12) ; // this is ignored when MAKE_TREATMENT_N is defined
 
 #endif
@@ -87,3 +87,5 @@ float time_to_treat=10*(365./12) ; // this is ignored when MAKE_TREATMENT_N is d
 const int _resol=1 ; // spatial resolution of sampling [cells]
 const int _bins=10000 ; // max number of bins
 //#define PAUSE_WHEN_MEMORY_LOW 10000 ; // if defined, the program pauses if there is less than PAUSE_WHEN_MEMORY_LOW MB of free memory
+
+const float max_save_size = 1e15;

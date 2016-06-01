@@ -61,14 +61,14 @@ extern int volume, max_size ;
 #ifndef classes_already_defined
 #define classes_already_defined
 
-#ifdef __APPLE__
+// #ifdef __APPLE__
 typedef unsigned int DWORD ;
 typedef unsigned char BYTE ;
-#elif __linux__
-typedef unsigned int DWORD ;
-typedef unsigned char BYTE ;
-#include <windows.h>
-#endif
+// #elif __linux__
+// typedef unsigned int DWORD ;
+// typedef unsigned char BYTE ;
+// #include <windows.h>
+// #endif
 
 class vecd  // class of 3d vectors
 {
@@ -250,6 +250,7 @@ const unsigned int L_PM = (1<<30) - 1 ;
 
 struct Genotype {
   vector <unsigned int> sequence ;
+  vector <unsigned int> drivers ;
   BYTE no_resistant, no_drivers ;
   float death[2], growth[2], m[2] ; // m = migration probability before/after treatment
   int number ; // number of cells of this genotype total/on the surface
