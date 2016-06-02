@@ -17,6 +17,36 @@ def SNP_count(genotypes_list):
 
 	return counts
 
+def unique_drivers(genotypes_list, all_drivers):
+	# print all_drivers
+	counts = Counter()
+
+	driver_SNPs_genome = map( lambda genotype: filter(lambda SNP: SNP in all_drivers, genotype.snps) , genotypes_list)
+	map(lambda driver_list : counts.update(driver_list), driver_SNPs_genome )
+
+	return counts
+
+def get_drivers_only(genotypes_list, all_drivers):
+	drivers_list = []
+	for cell_genotype in genotypes_list:
+		drivers_list.append(filter(lambda SNP: SNP in all_drivers, cell_genotype.snps))
+	return drivers_list
+
+
+def driver_proportion(SNP_counts, all_drivers):
+	unique_drivers = 0
+	total_drivers = 0
+
+	for driver in all_drivers:
+		print 'driver_SNP:',driver
+		count = SNP_counts.get(driver, 0)
+		print 'count:',count
+		if count == 1:
+			unique_drivers += 1
+		
+		total_drivers += count
+	return ( total_drivers, unique_drivers )
+
 def proportion_of_pairwise_differences(SNP_counts, sample_size):
 	"""
 		Calculates k or E(pi) the proportion of pairwise differences 
@@ -112,6 +142,6 @@ def tajimas_D(SNP_counts, n, return_parts=False):
 	S = number_of_segregating_sites(SNP_counts)
 	pi = proportion_of_pairwise_differences(SNP_counts, n)
 
-	D = float(pi - float(S)/an)/np.sqrt(uT*S + vT*(S**2))
+	D = float(pi - float(S)/an)/np.sqrt(uT*S + vT*(S**2)) if S != 0 else 0
 	return (pi, S, float(S)/an, D) if return_parts else D
 
