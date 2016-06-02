@@ -1,6 +1,7 @@
 from collections import namedtuple
 from Statistics import centre_of_mass
 import csv
+import pandas as pd
 
 Cell_ = namedtuple('Cell', 'x y z genotype')
 Cell_.__new__.__defaults__ = ( 0, 0, 0, -1 )
@@ -20,11 +21,10 @@ class Cell(Cell_):
 	@params:
 	  file_name
 	"""
-	cells = []
-	with open( file_name, 'r' ) as cell_file:
-	  for row in csv.reader(cell_file):
-		cells.append( Cell( *map( int, row[0].split(' ' ) ) ) )
-	return cells
+
+	cell_info = pd.read_csv(file_name,sep=' ').values
+	return map(lambda cell:Cell(*cell),cell_info)
+	
 
 Genotype_ = namedtuple('Genotype', 'original_id parent_genotype n_resistant n_driver frequency snps')
 Genotype_.__new__.__defaults__ = (-1, -1, 0, 0, 1, [])
