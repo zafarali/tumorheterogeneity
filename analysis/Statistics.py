@@ -2,6 +2,9 @@ import numpy as np
 from collections import Counter
 
 GAMMA = 0.5772156649015328606065120900824024310421
+L_PM = (1<<30) -1 
+D_PM = 1<<30
+R_PM = 1<<31
 
 def SNP_count(genotypes_list):
 	"""
@@ -17,35 +20,29 @@ def SNP_count(genotypes_list):
 
 	return counts
 
-def unique_drivers(genotypes_list, all_drivers):
-	# print all_drivers
+def drivers_count(genotypes_list):
+	"""
+		returns the counts for driver SNPs in the sample
+		@params:	
+			genotypes_list : list of Genotypes in the sample
+		@returns the driverSNP count
+	"""
 	counts = Counter()
-
-	driver_SNPs_genome = map( lambda genotype: filter(lambda SNP: SNP in all_drivers, genotype.snps) , genotypes_list)
-	map(lambda driver_list : counts.update(driver_list), driver_SNPs_genome )
+	# map over all genotypes
+	map(\
+		lambda genotype: counts.update( \
+			filter( lambda snp: (snp & D_PM) > 0, genotype.snps ) ), \
+		genotypes_list ) 		# ^ checks if a PM is a driver, filter snps accordingly.
+		# only counts the SNPs that pass the check.
 
 	return counts
 
-def get_drivers_only(genotypes_list, all_drivers):
-	drivers_list = []
-	for cell_genotype in genotypes_list:
-		drivers_list.append(filter(lambda SNP: SNP in all_drivers, cell_genotype.snps))
-	return drivers_list
-
-
-def driver_proportion(SNP_counts, all_drivers):
-	unique_drivers = 0
-	total_drivers = 0
-
-	for driver in all_drivers:
-		print 'driver_SNP:',driver
-		count = SNP_counts.get(driver, 0)
-		print 'count:',count
-		if count == 1:
-			unique_drivers += 1
-		
-		total_drivers += count
-	return ( total_drivers, unique_drivers )
+def unique_driver_proportion(driver_counts):
+	"""
+		Obtains the proportion of driver SNPs that are unique
+	"""
+	counts = np.array( driver_counts.values() )
+	return np.sum( counts == 1 ) / np.sum( counts )
 
 def proportion_of_pairwise_differences(SNP_counts, sample_size):
 	"""

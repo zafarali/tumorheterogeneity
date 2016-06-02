@@ -60,7 +60,7 @@ class Genotype(Genotype_):
 	return genotypes
 
 class Tumor(object):
-	def __init__( self, cells, genotypes, driver_SNPS=[] ):
+	def __init__( self, cells, genotypes ):
 		"""
 			Generic tumor object containing cells and genotypes.
 			@params:
@@ -68,8 +68,6 @@ class Tumor(object):
 				genotypes: a list of genotypes
 		"""
 		self.cells = cells
-		self.drivers = driver_SNPS
-		self.drivers_loaded = True if len(self.drivers) > 0 else False
 		self.genotypes = genotypes
 		self.number_of_cells = len(cells)
 		self.number_of_genotypes = len(genotypes)
@@ -93,24 +91,13 @@ class Tumor(object):
 		return self.genotypes[genotype_index]
 
 	@staticmethod
-	def from_files( cell_file, genome_file, drivers_file=None ):
+	def from_files( cell_file, genome_file ):
 		"""
 			Returns a tumor from cell and genotype data files
 			@params:
 				cell_file : file containing cell positions and genotypes
 				genome_file : file containing genome data
 		"""
-		drivers = set()
-
-		with open(drivers_file, 'r') as f:
-			reader = csv.reader(f)
-			for row in reader:
-				# SNPs = map(lambda SNP: int(SNP) if , row[0].split(' ') ) if len(row) > 0 and row != '' else []
-				SNPs = map(lambda SNP: int(SNP) if SNP != '' else -1 , row[0].split(' ') ) if len(row) > 0 and row != '' else []
-				
-				if len(SNPs)>0:
-					drivers.update(SNPs)
-		#end SNP loader
 
 		return Tumor( Cell.load_cells( cell_file ), \
-					 Genotype.load_genotypes( genome_file ) , driver_SNPS=drivers )
+					 Genotype.load_genotypes( genome_file ) )
