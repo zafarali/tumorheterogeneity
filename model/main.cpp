@@ -239,11 +239,13 @@ int main(int argc, char *argv[])
     // save some more data
     
     int *snp_no=new int[L], *snp_drivers=new int[L] ; // array of SNPs abundances
-    for (int i=0;i<L;i++) { snp_no[i]=snp_drivers[i]=0 ; }
-    for (int i=0;i<genotypes.size();i++) {
-      if (genotypes[i]!=NULL && genotypes[i]->number>0) 
-        for (int j=0;j<genotypes[i]->sequence.size();j++) {
+    for (int i=0;i<L;i++) { snp_no[i]=snp_drivers[i]=0 ; } // initialize all values to 0
+    for (int i=0;i<genotypes.size();i++) { // run through all genotypes
+      if (genotypes[i]!=NULL && genotypes[i]->number>0) // if this is a valid genotype and the frequency is greater than 0
+        for (int j=0;j<genotypes[i]->sequence.size();j++) { // go over the SNPs
+          // select the snp and add the number of genomes that have that particular SNP/genotype combo
           snp_no[((genotypes[i]->sequence[j])&L_PM)]+=genotypes[i]->number ;      
+          // check conversion strategy: https://github.com/zafarali/tumorheterogeneity/issues/4
           if (((genotypes[i]->sequence[j])&DRIVER_PM)) snp_drivers[((genotypes[i]->sequence[j])&L_PM)]+=genotypes[i]->number ;
         }
     }
@@ -253,7 +255,10 @@ int main(int argc, char *argv[])
     printf("saving PMs...\n") ;
     int most_abund[100] ;
     sprintf(name,"%s/all_PMs_%d_%d.dat",NUM,RAND,sample) ; save_snps(name,snp_no,max_size,0,most_abund) ;
-    if (driver_adv>0 || driver_migr_adv>0) { printf("saving driver PMs...\n") ; sprintf(name,"%s/drv_PMs_%d_%d.dat",NUM,RAND,sample) ; save_snps(name,snp_drivers,max_size,0,NULL) ; }
+    if (driver_adv>0 || driver_migr_adv>0) { printf("saving driver PMs...\n") ; 
+      sprintf(name,"%s/drv_PMs_%d_%d.dat",NUM,RAND,sample) ; 
+      save_snps(name,snp_drivers,max_size,0,NULL) ; 
+    }
     delete [] snp_no ; delete [] snp_drivers ;
 
     if (nsam==1) {  // do this only when making images of tumours
