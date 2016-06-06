@@ -165,7 +165,7 @@ int L=0 ; // total number of SNPs
 int volume ; // total volume of the tumor
 vector <int> drivers ; // vector of driver mutations
 
-FILE *drivers_file = fopen("./drivers.dat","w");
+// FILE *drivers_file = fopen("./drivers.dat","w");
 
 int treatment=0, cells_at_start ;
 FILE *times ; 
@@ -224,8 +224,15 @@ Genotype::Genotype(Genotype *mother, int prevg, int no_snp) {
       }
       // drivers decrease prob. of death or increase prob. of growth
       drivers.push_back(L) ; 
+<<<<<<< Updated upstream
       // // // save driver creation...
       // fprintf(drivers_file,"%d ",L) ; fflush(drivers_file) ; 
+=======
+
+      // // save driver creation...
+      // fprintf(drivers_file,"%d ",L) ; fflush(drivers_file) ; 
+
+>>>>>>> Stashed changes
       sequence.push_back((L++)|DRIVER_PM) ; no_drivers++ ;
     } else {
       if (_drand48()<gama_res/gama) {  
@@ -369,12 +376,14 @@ void reset()
   lesions.push_back(new Lesion(0,0, 0,0,0)) ;
   
   // erase output buffer for "times"
-#if defined __linux
-  times->_IO_write_ptr = times->_IO_write_base ;
-#elif defined __APPLE__
+// #if defined __linux
+  
+#if defined __APPLE__
   // not defined yet
 #else
-  times->_ptr = times->_base ; // this operates on elements of _iobuf and is specific to Windows GNU C++
+  times->_IO_write_ptr = times->_IO_write_base ;
+// #elif WINDOWS
+  // times->_ptr = times->_base ; // this operates on elements of _iobuf and is specific to Windows GNU C++
 #endif
 }
 
