@@ -37,12 +37,24 @@ def drivers_count(genotypes_list):
 
 	return counts
 
+def unique_driver_combinations(genotypes_list):
+
+	# here we hash a tuple of the driver snps
+	# this hash is unique based on the combination of driver snps
+	# 
+	driver_combos = set( map(\
+		lambda genotype: \
+		tuple( sorted( filter( lambda snp: (snp & D_PM ) > 0 , genotype.snps ) ) ) , \
+		genotypes_list ) )
+
+	return driver_combos
+
 def unique_driver_proportion(driver_counts):
 	"""
 		Obtains the proportion of driver SNPs that are unique
 	"""
 	counts = np.array( driver_counts.values() )
-	return np.sum( counts == 1 ) / np.sum( counts )
+	return np.sum( counts == 1 ) / float( np.sum( counts ) )
 
 def proportion_of_pairwise_differences(SNP_counts, sample_size):
 	"""

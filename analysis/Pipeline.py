@@ -43,7 +43,7 @@ def open_files(pipeline):
 		pipeline.FILES.update({
 			'cells' : glob(pipeline.folder+'/cells*')[0],
 			'genotypes' : glob(pipeline.folder+'/genotypes*')[0],
-			'drivers' : glob(pipeline.folder+'/driver_SNPS*')[0],
+			# 'drivers' : glob(pipeline.folder+'/driver_SNPS*')[0],
 		})
 	except IndexError as e:
 		sys.exit('(!) Certain files were missing')

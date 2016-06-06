@@ -1,6 +1,7 @@
 import numpy as np
 from BaseObjects import Tumor
 from Statistics import centre_of_mass
+from scipy.spatial import cKDTree
 
 class Sampler(object):
 	def __init__(self, tumor):
@@ -80,3 +81,26 @@ class SphericalSampler(EllipsoidSampler):
 		"""
 		return super(SphericalSampler, self).sample(radii=(radius, )*3, centre=centre, as_cells=as_cells, with_genotypes=with_genotypes)
 
+class KDTSphericalSampler(Sampler):
+	def __init__(self, tumor):
+		"""
+			Samples a Sphere from the tumor using a fast KDTree implementation
+			@params:
+				tumor: a Tumor Object
+		"""
+		Sampler.__init__(self, tumor)
+		self.kdt = cKDTree(self.cell_positions, leafsize=1000)
+
+	def sample(self, radius=1, centre=(0,0,0), with_genotypes=False):
+		"""
+			Samples a Sphere from the Tumor
+			@params:
+				radius: radius of the sphere
+				centre: centre of the sphere
+				with_genotypes [=False]: returns genotpe indicies as well
+		"""
+		sample_indicies = self.kdt.query_ball_point(centre, r=radius)
+		if with_genotypes:
+			return self.cell_data[sample_indicies, :3	], self.tumor.get_genotypes(self.cell_genotypes[sample_indicies])
+		else:
+			return self.cell_data[sample_indicies, :]
