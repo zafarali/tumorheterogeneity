@@ -47,7 +47,7 @@ def unique_driver_combinations(genotypes_list):
 		tuple( sorted( filter( lambda snp: (snp & D_PM ) > 0 , genotype.snps ) ) ) , \
 		genotypes_list ) )
 
-	return driver_combos
+	return len(driver_combos)
 
 def unique_driver_proportion(driver_counts):
 	"""
@@ -74,14 +74,23 @@ def proportion_of_pairwise_differences(SNP_counts, sample_size):
 	y = (sample_size - m)/float(sample_size-1)
 	return np.sum( 2 * x * y )
 
-def number_of_segregating_sites(SNP_counts):
+def number_of_segregating_sites(SNP_counts, sample_size):
 	"""
 		Calculates S the number of segregating sites
-		(basically the number of mutations in the sample)
+		(basically the number of mutations not shared by all in the sample)
 		@params:
 			SNP_counts returned from SNP_count function
+			sample_size: the size of the sample
 	"""
-	return len(SNP_counts.keys())
+	S = 0
+	for SNP, count in SNP_counts.items():
+		if count != sample_size:
+			S += 1
+		# only add to the number of segregating sites if it is not
+		# shared by the whole sample
+	#endfor
+	return S
+
 
 def number_of_singletons(SNP_counts):
 	"""
@@ -121,6 +130,9 @@ def generalized_harmonic_number(n, power):
 		@TODO: is there a better way to do this?
 	"""
 	assert n>0, 'n must be bigger than 0'
+	# use n+1 because arange doesn't include the n+1st integer.
+	if power == 1 and n > 100: 
+		return harmonic_number(n)
 	return np.sum(1./(np.arange(1,n+1)**power))
 
 def normalized_segregating_sites(SNP_counts, sample_size):
@@ -144,15 +156,26 @@ def tajimas_D(SNP_counts, n, return_parts=False):
 		Genetics, 141(1), 413-429.
 	"""
 	# the harmonic numbers
-	an = harmonic_number(n-1)
-	bn = generalized_harmonic_number(n-1, 2)
+	# an = harmonic_number(n-1)
+	an = generalized_harmonic_number(n-1, 1) # 1st harmonic number
+	bn = generalized_harmonic_number(n-1, 2) # 2nd harmonic number
 	
 	vT = (float(2*(n**2 + n + 3))/(9*n*(n-1)) - float(n+2)/(n*an) + bn/an)/(an**2 + bn)
 	uT = float(float(n+1)/(3*(n-1)) - 1./an)/an - vT
 
-	S = number_of_segregating_sites(SNP_counts)
+	S = number_of_segregating_sites(SNP_counts, n)
 	pi = proportion_of_pairwise_differences(SNP_counts, n)
+	
+	# print 'vt:',vT
+	# print 'ut:',uT
+	# print 'n:',n
+	# print 'an:',an
+	# print 'bn:',bn
+	# print 'S:',S
+	# print 'pi:',pi
+	D = float(pi - float(S)/an)/np.sqrt(uT*S + vT*(S**2)) if S != 0 and vT != 0 and uT != 0 else 0
+	if np.isnan(D):
+		raise Exception('NAN found during D calculation')
 
-	D = float(pi - float(S)/an)/np.sqrt(uT*S + vT*(S**2)) if S != 0 else 0
 	return (pi, S, float(S)/an, D) if return_parts else D
 

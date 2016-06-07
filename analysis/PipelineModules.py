@@ -105,8 +105,9 @@ def calculate_statistics(pipeline):
 def inline_statistics(pipeline):
 
 	stats = [['radius', 'distance_to_COM', 'sample_size', \
-	'pi', 'S', 'S/H', 'Tajimas D', 'D',\
-	'total_SNPs', 'proportion_driver', 'unique_driver_propotion', 'total_drivers', 'unique_combos']]
+	'pi', 'S', 'S/H', 'Tajimas D', 'D', \
+	'total_SNPs', 'proportion_driver', 'unique_driver_propotion',\
+	'total_drivers', 'unique_combos']]
 
 	pipeline.print2('Creating KDTSphericalSampler')
 	sampler = KDTSphericalSampler(pipeline.tumor)
@@ -139,14 +140,14 @@ def inline_statistics(pipeline):
 			# base statistics pi, S, SH, D
 			pi, S, SH, D = Statistics.tajimas_D(SNP_counts, n, return_parts=True)
 
+			# number of SNPs in the sample
 			total_SNPs = len( SNP_counts.keys() )
 
 			# frequency of driver mutations
 			drivers_count = Statistics.drivers_count(sample[1])
 
-			# total number of driver mutations in the sample
+			# number of driver mutations in the sample
 			total_drivers = len( drivers_count.keys() ) 
-
 
 			unique_drivers = Statistics.unique_driver_proportion(drivers_count)
 
@@ -154,7 +155,7 @@ def inline_statistics(pipeline):
 
 			stats.append( [radius, distance_to_COM, n, pi, S, SH, D, pi-SH, \
 				total_SNPs, total_drivers/float(total_SNPs),\
-				unique_drivers, total_drivers, len(unique_combos) ] )
+				unique_drivers, total_drivers, unique_combos ] )
 
 		pipeline.print2( str(number_of_samples) +' samples conducted and statistics too')
 	# end
