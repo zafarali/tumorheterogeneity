@@ -69,8 +69,10 @@ def proportion_of_pairwise_differences(SNP_counts, sample_size):
 			SNP_counts returned from SNP_count function
 	"""
 	# x holds the proportion of chromosomes at which a locus is mutated
-	x = np.array(SNP_counts.values(), dtype=np.float)/sample_size
-	return np.sum( 2 * x * (1-x) )
+	m = np.array(SNP_counts.values(), dtype=np.float)
+	x = m/float(sample_size)
+	y = (sample_size - m)/float(sample_size-1)
+	return np.sum( 2 * x * y )
 
 def number_of_segregating_sites(SNP_counts):
 	"""
