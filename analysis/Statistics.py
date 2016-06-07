@@ -165,16 +165,17 @@ def tajimas_D(SNP_counts, n, return_parts=False):
 
 	S = number_of_segregating_sites(SNP_counts, n)
 	pi = proportion_of_pairwise_differences(SNP_counts, n)
-	
-	# print 'vt:',vT
-	# print 'ut:',uT
-	# print 'n:',n
-	# print 'an:',an
-	# print 'bn:',bn
-	# print 'S:',S
-	# print 'pi:',pi
-	D = float(pi - float(S)/an)/np.sqrt(uT*S + vT*(S**2)) if S != 0 and vT != 0 and uT != 0 else 0
+
+	denom = np.sqrt(uT*S + vT*(S**2))
+	D = float(pi - float(S)/an)/denom if denom != 0 else 0
 	if np.isnan(D):
+		print 'vt:',vT
+		print 'ut:',uT
+		print 'n:',n
+		print 'an:',an
+		print 'bn:',bn
+		print 'S:',S
+		print 'pi:',pi
 		raise Exception('NAN found during D calculation')
 
 	return (pi, S, float(S)/an, D) if return_parts else D
