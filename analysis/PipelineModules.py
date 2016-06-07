@@ -1,6 +1,10 @@
 # modules for pipeline
 import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.cm as cm
+import pandas as pd
 import csv
+import itertools
 from BaseObjects import Tumor
 from Samplers import SphericalSampler, KDTSphericalSampler
 import Statistics
@@ -182,12 +186,38 @@ def save_statistics(pipeline):
 			writer.writerow(row)
 		pipeline.print2('Statistics saved')
 
-def create_plots(pipeline):
-	raise NotImplementedError('Not implemented yet!')
+def all_plot_combos(pipeline):
 
-def create_plots(pipeline):
-	raise NotImplementedError('Not implemented yet!')
+	indep = ['radius', 'distance_to_COM', 'sample_size']
+	dep = ['pi', 'S', 'S/H', 'Tajimas D', 'D', \
+		'total_SNPs', 'proportion_driver', 'unique_driver_propotion',\
+		'total_drivers', 'unique_combos']
+	
+	# generates all pairs of indep and dep variables
+	pairs = list(itertools.product(indep, dep))
+
+	# creates a dataframe for easy plotting
+	df = pd.DataFrame(pipeline.stats[1:], columns=pipeline.stats[0])
+	radii = pipeline.specs['RADII']
+
+	for x_label,y_label in pairs:
+
+		colors = iter( cm.rainbow( np.linspace( 0, 1, len(radii) ) ) ) 
+		plt.figure(figsize=(10,10))
+		plt.title(x_label+' vs '+y_label)
+		for radius in radii:
+			# subsample the data according to the radius so we can colour it
+			subsample = df[df['radius'] == radius]
+			plt.scatter( subsample[x_label], \
+				subsample[y_label], color=next(colors), label='radius='+str(radius))
+			plt.xlabel(x_label)
+			plt.ylabel(y_label)
+		plt.legend(bbox_to_anchor=(1.25,0.75))
+		y_label_serialized = y_label.replace('/', '')
+		plt.savefig( pipeline.FILES['out_directory']+'/'+x_label+'_vs_'+y_label_serialized+'.pdf',\
+		bbox_inches='tight')
+
 
 
 BASE = [ load_tumor, random_spherical_samples, calculate_statistics, save_statistics ]
-KD_SAMPLING = [ load_tumor, inline_statistics, save_statistics ]
+KD_SAMPLING = [ load_tumor, inline_statistics, save_statistics, all_plot_combos ]
