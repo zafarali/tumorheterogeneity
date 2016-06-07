@@ -121,9 +121,11 @@ def inline_statistics(pipeline):
 
 	for radius in pipeline.specs['RADII']:
 		pipeline.print2('Sampling radius:'+str(radius))
-
-		for i in xrange( number_of_samples ):
-			
+		i = 0
+		# for i in xrange( number_of_samples ):
+		while i != number_of_samples:
+			if i > 1000:
+				raise Exception('Did not find enough samples.')
 			# generate a new coordinate
 			centre = rand_coordinate.next()
 
@@ -140,7 +142,7 @@ def inline_statistics(pipeline):
 			if n < 2:
 				pipeline.print2('Skipped sample due to only ' + str(n)+ ' individuals')
 				continue
-
+			i+=1
 			# base statistics pi, S, SH, D
 			pi, S, SH, D = Statistics.tajimas_D(SNP_counts, n, return_parts=True)
 
@@ -160,6 +162,8 @@ def inline_statistics(pipeline):
 			stats.append( [radius, distance_to_COM, n, pi, S, SH, D, pi-SH, \
 				total_SNPs, total_drivers/float(total_SNPs),\
 				unique_drivers, total_drivers, unique_combos ] )
+		
+		#end sampling for loop
 
 		pipeline.print2( str(number_of_samples) +' samples conducted and statistics too')
 	# end
@@ -200,6 +204,7 @@ def all_plot_combos(pipeline):
 	df = pd.DataFrame(pipeline.stats[1:], columns=pipeline.stats[0])
 	radii = pipeline.specs['RADII']
 
+	pipeline.print2('Plotting')
 	for x_label,y_label in pairs:
 
 		colors = iter( cm.rainbow( np.linspace( 0, 1, len(radii) ) ) ) 
@@ -216,7 +221,7 @@ def all_plot_combos(pipeline):
 		y_label_serialized = y_label.replace('/', '')
 		plt.savefig( pipeline.FILES['out_directory']+'/'+x_label+'_vs_'+y_label_serialized+'.pdf',\
 		bbox_inches='tight')
-
+	pipeline.print2('Plotting done')
 
 
 BASE = [ load_tumor, random_spherical_samples, calculate_statistics, save_statistics ]
