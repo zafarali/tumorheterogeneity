@@ -54,7 +54,7 @@ def unique_driver_proportion(driver_counts):
 		Obtains the proportion of driver SNPs that are unique
 	"""
 	counts = np.array( driver_counts.values() )
-	return np.sum( counts == 1 ) / float( np.sum( counts ) )
+	return np.sum( counts == 1 ) / float(len( driver_counts.keys() ))
 
 def proportion_of_pairwise_differences(SNP_counts, sample_size):
 	"""
@@ -62,7 +62,8 @@ def proportion_of_pairwise_differences(SNP_counts, sample_size):
 		according to the following equation:
 		x_l = proportion of chromosomes where locus l is mutated
 
-		pi = sum_(all loci l) 2*x_l*(1-x_l)
+		using exact formula:
+			2*(m/n)*(n-m)/(n-1)
 		sample_size = the number of cells in the sample
 
 		@params:
