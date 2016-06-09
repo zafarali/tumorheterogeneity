@@ -124,7 +124,7 @@ def inline_statistics(pipeline):
 		i = 0
 		# for i in xrange( number_of_samples ):
 		while i != number_of_samples:
-			if i > 1000:
+			if i > 2000:
 				pipeline.print2('Did not find enough samples for radius='+str(radius)+'.')
 				break
 			# generate a new coordinate
@@ -140,10 +140,10 @@ def inline_statistics(pipeline):
 			SNP_counts = Statistics.SNP_count(sample[1])
 
 			n = len(sample[1])
+			i+=1
 			if n < 2:
 				pipeline.print2('Skipped sample due to only ' + str(n)+ ' individuals')
 				continue
-			i+=1
 			# base statistics pi, S, SH, D
 			pi, S, SH, D = Statistics.tajimas_D(SNP_counts, n, return_parts=True)
 
