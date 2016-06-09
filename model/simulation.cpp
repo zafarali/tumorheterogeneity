@@ -224,15 +224,8 @@ Genotype::Genotype(Genotype *mother, int prevg, int no_snp) {
       }
       // drivers decrease prob. of death or increase prob. of growth
       drivers.push_back(L) ; 
-<<<<<<< Updated upstream
       // // // save driver creation...
       // fprintf(drivers_file,"%d ",L) ; fflush(drivers_file) ; 
-=======
-
-      // // save driver creation...
-      // fprintf(drivers_file,"%d ",L) ; fflush(drivers_file) ; 
-
->>>>>>> Stashed changes
       sequence.push_back((L++)|DRIVER_PM) ; no_drivers++ ;
     } else {
       if (_drand48()<gama_res/gama) {  
