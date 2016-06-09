@@ -110,8 +110,9 @@ def inline_statistics(pipeline):
 
 	stats = [['radius', 'distance_to_COM', 'sample_size', \
 	'pi', 'S', 'S/H', 'Tajimas D', 'D', \
-	'total_SNPs', 'proportion_driver', 'unique_driver_propotion',\
-	'total_drivers', 'unique_combos']]
+	'num_SNPs', 'proportion_driver', 'unique_driver_propotion',\
+	'num_drivers', 'unique_combos', 'mean_drivers', \
+	'mean_SNPs', 'driver_enrichment']]
 
 	pipeline.print2('Creating KDTSphericalSampler')
 	sampler = KDTSphericalSampler(pipeline.tumor)
@@ -148,23 +149,37 @@ def inline_statistics(pipeline):
 			pi, S, SH, D = Statistics.tajimas_D(SNP_counts, n, return_parts=True)
 
 			# number of SNPs in the sample
-			total_SNPs = len( SNP_counts.keys() )
+			num_SNPs = len( SNP_counts.keys() )
+
+			# total number of SNPs in the sample
+			mean_SNPs = np.sum( SNP_counts.values() ) / float(n)
 
 			# frequency of driver mutations
 			drivers_count = Statistics.drivers_count(sample[1])
 
 			# number of driver mutations in the sample
-			total_drivers = len( drivers_count.keys() ) 
+			num_drivers = len( drivers_count.keys() ) 
 
+			# total number of driver mutations:
+			mean_drivers = np.sum( drivers_count.values() ) / float(n)
+
+			# the number of drivers that are unique / total number of drivers
 			unique_drivers = Statistics.unique_driver_proportion(drivers_count)
 
+			# the number of unique haplotypes (combinations of drivers)
 			unique_combos = Statistics.unique_driver_combinations(sample[1])
-			
-			driver_to_SNP_ratio = total_drivers/float(total_SNPs) if total_SNPs > 0 else 0
 
-			stats.append( [radius, distance_to_COM, n, pi, S, SH, D, pi-SH, \
-				total_SNPs, driver_to_SNP_ratio,\
-				unique_drivers, total_drivers, unique_combos ] )
+			# the proportion of total SNPs in the data that are drivers
+			driver_enrichment = mean_drivers/float(mean_SNPs) if mean_SNPs > 0 else 0
+			
+			# the number of SNPs that are driver
+			driver_to_SNP_ratio = num_drivers/float(num_SNPs) if num_SNPs > 0 else 0
+
+			stats.append( [radius, distance_to_COM, \
+				n, pi, S, SH, D, pi-SH, \
+				num_SNPs, driver_to_SNP_ratio,\
+				unique_drivers, num_drivers, unique_combos, \
+				mean_drivers, mean_SNPs, driver_enrichment ] )
 		
 		#end sampling for loop
 
@@ -197,8 +212,9 @@ def all_plot_combos(pipeline):
 
 	indep = ['radius', 'distance_to_COM', 'sample_size']
 	dep = ['pi', 'S', 'S/H', 'Tajimas D', 'D', \
-		'total_SNPs', 'proportion_driver', 'unique_driver_propotion',\
-		'total_drivers', 'unique_combos']
+		'num_SNPs', 'proportion_driver', 'unique_driver_propotion',\
+		'num_drivers', 'unique_combos', 'mean_drivers', \
+		'mean_SNPs', 'driver_enrichment']
 	
 	# generates all pairs of indep and dep variables
 	pairs = list(itertools.product(indep, dep))
