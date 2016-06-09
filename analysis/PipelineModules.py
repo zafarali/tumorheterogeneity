@@ -125,7 +125,8 @@ def inline_statistics(pipeline):
 		# for i in xrange( number_of_samples ):
 		while i != number_of_samples:
 			if i > 1000:
-				raise Exception('Did not find enough samples.')
+				pipeline.print2('Did not find enough samples for radius='+str(radius)+'.')
+				break
 			# generate a new coordinate
 			centre = rand_coordinate.next()
 
@@ -158,9 +159,11 @@ def inline_statistics(pipeline):
 			unique_drivers = Statistics.unique_driver_proportion(drivers_count)
 
 			unique_combos = Statistics.unique_driver_combinations(sample[1])
+			
+			driver_to_SNP_ratio = total_drivers/float(total_SNPs) if total_SNPs > 0 else 0
 
 			stats.append( [radius, distance_to_COM, n, pi, S, SH, D, pi-SH, \
-				total_SNPs, total_drivers/float(total_SNPs),\
+				total_SNPs, driver_to_SNP_ratio,\
 				unique_drivers, total_drivers, unique_combos ] )
 		
 		#end sampling for loop
