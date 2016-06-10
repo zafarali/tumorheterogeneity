@@ -242,6 +242,122 @@ def all_plot_combos(pipeline):
 		bbox_inches='tight')
 	pipeline.print2('Plotting done')
 
+def mutation_count_plots(pipeline):
+	pipeline.print2('Plotting mutation counts')
+	_mutation_count_plots(pipeline, 'distance_to_COM')
+	_mutation_count_plots(pipeline, 'sample_size')
+	pipeline.print2('Plotting mutation counts done')
+
+def driver_stats_plots(pipeline):
+	pipeline.print2('Plotting driver stats')
+	_driver_stats_plots(pipeline, 'distance_to_COM')
+	_driver_stats_plots(pipeline, 'sample_size')
+	pipeline.print2('Plotting driver stats done')
+
+
+def _driver_stats_plots(pipeline, x_label):
+	
+	printlabel = 'Distance to Center of Mass' if x_label == 'distance_to_COM' else 'Sample Size'
+
+	df = pd.DataFrame(pipeline.stats[1:], columns=pipeline.stats[0])
+	plt.figure(figsize=(11,10))
+	radii = np.unique(df['radius'].values)
+	colors = itertools.cycle( cm.rainbow( np.linspace( 0, 1, len(radii) ) ) )
+
+	plt.subplot(2,2,1)
+
+	plt.title('Singleton Drivers vs Distance')
+	for i in radii:
+	    subsample = df[df['radius'] == i]
+	    plt.scatter( subsample[x_label], subsample['unique_driver_propotion'], color=next(colors), label='Radius='+str(i))
+	    plt.xlabel(printlabel)
+	    plt.ylabel('Proportion of Drivers that are Singletons')
+
+	plt.subplot(2,2,2)
+
+	plt.title('Driver Enrichment vs Distance')
+	for i in radii:
+	    subsample = df[df['radius'] == i]
+	    plt.scatter( subsample[x_label], subsample['driver_enrichment'], color=next(colors), label='Radius='+str(i))
+	    plt.xlabel(printlabel)
+	    plt.ylabel('Mean Drivers per Cell / Mean SNPs per Cell')
+	    
+	plt.subplot(2,2,3)
+	plt.title('Unique Haplotypes vs Distance')
+	for i in radii:
+	    subsample = df[df['radius'] == i]
+	    plt.scatter( subsample[x_label], subsample['unique_combos'], color=next(colors), label='Radius='+str(i))
+	    plt.xlabel(printlabel)
+	    plt.ylabel('Number of Unique Haplotypes')
+
+	plt.subplot(2,2,4)
+
+	plt.title('Proportion of SNPs that are Driver')
+	for i in radii:
+	    subsample = df[df['radius'] == i]
+	    plt.scatter( subsample[x_label], subsample['proportion_driver'], color=next(colors), label='Radius='+str(i))
+	    plt.xlabel(printlabel)
+	    plt.ylabel('Number of Drivers / Number of SNPs')
+
+	plt.suptitle('Statistics about Driver SNPs in Samples', fontsize=15)
+	plt.legend(ncol=5, bbox_to_anchor=(0.88,2.38))
+	plt.savefig( pipeline.FILES['out_directory']+'/driver_stats_'+x_label+'.pdf',\
+		bbox_inches='tight')
+
+
+def _mutation_count_plots(pipeline, x_label):
+
+	printlabel = 'Distance to Center of Mass' if x_label == 'distance_to_COM' else 'Sample Size'
+
+
+	pipeline.print2('Special Plot being conducted.')
+
+	df = pd.DataFrame(pipeline.stats[1:], columns=pipeline.stats[0])
+	radii = np.unique(df['radius'].values)
+
+	plt.figure(figsize=(11,10))
+	colors = itertools.cycle( cm.rainbow( np.linspace( 0, 1, len(radii) ) ) )
+
+	plt.subplot(2,2,1)
+	plt.title('Mean number of SNPs per cell')
+
+	for i in radii:
+	    subsample = df[df['radius'] == i]
+	    plt.scatter( subsample[x_label], subsample['mean_SNPs'], color=next(colors), label='Radius='+str(i))
+	    plt.xlabel(printlabel)
+	    plt.ylabel('Mean SNPs per Cell')
+
+	plt.subplot(2,2,2)
+	
+	plt.title('Mean number of Drivers per cell')
+	for i in radii:
+	    subsample = df[df['radius'] == i]
+	    plt.scatter( subsample[x_label], subsample['mean_drivers'], color=next(colors), label='Radius='+str(i))
+	    plt.xlabel(printlabel)
+	    plt.ylabel('Mean Drivers per Cell')
+
+	plt.subplot(2,2,3)
+	
+	plt.title('Number of SNPs in the sample vs Distance')
+	for i in radii:
+	    subsample = df[df['radius'] == i]
+	    plt.scatter( subsample[x_label], subsample['num_SNPs'], color=next(colors), label='Radius='+str(i))
+	    plt.xlabel(printlabel)
+	    plt.ylabel('Number of SNPs')
+
+	plt.subplot(2,2,4)
+	
+	plt.title('Number of drivers in the sample vs Distance')
+	for i in radii:
+	    subsample = df[df['radius'] == i]
+	    plt.scatter( subsample[x_label], subsample['num_drivers'], color=next(colors), label='Radius='+str(i))
+	    plt.xlabel(printlabel)
+	    plt.ylabel('Number of Drivers')
+	
+	plt.savefig( pipeline.FILES['out_directory']+'/mutation_count_plots_'+x_label+'.pdf',\
+		bbox_inches='tight')
+	
+
 
 BASE = [ load_tumor, random_spherical_samples, calculate_statistics, save_statistics ]
-KD_SAMPLING = [ load_tumor, inline_statistics, save_statistics, all_plot_combos ]
+KD_SAMPLING = [ load_tumor, inline_statistics, save_statistics, all_plot_combos, mutation_count_plots, driver_stats_plots ]
