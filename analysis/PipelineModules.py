@@ -254,6 +254,11 @@ def driver_stats_plots(pipeline):
 	_driver_stats_plots(pipeline, 'sample_size')
 	pipeline.print2('Plotting driver stats done')
 
+def pop_gen_plots(pipeline):
+	pipeline.print2('Plotting pop_gen stats')
+	_pop_gen_stats(pipeline, 'distance_to_COM')
+	_pop_gen_stats(pipeline, 'sample_size')
+	pipeline.print2('Plotting pop_gen stats done')
 
 def _driver_stats_plots(pipeline, x_label):
 	
@@ -357,7 +362,49 @@ def _mutation_count_plots(pipeline, x_label):
 	plt.savefig( pipeline.FILES['out_directory']+'/mutation_count_plots_'+x_label+'.pdf',\
 		bbox_inches='tight')
 	
+def _pop_gen_stats(pipeline,x_label):
+	plt.figure(figsize=(15,10))
+	printlabel = 'Distance to COM' if x_label == 'distane_to_COM' else 'Sample Size'
+	df = pd.DataFrame(pipeline.stats[1:], columns=pipeline.stats[0])
 
+	radii = np.unique(df['radius'].values)
+	colors = itertools.cycle( cm.rainbow( np.linspace( 0, 1, len(radii) ) ) )
+
+	plt.subplot(2,2,1)
+	plt.title('D vs Radius')
+	for i in radii:
+	    subsample = df[df['radius'] == i]
+	    plt.scatter( subsample[x_label], subsample['D'], color=next(colors))
+	    plt.xlabel(printlabel)
+	    plt.ylabel('D')
+	    
+	plt.subplot(2,2,2)
+	plt.title('Tajimas D vs Radius')
+	for i in radii:
+	    subsample = df[df['radius'] == i]
+	    plt.scatter( subsample[x_label], subsample['Tajimas D'], color=next(colors))
+	    plt.xlabel(printlabel)
+	    plt.ylabel('Tajimas D')
+	    
+	plt.subplot(2,2,3)
+	plt.title('S/H vs Radius')
+	for i in radii:
+	    subsample = df[df['radius'] == i]
+	    plt.scatter( subsample[x_label], subsample['S/H'], color=next(colors))
+	    plt.xlabel(printlabel)
+	    plt.ylabel('Normalized Number of Segregating Sites (S/H)')
+	    
+	plt.subplot(2,2,4)
+	plt.title('Pi vs Radius')
+	for i in radii:
+	    subsample = df[df['radius'] == i]
+	    plt.scatter( subsample[x_label], subsample['pi'], color=next(colors))
+	    plt.xlabel(printlabel)
+	    plt.ylabel('Proportion of Pairwise Differences (Pi)')
+	    
+	plt.suptitle('Statistics for Neutrality of Samples', fontsize=15)
+	plt.savefig( pipeline.FILES['out_directory']+'/pop_gen_stats'+x_label+'.pdf',\
+		bbox_inches='tight')
 
 BASE = [ load_tumor, random_spherical_samples, calculate_statistics, save_statistics ]
-KD_SAMPLING = [ load_tumor, inline_statistics, save_statistics, all_plot_combos, mutation_count_plots, driver_stats_plots ]
+KD_SAMPLING = [ load_tumor, inline_statistics, save_statistics, all_plot_combos, mutation_count_plots, driver_stats_plots, pop_gen_plots ]
