@@ -364,7 +364,7 @@ def _mutation_count_plots(pipeline, x_label):
 	
 def _pop_gen_stats(pipeline,x_label):
 	plt.figure(figsize=(15,10))
-	printlabel = 'Distance to COM' if x_label == 'distane_to_COM' else 'Sample Size'
+	printlabel = 'Distance to COM' if x_label == 'distance_to_COM' else 'Sample Size'
 	df = pd.DataFrame(pipeline.stats[1:], columns=pipeline.stats[0])
 
 	radii = np.unique(df['radius'].values)
