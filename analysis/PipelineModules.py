@@ -118,14 +118,15 @@ def inline_statistics(pipeline):
 	sampler = KDTSphericalSampler(pipeline.tumor)
 	pipeline.print2('KDTSphericalSampler created.')
 	rand_coordinate = sample_coordinate(sampler.cell_positions, deviate=True)
-	number_of_samples = pipeline.specs.get('repeats', 100)
-
+	number_of_samples = pipeline.specs.get('repeats', 500)
+	pipeline.sampler = sampler
 	for radius in pipeline.specs['RADII']:
 		pipeline.print2('Sampling radius:'+str(radius))
-		i = 0
+		i = 0 # holds the number of samples so far
 		# for i in xrange( number_of_samples ):
+		i2=0 # holds the number of attempts so far
 		while i != number_of_samples:
-			if i > 2000:
+			if i2 > 2000:
 				pipeline.print2('Did not find enough samples for radius='+str(radius)+'.')
 				break
 			# generate a new coordinate
@@ -141,10 +142,14 @@ def inline_statistics(pipeline):
 			SNP_counts = Statistics.SNP_count(sample[1])
 
 			n = len(sample[1])
-			i+=1
+			
+			i2 += 1
+
 			if n < 2:
 				pipeline.print2('Skipped sample due to only ' + str(n)+ ' individuals')
 				continue
+
+			i+=1
 			# base statistics pi, S, SH, D
 			pi, S, SH, D = Statistics.tajimas_D(SNP_counts, n, return_parts=True)
 
@@ -189,8 +194,21 @@ def inline_statistics(pipeline):
 	pipeline.stats = stats
 	pipeline.print2('Sampling/Statistics Completed')
 
-
-
+def density_plot(pipeline):
+	rho, r = np.histogram(np.sqrt(np.sum((pipeline.sampler.cell_positions-pipeline.tumor.COM)**2,axis=1)), bins=100)
+	def neighbour_iterator(arr):
+	    index = 0
+	    while index < len(arr)-1:
+	        yield (arr[index], arr[index+1])
+	        index += 1
+	r_meaned = np.mean(np.array(list(neighbour_iterator(r))), axis=1)
+	rho2 = rho/ (4*np.pi*r_meaned**2)  
+	plt.figure(3,figsize=(10,7.5))
+	plt.plot(r_meaned,rho2)
+	plt.xlabel('r')
+	plt.ylabel('density')
+	plt.title('Tumor Density')
+	plt.savefig(pipeline.FILES['out_directory']+'/density_corrected.pdf', bbox_inches='tight')
 
 def save_statistics(pipeline):
 	"""
@@ -309,7 +327,6 @@ def _driver_stats_plots(pipeline, x_label):
 	plt.savefig( pipeline.FILES['out_directory']+'/driver_stats_'+x_label+'.pdf',\
 		bbox_inches='tight')
 
-
 def _mutation_count_plots(pipeline, x_label):
 
 	printlabel = 'Distance to Center of Mass' if x_label == 'distance_to_COM' else 'Sample Size'
@@ -407,4 +424,4 @@ def _pop_gen_stats(pipeline,x_label):
 		bbox_inches='tight')
 
 BASE = [ load_tumor, random_spherical_samples, calculate_statistics, save_statistics ]
-KD_SAMPLING = [ load_tumor, inline_statistics, save_statistics, all_plot_combos, mutation_count_plots, driver_stats_plots, pop_gen_plots ]
+KD_SAMPLING = [ load_tumor, inline_statistics, save_statistics, all_plot_combos, mutation_count_plots, driver_stats_plots, pop_gen_plots, density_plot ]
