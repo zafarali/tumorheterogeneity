@@ -208,6 +208,8 @@ def density_plot(pipeline):
 	plt.xlabel('r')
 	plt.ylabel('density')
 	plt.title('Tumor Density')
+	np.save(pipeline.FILES['out_directory']+'/r_meaned.npy',r_meaned)
+	np.save(pipeline.FILES['out_directory']+'/rho2.npy',rho2)
 	plt.savefig(pipeline.FILES['out_directory']+'/density_corrected.pdf', bbox_inches='tight')
 
 def save_statistics(pipeline):
