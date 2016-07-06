@@ -203,7 +203,7 @@ def density_plot(pipeline):
 	        index += 1
 	r_meaned = np.mean(np.array(list(neighbour_iterator(r))), axis=1)
 	rho2 = rho/ (4*np.pi*r_meaned**2)  
-	plt.figure(3,figsize=(10,7.5))
+	plt.figure(figsize=(10,7.5))
 	plt.plot(r_meaned,rho2)
 	plt.xlabel('r')
 	plt.ylabel('density')
