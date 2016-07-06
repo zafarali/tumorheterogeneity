@@ -195,7 +195,7 @@ def inline_statistics(pipeline):
 	pipeline.print2('Sampling/Statistics Completed')
 
 def density_plot(pipeline):
-	rho, r = np.histogram(np.sqrt(np.sum((pipeline.sampler.cell_positions-pipeline.tumor.COM)**2,axis=1)), bins=100)
+	rho, r = np.histogram(np.sqrt(np.sum((pipeline.sampler.cell_positions-pipeline.tumor.COM)**2,axis=1)), bins=np.linspace(0,1000,1000))
 	def neighbour_iterator(arr):
 	    index = 0
 	    while index < len(arr)-1:
