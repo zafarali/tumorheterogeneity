@@ -1,7 +1,8 @@
-from collections import namedtuple
+from collections import namedtuple, Counter
 from Statistics import centre_of_mass
 import csv
 import pandas as pd
+import numpy as np
 
 Cell_ = namedtuple('Cell', 'x y z genotype')
 Cell_.__new__.__defaults__ = ( 0, 0, 0, -1 )
@@ -59,6 +60,13 @@ class Genotype(Genotype_):
 					   int(n_driver), int(frequency), sequence ) )
 	return genotypes
 
+	def set(self, attribute, value):
+		if attribute == 'frequency':
+			self.frequency = value
+		elif attribute == 'parent_genotype':
+			self.parent_genotype = value
+
+
 class Tumor(object):
 	def __init__( self, cells, genotypes ):
 		"""
@@ -67,8 +75,8 @@ class Tumor(object):
 				cells: a list of cells
 				genotypes: a list of genotypes
 		"""
-		self.cells = cells
-		self.genotypes = genotypes
+		self.cells = np.copy(cells)
+		self.genotypes = list(genotypes)
 		self.number_of_cells = len(cells)
 		self.number_of_genotypes = len(genotypes)
 		self.COM = centre_of_mass(self.cells)
@@ -107,33 +115,50 @@ class CTC(Tumor):
 	@staticmethod
 	def prepare_CTC(sample, genomes):
 		
-		cell_positions = sample[:,:3]
-		genome_ids = sample[:,3]
-		tm = Tumor(sample, genomes)
-		# need to calculate the COM of the sample and correct for that
-		# COM = centre_of_mass(cell_positions)    
+		# get important data
+		cell_positions = np.copy(sample[:,:3])
+		genome_ids = np.copy(sample[:,3].astype(int))
 		
-		cell_positions_corrected = cell_positions-COM
+		# create a CTC
+		tm = CTC(sample, genomes)
 
+		# correct for the position relative to COM
+		cell_positions_corrected = cell_positions-tm.COM
 		tm.cells[:,:3] = cell_positions_corrected
 
+		# calculate the new frequencies
 		genome_counts = Counter(genome_ids.astype(int))
+
 		# reprocess the way genomes are stored for reseeding
-		genome_dict = {}
+		genome_dict = {} #temporary holding for genomes.
 		for gid, genome in zip(genome_ids, genomes):
 			genome_dict[int(gid)] = genome
 
+		# obtain the new ids for genomes
 		new_mapping = { int(gid):new_id for new_id, gid in enumerate(genome_dict.keys()) }
 		
+		# create an empty array of the same size.
 		genomes_modified = [0]*len(new_mapping.keys())
+
+		# now update what will be in the new CTC object.
 		for original_id, new_id in new_mapping.items():
 
-			original_genome = genomes[original_id]
+			genome_ids[np.where(genome_ids==original_id)] = new_id
+
+			original_genome = genome_dict[original_id]
 			new_frequency = genome_counts[original_id]
-			original_genome.frequency = new_frequency
-			genomes_modified[new_id] = original_genome
+			genomes_modified[new_id] = Genotype(
+				original_genome.original_id,
+				-1,
+				original_genome.n_resistant,
+				original_genome.n_driver,
+				new_frequency,
+				list(original_genome.snps)
+				)
 
 		tm.genotypes = genomes_modified
+		tm.cells[:,3] = genome_ids
+		return tm
 
 	def cells_to_save(self):
 		# cell positions and genome ids
@@ -156,4 +181,3 @@ class CTC(Tumor):
 			to_return.append(string_builder)
 
 		return to_return
-		  
