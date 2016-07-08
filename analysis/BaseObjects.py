@@ -158,22 +158,25 @@ class CTC(Tumor):
 
 		tm.genotypes = genomes_modified
 		tm.cells[:,3] = genome_ids
+		tm.new_mapping = new_mapping
+		tm.genome_counts = genome_counts
+		tm.genome_dict = genome_dict
 		return tm
 
-	def cells_to_save(self):
+	def cells_to_string(self):
 		# cell positions and genome ids
 		to_return = []
-		for gid, cell in zip(genome_ids,cell_positions_corrected):
+		for gid, cell in zip(self.cells[:,3], self.cells[:,:3]):
 			x,y,z = cell
-			to_return.append([x,y,z, new_mapping[int(gid)]])
+			to_return.append( str(x)+' '+str(y)+' '+str(z)+' '+str(int(gid))])
 
 		return to_return
 
 	def genomes_to_string(self):
 
 		to_return = []
-		for gid,genome in genome_dict.items():
-			string_builder = str(new_mapping[int(gid)])+' '+str(genome_counts[int(gid)])+' '+str(genome.n_resistant)+' '+str(genome.n_driver)+' '
+		for gid,genome in self.genome_dict.items():
+			string_builder = str(self.new_mapping[int(gid)])+' '+str(self.genome_counts[int(gid)])+' '+str(genome.n_resistant)+' '+str(genome.n_driver)+' '
 			for snp in genome.snps:
 				string_builder+=str(snp)+','
 			string_builder+='-1'
