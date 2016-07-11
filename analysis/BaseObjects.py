@@ -4,6 +4,12 @@ import csv
 import pandas as pd
 import numpy as np
 
+D_PM = 1<<30 # convert to driver
+R_PM = 1<<31 # convert to resistant
+L_PM = (1<<30) - 1 # return from driver
+L_PM2 = (1<<31) - 1 # return from resistant
+
+
 Cell_ = namedtuple('Cell', 'x y z genotype')
 Cell_.__new__.__defaults__ = ( 0, 0, 0, -1 )
 
@@ -140,6 +146,50 @@ class CTC(Tumor):
 		# create an empty array of the same size.
 		genomes_modified = [0]*len(new_mapping.keys())
 
+
+		# now rehash the snps
+		snp_mapping = set()
+		snp_types = {}
+		new_snp_sequences = {}
+
+		for gid, genotype in genome_dict.items():
+		    for snp in genotype.snps:
+		#         print 'SNP:',snp
+		        if snp & D_PM:
+		#             print('driver', snp & L_PM)
+		            snp_types[snp] = 'driver'
+		            if not snp & L_PM in snp_mapping:
+		                snp_mapping.update([snp & L_PM])
+		        elif snp & R_PM:
+		#             print('resistant', snp & L_PM2)
+		            snp_types[snp] = 'resistant'
+		            if not snp & L_PM2 in snp_mapping:
+		                snp_mapping.update([snp & L_PM2])
+		        else:
+		            if not snp in snp_mapping:
+		                snp_mapping.update([snp])
+		#         print '---'
+
+		    
+		snp_mapping = { mut: newid for newid, mut in enumerate(snp_mapping)}
+
+		for gid, genotype in genome_dict.items():
+		    new_snp_sequence = []
+		    
+		    for snp in genotype.snps:
+		        snp_type = snp_types.get(snp, False)
+		        if snp_type == 'resistant':
+		            mapped = snp_mapping.get(snp & L_PM2)
+		            new_snp_sequence.append(mapped | R_PM)
+		        elif snp_type == 'driver':
+		            mapped = snp_mapping.get( snp & L_PM )
+		            new_snp_sequence.append(mapped | D_PM)
+		        else:
+		            mapped = snp_mapping.get(snp)
+		            new_snp_sequence.append(mapped)
+		            
+		    new_snp_sequences[gid] = new_snp_sequence
+
 		# now update what will be in the new CTC object.
 		for original_id, new_id in new_mapping.items():
 
@@ -153,9 +203,10 @@ class CTC(Tumor):
 				original_genome.n_resistant,
 				original_genome.n_driver,
 				new_frequency,
-				list(original_genome.snps)
+				new_snp_sequences[original_id]
 				)
 
+		tm.new_snp_sequences = new_snp_sequences
 		tm.genotypes = genomes_modified
 		tm.cells[:,3] = genome_ids
 		tm.new_mapping = new_mapping
@@ -168,7 +219,7 @@ class CTC(Tumor):
 		to_return = []
 		for gid, cell in zip(self.cells[:,3], self.cells[:,:3]):
 			x,y,z = cell
-			to_return.append( str(x)+' '+str(y)+' '+str(z)+' '+str(int(gid))])
+			to_return.append( str(x)+' '+str(y)+' '+str(z)+' '+str(int(gid)))
 
 		return to_return
 
@@ -176,8 +227,9 @@ class CTC(Tumor):
 
 		to_return = []
 		for gid,genome in self.genome_dict.items():
+			new_mapping = self.new_mapping[int(gid)]
 			string_builder = str(self.new_mapping[int(gid)])+' '+str(self.genome_counts[int(gid)])+' '+str(genome.n_resistant)+' '+str(genome.n_driver)+' '
-			for snp in genome.snps:
+			for snp in self.genotypes[new_mapping].snps:
 				string_builder+=str(snp)+','
 			string_builder+='-1'
 			
