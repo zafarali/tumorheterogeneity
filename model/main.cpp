@@ -34,6 +34,9 @@
 #include <string.h>
 #include <math.h>
 #include <iostream>
+#include <string>
+#include <fstream>
+#include <sstream>
 using namespace std;
 #include "classes.h"
 #define __MAIN
@@ -59,6 +62,8 @@ extern char *NUM ;
 extern int RAND, sample, treatment, max_size ;
 extern double tt ;
 extern float time_to_treat ;
+extern char* CELLFILE;
+extern char* GENFILE;
 
 int sample=0 ;
 
@@ -194,11 +199,25 @@ int main(int argc, char *argv[])
 #endif
 
   int nsam ;
-  if (argc!=4) { err(" Error:: arguments needed: name, no_samples, RAND. Program terminated. \n"); } 
+
+  #ifdef RESEEDING
+  if(argc != 6){
+    err(" Error:: arguments needed: name, no_samples, RAND, cell_file, genome_file. Program terminated. \n"); 
+  }
+  #else
+  if (argc!=4) { 
+    err(" Error:: arguments needed: name, no_samples, RAND. Program terminated. \n"); 
+  } 
+  #endif
+
   else { 
     NUM=argv[1] ;
     nsam=atoi(argv[2]) ;
     RAND=atoi(argv[3]) ;
+    #ifdef RESEEDING
+    CELLFILE=argv[4];
+    GENFILE=argv[5];
+    #endif
   }
   cout <<NUM<<" "<<" "<<nsam<<" "<<RAND<<endl ;
   _srand48(RAND) ;
@@ -209,6 +228,12 @@ int main(int argc, char *argv[])
   FILE *er=fopen(name,"w") ; fclose(er) ;
   for (sample=0;sample<nsam;sample++) { 
     reset() ;
+    /* explanation of code:
+    the while(main_proc(..)==1){ ... reset()...} basically does these things:
+      1. initalizes and grows a tumor
+      2. if the tumor contains cells < max_cells, it returns 1
+      3. thus the while loop will keep resetting/reseeding until we actually do grow a tumor.
+    */
 #ifdef MAKE_TREATMENT_N
     int s=0 ; while (main_proc(max_size,-1,-1, 10)==1) { s++ ; reset() ; } ; // initial growth until max size is reached, saved every 10 days
     if (s>0) printf("resetted %d times\n",s) ;

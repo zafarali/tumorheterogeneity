@@ -46,7 +46,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
+#include <string>
 #include <math.h>
 #define MIN(a,b) ((a) < (b) ? (a) : (b))
 #define SQR(x) (x)*(x)
@@ -54,10 +54,13 @@
 #define SWAP(x, y) temp = (x); (x) = (y); (y) = temp
 #include <vector>
 #include <iostream>
+#include <fstream>
+#include <sstream>
 using namespace std;
 
 char *NUM ; // name given as 1st argument from the command line
-
+char *GENFILE;
+char *CELLFILE;
 #include "params.h"
 #include "classes.h"
 
@@ -204,6 +207,52 @@ Genotype::Genotype(void)
 #endif
   number=1 ; no_resistant=no_drivers=0 ; sequence.clear() ; prev_gen=-1 ;
 }
+
+// RESEEDING FUNCTION
+
+Genotype::Genotype(vector <unsigned int> seq2, int freq, int no_resistant_p, int no_drivers_p){
+  
+  for (int i = 0; i < seq2.size(); ++i)
+  {
+    sequence.push_back(seq2[i]); //add new SNPs
+  }
+
+  // before treatment = 0
+  // after treatment = 1
+  death[0]=death0 ; death[1]=death1 ; growth[0]=growth0 ; growth[1]=growth1 ;
+
+#ifdef MIGRATION_MATRIX
+  // this is not actually defined in our models, so i will not attempt to deal with this.
+  m[0]=migr[0][0] ; m[1]=migr[1][0] ;
+#else
+  m[0]=m[1]=migr ; 
+#endif
+
+  // assign other parameters
+  number=freq ; 
+  no_resistant= no_resistant_p ;
+  no_drivers= no_drivers_p ; 
+  prev_gen=-1 ;
+
+  // for us driver_mode < 2 always so let's just
+  // go with the simple case:
+ // update birth/death rates
+  death[0] = pow(1-driver_adv*driver_balance, no_drivers_p);
+  growth[0] = pow(1+driver_adv*(1-driver_balance), no_drivers_p); if (max_growth_rate<growth[0]) max_growth_rate=growth[0] ;
+
+  if(no_resistant_p > 0){
+    death[1]=death0 ; growth[1]=growth0 ; 
+  }
+  // not updating the folloing because for us driver_migr_adv =0 and driver_mode = 0
+      //   if (driver_migr_adv>0 && ((q>=0.5 && driver_mode==2) || driver_mode==1)) {
+      //   m[0]*=1+driver_migr_adv ; if (m[0]>max_migr) m[0]=max_migr ;
+      //   m[1]*=1+driver_migr_adv ; if (m[1]>max_migr) m[1]=max_migr ;
+      // }
+
+}
+
+
+// REPLICATION FUNCTION
 
 Genotype::Genotype(Genotype *mother, int prevg, int no_snp) { 
   death[0]=mother->death[0] ; growth[0]=mother->growth[0] ; m[0]=mother->m[0] ;
@@ -356,18 +405,166 @@ void Lesion::reduce_overlap()
   delete [] ind ;
 }  
 
+#ifdef RESEEDING
+// holds a temporary cell
+struct Cell_t{
+  int x,y,z,gen;
+};
+#endif
+
+
 void reset() 
 {
-  tt=0 ; L=0 ; max_growth_rate=growth0 ;
-  treatment=0 ; 
-  for (int i=0;i<genotypes.size();i++) if (genotypes[i]!=NULL) delete genotypes[i] ;
-  genotypes.clear() ; genotypes.push_back(new Genotype) ;  
-  for (int i=0;i<lesions.size();i++) delete lesions[i] ;
-  lesions.clear() ;
-  cells.clear() ; volume=0 ;
-  drivers.clear() ;
-  lesions.push_back(new Lesion(0,0, 0,0,0)) ;
+
+  #ifndef RESEEDING
+    tt=0 ; L=0 ; max_growth_rate=growth0 ;
+    treatment=0 ; 
+    for (int i=0;i<genotypes.size();i++) if (genotypes[i]!=NULL) delete genotypes[i] ;
+    genotypes.clear() ; genotypes.push_back(new Genotype) ;  
+    for (int i=0;i<lesions.size();i++) delete lesions[i] ;
+    lesions.clear() ;
+    cells.clear() ; volume=0 ;
+    drivers.clear() ;
+    lesions.push_back(new Lesion(0,0, 0,0,0)) ;
+  #else
+    /*
+
+      RESEEDING MODE
+
+    */
+      // load all cells:
+      ifstream cells_file(CELLFILE);
+      string line;
+      vector <Cell_t> temp_cells;
+
+    if (cells_file.is_open())
+    {
+
+// load all cells into memory
+      printf("Loading seed file...");
+      while (getline(cells_file, line)) {
+         float x, y, z;
+         int gid;
+
+          istringstream iss(line);
+
+          iss >> x;
+          iss >> y;
+          iss >> z;
+
+          iss >> gid;
+
+          Cell_t c;
+          c.x = x;
+          c.y = y;
+          c.z = z;
+          c.gen = gid;
+          temp_cells.push_back(c);
+
+      }
+
+      cells_file.close();
+    } else cout << "Unable to open cells file"; 
+
+    printf("Seed file loaded\n");
+      // do while to execute the initialization at least once
+  // and will continue until we grow the initial lesion.
+  do{
+    tt = 0 ; 
+    L = 0 ; // need to update this
+    max_growth_rate = growth0 ;
+    treatment = 0 ;
+
+    // ---- delete all genotypes and cells first ----
+
+    for (int i = 0; i < genotypes.size(); ++i){
+      if(genotypes[i]!=NULL){
+        // delete if not already deleted
+        delete genotypes[i];
+      }
+    }
+    genotypes.clear() ; 
+    genotypes.push_back(new Genotype) ;  
+
+    // add new genotypes using genotypes.push_back(new Genotype(....))
+    for (int i=0;i<lesions.size();i++) delete lesions[i] ;
+    lesions.clear() ;
+    cells.clear() ; volume = 0 ;
+    drivers.clear() ; 
+
+    // create a new lesion
+    lesions.push_back(new Lesion(0,0, 0,0,0)) ;
+
+  }while(main_proc(temp_cells.size(), -1, -1, -1)==1);
+
+  // initial lesion created, now we mod it it to conform to our sample
+  if(temp_cells.size() != cells.size()){
+    err("cells and temp cells size did not match");
+  }
+  // first change cells
+
+
+  for (int i = 0; i < cells.size(); ++i)
+  {
+    cells[i].x = temp_cells[i].x;
+    cells[i].y = temp_cells[i].y;
+    cells[i].z = temp_cells[i].z;
+    cells[i].z = temp_cells[i].z;
+    cells[i].gen = temp_cells[i].gen;
+  }
+  printf(" Cells modified.\n Loading Genotypes...");
+  int old_genome_size = genotypes.size();
+  /// next delete genotypes and replace with new ones
+  for (int i = 0; i < genotypes.size(); ++i){
+      if(genotypes[i]!=NULL){
+        // delete if not already deleted
+        delete genotypes[i];
+      }
+    }
+    genotypes.clear() ; 
   
+  ifstream genome_file(GENFILE);
+   if(genome_file.is_open()){
+    
+    while(getline(genome_file, line)){
+      
+      int gen_id, freq, n_res, n_driver; 
+      string snps; 
+
+      istringstream iss(line);
+
+      iss >> gen_id;
+      iss >> freq;
+      iss >> n_res;
+      iss >> n_driver;
+      // printf("gen_id:%d, freq:%d, n_res: %d, n_driver: %d", gen_id, freq, n_res, n_driver);
+      iss >> snps;
+
+      istringstream snps_stream(snps);
+      printf(" snps:%s\n", snps.c_str());
+
+      vector <unsigned int> snps_extracted;
+      
+      string snp;
+
+      while(getline(snps_stream, snp, ',')){
+        if(stoi(snp)!= -1){
+          snps_extracted.push_back(stoi(snp));
+        }
+      }
+
+      // printf("NUM OF SNPS: %lu\n", snps_extracted.size());
+      genotypes.push_back(new Genotype(snps_extracted, freq, n_res, n_driver));
+    }
+
+  }else cout << "Unable to open genome file";
+  // this case is not necessary
+  // if(old_genome_size != genotypes.size()){
+  //   err("New genotypes not same size as old genotypes");
+  // }
+  printf("Genomes loaded!");
+
+  #endif
   // erase output buffer for "times"
 // #if defined __linux
   
@@ -819,7 +1016,7 @@ int main_proc(int exit_size, int save_size, double max_time, double wait_time)
     if (wait_time>0 && tt>tt_old+wait_time) { tt_old=tt ; save_data(); }
     if (save_size>1 && ntot>=save_size) { save_size*=2 ; save_data() ; }
 
-    if (cells.size()==0) return 1 ; 
+    if (cells.size()==0) return 1 ; // no cells available. 
     if (max_time>0 && tt>max_time) return 3 ;
     if (exit_size>0 && ntot>=exit_size) return 4 ;
 
