@@ -251,7 +251,7 @@ int main(int argc, char *argv[])
     main_proc(max_size,-1,max_time, 10) ; // treatment
 
 #else    
-    int s=0 ; while (main_proc(max_size,2,-1, -1)==1) { s++ ; reset() ; } // initial growth until max size is reached
+    int s=0 ; while (main_proc(max_size,2,-1, -1)==1) { s++ ; reset() ;  } // initial growth until max size is reached
     if (s>0) printf("resetted %d times\n",s) ;
     fflush(stdout) ;
     save_data() ; 

@@ -506,10 +506,9 @@ void reset()
 
   for (int i = 0; i < cells.size(); ++i)
   {
-    cells[i].x = temp_cells[i].x;
-    cells[i].y = temp_cells[i].y;
-    cells[i].z = temp_cells[i].z;
-    cells[i].z = temp_cells[i].z;
+    // cells[i].x = temp_cells[i].x;
+    // cells[i].y = temp_cells[i].y;
+    // cells[i].z = temp_cells[i].z;
     cells[i].gen = temp_cells[i].gen;
   }
   printf(" Cells modified.\n Loading Genotypes...");
@@ -525,13 +524,17 @@ void reset()
   
   ifstream genome_file(GENFILE);
    if(genome_file.is_open()){
-    
+    int lastline = 0;
     while(getline(genome_file, line)){
+      istringstream iss(line);
+
+      if(lastline){
+        iss >> L;
+      }else{
       
       int gen_id, freq, n_res, n_driver; 
       string snps; 
 
-      istringstream iss(line);
 
       iss >> gen_id;
       iss >> freq;
@@ -551,10 +554,15 @@ void reset()
         if(stoi(snp)!= -1){
           snps_extracted.push_back(stoi(snp));
         }
+        if(stoi(snp) == -2){
+          lastline = 1;
+        }
       }
 
+        genotypes.push_back(new Genotype(snps_extracted, freq, n_res, n_driver));
+    }
+
       // printf("NUM OF SNPS: %lu\n", snps_extracted.size());
-      genotypes.push_back(new Genotype(snps_extracted, freq, n_res, n_driver));
     }
 
   }else cout << "Unable to open genome file";
@@ -881,6 +889,7 @@ int main_proc(int exit_size, int save_size, double max_time, double wait_time)
 #elif (!defined(PUSHING)) && (defined(CONST_BIRTH_RATE))
       int in=i, jn=j, kn=k ;
       ll->choose_nn(kn,jn,in) ;
+      printf("line 884\n");
       if (kn!=-1000000) { // if there is at least one empty n.n., then.....
 #elif defined(PUSHING)
       int in,jn,kn ;
@@ -894,6 +903,7 @@ int main_proc(int exit_size, int save_size, double max_time, double wait_time)
           Cell c ; c.x=kn-wx/2 ; c.y=jn-wx/2 ; c.z=in-wx/2 ; c.lesion=cells[n].lesion ;
 #ifndef PUSHING
           ll->p[in*wx+jn]->set(kn) ;
+          printf("Line 89\n");
 #else
           ll->p[in][jn][kn]=cells.size() ;
 #endif
@@ -926,7 +936,8 @@ int main_proc(int exit_size, int save_size, double max_time, double wait_time)
           lesions[lesions.size()-1]->find_closest() ; 
 #endif
         }
-// BOTH_MUTATE          
+// BOTH_MUTATE         
+        printf("got past leision dynamics\n"); 
         no_SNPs=poisson() ; // old cell mutates
         if (no_SNPs>0) { 
           genotypes[cells[n].gen]->number-- ; 
@@ -936,6 +947,7 @@ int main_proc(int exit_size, int save_size, double max_time, double wait_time)
             delete genotypes[cells[n].gen] ; genotypes[cells[n].gen]=NULL ; 
           }
         }
+        printf("got past cell divisions\n");
       }
     }
 #ifdef CORE_IS_DEAD
@@ -1012,7 +1024,7 @@ int main_proc(int exit_size, int save_size, double max_time, double wait_time)
 #else
     ntot=cells.size() ;
 #endif
-
+    printf("----\ncellsize:%d\n---", cells.size());
     if (wait_time>0 && tt>tt_old+wait_time) { tt_old=tt ; save_data(); }
     if (save_size>1 && ntot>=save_size) { save_size*=2 ; save_data() ; }
 
@@ -1021,6 +1033,8 @@ int main_proc(int exit_size, int save_size, double max_time, double wait_time)
     if (exit_size>0 && ntot>=exit_size) return 4 ;
 
   }
+
+
 
 }
 #endif // NORMAL
