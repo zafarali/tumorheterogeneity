@@ -551,10 +551,10 @@ void reset()
       string snp;
 
       while(getline(snps_stream, snp, ',')){
-        if(stoi(snp)!= -1){
-          snps_extracted.push_back(stoi(snp));
+        if(atoi(snp.c_str()) >= 0){
+          snps_extracted.push_back(atoi(snp.c_str()));
         }
-        if(stoi(snp) == -2){
+        if(atoi(snp.c_str()) == -2){
           lastline = 1;
         }
       }
@@ -695,7 +695,10 @@ void save_data()
   for (i=0;i<L;i++) { snp_no[i]=0 ; }
   for (i=0;i<genotypes.size();i++) {
     if (genotypes[i]!=NULL && genotypes[i]->number>0) {
-      for (int j=0;j<genotypes[i]->sequence.size();j++) snp_no[((genotypes[i]->sequence[j])&L_PM)]+=genotypes[i]->number ;      
+      for (int j=0;j<genotypes[i]->sequence.size();j++){
+        snp_no[((genotypes[i]->sequence[j])&L_PM)]+=genotypes[i]->number ;      
+
+      }
     }
   }  
   int snps_det=0 ;
