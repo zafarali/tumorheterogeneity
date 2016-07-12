@@ -544,7 +544,7 @@ void reset()
       iss >> snps;
 
       istringstream snps_stream(snps);
-      printf(" snps:%s\n", snps.c_str());
+    
 
       vector <unsigned int> snps_extracted;
       
@@ -892,7 +892,6 @@ int main_proc(int exit_size, int save_size, double max_time, double wait_time)
 #elif (!defined(PUSHING)) && (defined(CONST_BIRTH_RATE))
       int in=i, jn=j, kn=k ;
       ll->choose_nn(kn,jn,in) ;
-      printf("line 884\n");
       if (kn!=-1000000) { // if there is at least one empty n.n., then.....
 #elif defined(PUSHING)
       int in,jn,kn ;
@@ -906,7 +905,6 @@ int main_proc(int exit_size, int save_size, double max_time, double wait_time)
           Cell c ; c.x=kn-wx/2 ; c.y=jn-wx/2 ; c.z=in-wx/2 ; c.lesion=cells[n].lesion ;
 #ifndef PUSHING
           ll->p[in*wx+jn]->set(kn) ;
-          printf("Line 89\n");
 #else
           ll->p[in][jn][kn]=cells.size() ;
 #endif
@@ -940,7 +938,6 @@ int main_proc(int exit_size, int save_size, double max_time, double wait_time)
 #endif
         }
 // BOTH_MUTATE         
-        printf("got past leision dynamics\n"); 
         no_SNPs=poisson() ; // old cell mutates
         if (no_SNPs>0) { 
           genotypes[cells[n].gen]->number-- ; 
@@ -950,7 +947,6 @@ int main_proc(int exit_size, int save_size, double max_time, double wait_time)
             delete genotypes[cells[n].gen] ; genotypes[cells[n].gen]=NULL ; 
           }
         }
-        printf("got past cell divisions\n");
       }
     }
 #ifdef CORE_IS_DEAD
@@ -1027,7 +1023,6 @@ int main_proc(int exit_size, int save_size, double max_time, double wait_time)
 #else
     ntot=cells.size() ;
 #endif
-    printf("----\ncellsize:%d\n---", cells.size());
     if (wait_time>0 && tt>tt_old+wait_time) { tt_old=tt ; save_data(); }
     if (save_size>1 && ntot>=save_size) { save_size*=2 ; save_data() ; }
 
