@@ -279,10 +279,11 @@ int main(int argc, char *argv[])
 
     printf("saving PMs...\n") ;
     int most_abund[100] ;
-    sprintf(name,"%s/all_PMs_%d_%d.dat",NUM,RAND,sample) ; save_snps(name,snp_no,max_size,0,most_abund) ;
+    // changed the mode here so that we save all SNPs
+    sprintf(name,"%s/all_PMs_%d_%d.dat",NUM,RAND,sample) ; save_snps(name,snp_no,max_size,1,most_abund) ;
     if (driver_adv>0 || driver_migr_adv>0) { printf("saving driver PMs...\n") ; 
       sprintf(name,"%s/drv_PMs_%d_%d.dat",NUM,RAND,sample) ; 
-      save_snps(name,snp_drivers,max_size,0,NULL) ; 
+      save_snps(name,snp_drivers,max_size,1,NULL) ; 
     }
     delete [] snp_no ; delete [] snp_drivers ;
 
