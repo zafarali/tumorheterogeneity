@@ -243,6 +243,11 @@ Genotype::Genotype(vector <unsigned int> seq2, int freq, int no_resistant_p, int
   if(no_resistant_p > 0){
     death[1]=death0 ; growth[1]=growth0 ; 
   }
+
+  // if(no_drivers_p >0){
+  //   printf("More than 1 driver: ");
+  //   printf("Growth rate:%f, no_drivers:%d \n", growth[0], no_drivers);
+  // }
   // not updating the folloing because for us driver_migr_adv =0 and driver_mode = 0
       //   if (driver_migr_adv>0 && ((q>=0.5 && driver_mode==2) || driver_mode==1)) {
       //   m[0]*=1+driver_migr_adv ; if (m[0]>max_migr) m[0]=max_migr ;
@@ -432,6 +437,7 @@ void reset()
       RESEEDING MODE
 
     */
+      printf("CELL_FILE:%s, GENOME_FILE: %s",CELLFILE, GENFILE);
       // load all cells:
       ifstream cells_file(CELLFILE);
       string line;
@@ -441,7 +447,8 @@ void reset()
     {
 
 // load all cells into memory
-      printf("Loading seed file...");
+      
+      printf("\nLoading seed file...");
       while (getline(cells_file, line)) {
          float x, y, z;
          int gid;

@@ -61,6 +61,16 @@ def unique_snp_combinations(genotypes_list):
 
 	return len(snp_combos)
 
+def unique_res_combinations(genotypes_list):
+
+	# here we hash a tuple of the snps
+	# this hash is unique based on the combination of snps
+	# 
+	snp_combos = set( map(\
+		lambda genotype: \
+		tuple( sorted( filter( lambda snp: (snp & R_PM ) > 0 , genotype.snps ) ) ) , \
+		genotypes_list ) )
+	return len(snp_combos)
 
 def unique_driver_proportion(driver_counts):
 	"""

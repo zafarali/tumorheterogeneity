@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import pandas as pd
 import csv
+import os
 import itertools
 from BaseObjects import Tumor, CTC
 from Samplers import SphericalSampler, KDTSphericalSampler
@@ -125,8 +126,8 @@ def inline_statistics(pipeline):
 	stats = [['radius', 'distance_to_COM', 'sample_size', \
 	'pi', 'S', 'S/H', 'Tajimas D', 'D', \
 	'num_SNPs', 'proportion_driver', 'unique_driver_propotion',\
-	'num_drivers', 'unique_combos','unique_combos_snps', 'mean_drivers', \
-	'mean_SNPs', 'driver_enrichment']]
+	'num_drivers', 'unique_combos','unique_combos_snps', 'uniqe_res_combos',\
+	'mean_drivers', 'mean_SNPs', 'driver_enrichment']]
 
 	pipeline.print2('Creating KDTSphericalSampler')
 	sampler = KDTSphericalSampler(pipeline.tumor)
@@ -191,6 +192,7 @@ def inline_statistics(pipeline):
 			# the number of unique haplotypes (combinations of drivers)
 			unique_combos = Statistics.unique_driver_combinations(sample[1])
 			unique_combos_snps = Statistics.unique_snp_combinations(sample[1])
+			unique_combos_res = Statistics.unique_res_combinations(sample[1])
 
 			# the proportion of total SNPs in the data that are drivers
 			driver_enrichment = mean_drivers/float(mean_SNPs) if mean_SNPs > 0 else 0
@@ -201,7 +203,8 @@ def inline_statistics(pipeline):
 			stats.append( [radius, distance_to_COM, \
 				n, pi, S, SH, D, pi-SH, \
 				num_SNPs, driver_to_SNP_ratio,\
-				unique_drivers, num_drivers, unique_combos, unique_combos_snps, \
+				unique_drivers, num_drivers, \
+				unique_combos, unique_combos_snps, unique_combos_res,\
 				mean_drivers, mean_SNPs, driver_enrichment ] )
 
 			if to_save:
@@ -217,14 +220,12 @@ def inline_statistics(pipeline):
 				# using randint() to randomize the file names just in case
 				identifier = str(np.random.randint(10000))
 				with open(save_loc+'/gen'+identifier+'.dat', 'w') as f:
-					writer = csv.writer(f)
 					for row in ctc.genomes_to_string():
-						writer.writerow(row)
+						f.write(row+'\n')
 				
 				with open(save_loc+'/cells'+identifier+'.dat', 'w') as f:
-					writer = csv.writer(f)
 					for row in ctc.cells_to_string():
-						writer.writerow(row)
+						f.write(row+'\n')
 
 				with open(save_loc+'/details'+identifier+'.dat', 'w') as f:
 				    f.write(ctc.details())

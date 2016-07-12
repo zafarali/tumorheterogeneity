@@ -45,7 +45,29 @@
 #define MOORE_NEIGHBOURHOOD // 26 neighbours
 //--------------------------------------------------------
 
-#define RESEEDING
+
+// ------------------------------------------------------------------------------------------------------------------------
+//            CHANGE THESE WHEN EDITING
+// ------------------------------------------------------------------------------------------------------------------------    
+// #define RESEEDING // defined when need to use seeds.
+
+// S_T_D
+// // 1_0_0
+// const float driver_adv=0.01;
+// //#define DEATH_ON_SURFACE ;
+// const float death0=0, growth0=1.0 ;
+
+// // 1_0_1
+const float driver_adv=0.01;
+//#define DEATH_ON_SURFACE ;
+const float death0=0.95, growth0=1.0 ;
+
+
+// // // 1_1_1
+
+// const float driver_adv=0.01;
+// #define DEATH_ON_SURFACE ;
+// const float death0=0.95, growth0=1.0 ;
 
 //#define MAKE_TREATMENT_N // if defined, simulate treatment after reaching given size
 //#define MAKE_TREATMENT_T // if defined, simulate treatment after reaching given time
@@ -65,22 +87,21 @@ const float migr=0 ;
 #define SHOW_ONLY_DRIVERS
 //#define NO_MECHANICS  // if defined, no mechanics is simulated (this speeds up everything but looses info on spatial distribution)
 const float timescale=1./log(2.) ; // calculates the timescale factor from the division time [days] (first number, here 1.)
-const float death0=0.95, growth0=1.0 ;   // before treatment
 
 // if death on surface:
-//float death1=/*0.1*/0.99, growth1=0.0 ;   // after treatment
+// float death1=/*0.1*/0.99, growth1=0.0 ;   // after treatment
 // if death in volume
 const float death1=1., growth1=0.5 ; // after treatment
 
-const float driver_adv=0.05 ; 
+
 const float driver_prob=2e-5 ; // driver probability per haploid genome (should be 2e-5)
-const float driver_balance=1 ; // 1==drivers decrease death, 0==drivers increase growth, intermediate values are also possible
+const float driver_balance=0 ; // 1==drivers decrease death, 0==drivers increase growth, intermediate values are also possible
 const float driver_migr_adv=0.0,  max_migr=1e-5 ; // maximum migration prob. is taken into account only when driver_migr_adv>0
 const int driver_mode = 0 ; // 0== drivers affect bd only, 1==drivers affect simultaneously bd and migr, 2==drivers affect bd xor migr with equal prob.
 
 const float cutoff=0.1 ;
 #ifdef __MAIN
-int max_size=int(1e4) ; // this is ignored when MAKE_TREATMENT_T is defined
+int max_size=int(1e6) ; // this is ignored when MAKE_TREATMENT_T is defined
 float time_to_treat=10*(365./12) ; // this is ignored when MAKE_TREATMENT_N is defined
 
 #endif
