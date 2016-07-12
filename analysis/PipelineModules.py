@@ -5,10 +5,10 @@ import matplotlib.cm as cm
 import pandas as pd
 import csv
 import itertools
-from BaseObjects import Tumor
+from BaseObjects import Tumor, CTC
 from Samplers import SphericalSampler, KDTSphericalSampler
 import Statistics
-
+import time
 
 # generates a coordinate
 def generate_coordinate(max_value, min_value):
@@ -105,13 +105,27 @@ def calculate_statistics(pipeline):
 	pipeline.stats = stats
 	pipeline.print2('Statistics Calculated')
 
+def create_sample_directory(pipeline):
+	"""
+		Creates a directory to store the samples
+	"""
+	time_info = '_'.join('_'.join(time.asctime().split(':')).split(' '))
+	try:
+		pipeline.FILES['sample_directory'] = pipeline.FILES['out_directory'] + '/samples'
+		# create the output directory and save specs and sampling there
+		if not os.path.exists( pipeline.FILES['sample_directory'] ):
+			os.makedirs( pipeline.FILES['sample_directory'] )
+			pipeline.print2('sample directory created')
+	except Exception as e:
+		raise Exception('Exception occured in create_sample_directory'+str(e))
+
 
 def inline_statistics(pipeline):
 
 	stats = [['radius', 'distance_to_COM', 'sample_size', \
 	'pi', 'S', 'S/H', 'Tajimas D', 'D', \
 	'num_SNPs', 'proportion_driver', 'unique_driver_propotion',\
-	'num_drivers', 'unique_combos', 'mean_drivers', \
+	'num_drivers', 'unique_combos','unique_combos_snps', 'mean_drivers', \
 	'mean_SNPs', 'driver_enrichment']]
 
 	pipeline.print2('Creating KDTSphericalSampler')
@@ -120,6 +134,8 @@ def inline_statistics(pipeline):
 	rand_coordinate = sample_coordinate(sampler.cell_positions, deviate=True)
 	number_of_samples = pipeline.specs.get('repeats', 500)
 	pipeline.sampler = sampler
+	to_save = pipeline.specs.get('save_samples', True)
+
 	for radius in pipeline.specs['RADII']:
 		pipeline.print2('Sampling radius:'+str(radius))
 		i = 0 # holds the number of samples so far
@@ -134,7 +150,8 @@ def inline_statistics(pipeline):
 
 			# conduct the sample
 			sample = sampler.sample(radius=radius, centre=centre, with_genotypes=True)
-			
+			cell_data = sampler.sample(radius=radius, centre=centre)
+			genotypes = sample[1]
 			# calculate statistics
 
 			distance_to_COM = np.sqrt( np.sum( ( np.array(centre) - np.array(pipeline.tumor.COM ) )**2 ) )
@@ -173,6 +190,7 @@ def inline_statistics(pipeline):
 
 			# the number of unique haplotypes (combinations of drivers)
 			unique_combos = Statistics.unique_driver_combinations(sample[1])
+			unique_combos_snps = Statistics.unique_snp_combinations(sample[1])
 
 			# the proportion of total SNPs in the data that are drivers
 			driver_enrichment = mean_drivers/float(mean_SNPs) if mean_SNPs > 0 else 0
@@ -183,8 +201,19 @@ def inline_statistics(pipeline):
 			stats.append( [radius, distance_to_COM, \
 				n, pi, S, SH, D, pi-SH, \
 				num_SNPs, driver_to_SNP_ratio,\
-				unique_drivers, num_drivers, unique_combos, \
+				unique_drivers, num_drivers, unique_combos, unique_combos_snps, \
 				mean_drivers, mean_SNPs, driver_enrichment ] )
+
+			if to_save:
+				save_loc = pipeline.FILES['sample_directory'] +'/size'+str(n)+'dist'+str(distance_to_COM)+'haplo'+str(unique_combos)+'i'+str(i)
+				# create the output directory and save specs and sampling there
+				if not os.path.exists( save_loc ):
+					os.makedirs( save_loc )
+					# pipeline.print2('sample dire directory created')
+
+					ctc = CTC.prepare_CTC(cell_data, genotypes, dist=distance_to_COM,nhaplotypes=unique_combos,notes='snp_combos:'+str(unique_combos_snps))
+					ctc.
+
 		
 		#end sampling for loop
 
@@ -426,4 +455,4 @@ def _pop_gen_stats(pipeline,x_label):
 		bbox_inches='tight')
 
 BASE = [ load_tumor, random_spherical_samples, calculate_statistics, save_statistics ]
-KD_SAMPLING = [ load_tumor, inline_statistics, save_statistics, all_plot_combos, mutation_count_plots, driver_stats_plots, pop_gen_plots, density_plot ]
+KD_SAMPLING = [ load_tumor, create_sample_directory, inline_statistics, save_statistics, all_plot_combos, mutation_count_plots, driver_stats_plots, pop_gen_plots, density_plot ]
