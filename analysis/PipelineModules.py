@@ -211,8 +211,24 @@ def inline_statistics(pipeline):
 					os.makedirs( save_loc )
 					# pipeline.print2('sample dire directory created')
 
-					ctc = CTC.prepare_CTC(cell_data, genotypes, dist=distance_to_COM,nhaplotypes=unique_combos,notes='snp_combos:'+str(unique_combos_snps))
-					ctc.
+
+				ctc = CTC.prepare_CTC(cell_data, genotypes, dist=distance_to_COM,nhaplotypes=unique_combos,notes='snp_combos:'+str(unique_combos_snps))
+				
+				# using randint() to randomize the file names just in case
+				identifier = str(np.random.randint(10000))
+				with open(save_loc+'/gen'+identifier+'.dat', 'w') as f:
+					writer = csv.writer(f)
+					for row in ctc.genomes_to_string():
+						writer.writerow(row)
+				
+				with open(save_loc+'/cells'+identifier+'.dat', 'w') as f:
+					writer = csv.writer(f)
+					for row in ctc.cells_to_string():
+						writer.writerow(row)
+
+				with open(save_loc+'/details'+identifier+'.dat', 'w') as f:
+				    f.write(ctc.details())
+
 
 		
 		#end sampling for loop
