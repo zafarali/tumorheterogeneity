@@ -31,6 +31,7 @@
 
 #include <stdio.h>
 #include <math.h>
+#include <string>
 #define MIN(a,b) ((a) < (b) ? (a) : (b))
 #define SQR(x) (x)*(x)
 #define SWAPD(x, y) tempd = (x); (x) = (y); (y) = tempd
@@ -174,6 +175,7 @@ struct Lesion {
   Sites **p ;
   static int nl ;
   static double maxdisp ;
+
   Lesion(int cellno, int g, int x0, int y0, int z0) {
     // cellno is not used anywhere in this version of the method
     rad=rad0=1 ; 
@@ -259,6 +261,8 @@ struct Genotype {
   Genotype(void) ;
   ~Genotype(void) { sequence.clear() ; }
   Genotype(Genotype *mother, int prevg, int no_snp) ;
+  // RESEEDING:
+  Genotype( vector<unsigned int> seq2, int freq, int no_resistant, int no_drivers);
 };
 
 class Hist {

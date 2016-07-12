@@ -1,7 +1,14 @@
-from collections import namedtuple
+from collections import namedtuple, Counter
 from Statistics import centre_of_mass
 import csv
 import pandas as pd
+import numpy as np
+
+D_PM = 1<<30 # convert to driver
+R_PM = 1<<31 # convert to resistant
+L_PM = (1<<30) - 1 # return from driver
+L_PM2 = (1<<31) - 1 # return from resistant
+
 
 Cell_ = namedtuple('Cell', 'x y z genotype')
 Cell_.__new__.__defaults__ = ( 0, 0, 0, -1 )
@@ -59,6 +66,7 @@ class Genotype(Genotype_):
 					   int(n_driver), int(frequency), sequence ) )
 	return genotypes
 
+
 class Tumor(object):
 	def __init__( self, cells, genotypes ):
 		"""
@@ -67,8 +75,8 @@ class Tumor(object):
 				cells: a list of cells
 				genotypes: a list of genotypes
 		"""
-		self.cells = cells
-		self.genotypes = genotypes
+		self.cells = np.copy(cells)
+		self.genotypes = list(genotypes)
 		self.number_of_cells = len(cells)
 		self.number_of_genotypes = len(genotypes)
 		self.COM = centre_of_mass(self.cells)
