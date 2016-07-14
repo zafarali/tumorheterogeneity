@@ -48,6 +48,8 @@
 #include <stdlib.h>
 #include <string>
 #include <math.h>
+
+
 #define MIN(a,b) ((a) < (b) ? (a) : (b))
 #define SQR(x) (x)*(x)
 #define SWAPD(x, y) tempd = (x); (x) = (y); (y) = tempd
@@ -56,14 +58,18 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+
 using namespace std;
 
 char *NUM ; // name given as 1st argument from the command line
 char *GENFILE;
 char *CELLFILE;
+string CELLIDENT;
 #include "params.h"
 #include "classes.h"
+int show_init = 1;
 
+  
 #if defined __APPLE__
 typedef unsigned int DWORD ;
 int memory_taken()
@@ -237,8 +243,8 @@ Genotype::Genotype(vector <unsigned int> seq2, int freq, int no_resistant_p, int
   // for us driver_mode < 2 always so let's just
   // go with the simple case:
  // update birth/death rates
-  death[0] = pow(1-driver_adv*driver_balance, no_drivers_p);
-  growth[0] = pow(1+driver_adv*(1-driver_balance), no_drivers_p); if (max_growth_rate<growth[0]) max_growth_rate=growth[0] ;
+  death[0] = death0*pow(1-driver_adv*driver_balance, no_drivers_p);
+  growth[0] = growth0*pow(1+driver_adv*(1-driver_balance), no_drivers_p); if (max_growth_rate<growth[0]) max_growth_rate=growth[0] ;
 
   if(no_resistant_p > 0){
     death[1]=death0 ; growth[1]=growth0 ; 
@@ -437,7 +443,11 @@ void reset()
       RESEEDING MODE
 
     */
-      printf("CELL_FILE:%s, GENOME_FILE: %s",CELLFILE, GENFILE);
+      if(show_init){
+        printf("CELL_FILE:%s, GENOME_FILE: %s",CELLFILE, GENFILE);
+      }
+
+      
       // load all cells:
       ifstream cells_file(CELLFILE);
       string line;
@@ -447,8 +457,11 @@ void reset()
     {
 
 // load all cells into memory
-      
-      printf("\nLoading seed file...");
+      if(show_init){
+        printf("\nLoading seed file...");
+      }
+
+
       while (getline(cells_file, line)) {
          float x, y, z;
          int gid;
@@ -473,7 +486,9 @@ void reset()
       cells_file.close();
     } else cout << "Unable to open cells file"; 
 
-    printf("Seed file loaded\n");
+    if(show_init){
+      printf("Seed file loaded. ");
+    }
       // do while to execute the initialization at least once
   // and will continue until we grow the initial lesion.
   do{
@@ -517,8 +532,13 @@ void reset()
     // cells[i].y = temp_cells[i].y;
     // cells[i].z = temp_cells[i].z;
     cells[i].gen = temp_cells[i].gen;
+    if(show_init){
+      printf("cell %d, genome_id=%d\n", i, temp_cells[i].gen);
+    }
   }
-  printf(" Cells modified.\n Loading Genotypes...");
+  if(show_init){
+    printf(" Cells modified. Loading Genotypes...\n");
+  }
   int old_genome_size = genotypes.size();
   /// next delete genotypes and replace with new ones
   for (int i = 0; i < genotypes.size(); ++i){
@@ -551,7 +571,12 @@ void reset()
       iss >> snps;
 
       istringstream snps_stream(snps);
-    
+      if(show_init){
+        float death_p = pow(1-driver_adv*driver_balance, n_driver);
+        float growth_p = pow(1+driver_adv*(1-driver_balance), n_driver);
+        printf("genome_id:%d, frequency:%d, n_res=%d, n_driver=%d, ",gen_id, freq, n_res, n_driver);
+        printf("death[0]= %f, growth[0]= %f\n", death_p, growth_p);
+      }
 
       vector <unsigned int> snps_extracted;
       
@@ -577,8 +602,11 @@ void reset()
   // if(old_genome_size != genotypes.size()){
   //   err("New genotypes not same size as old genotypes");
   // }
-  printf("Genomes loaded!");
+  if(show_init){
+    printf("Genomes loaded!\n");
+  }
 
+  show_init = 0;
   #endif
   // erase output buffer for "times"
 // #if defined __linux
@@ -617,7 +645,18 @@ void init()
 
   char txt[256] ;
   sprintf(txt,"mkdir %s",NUM) ; system(txt) ;
-  sprintf(txt,"%s/%s_%d.dat",NUM,NUM,RAND) ; times=fopen(txt,"w") ;
+  
+#ifdef RESEEDING
+    string temporary(CELLFILE);
+  long int loc = temporary.find(".dat");
+  CELLIDENT = temporary.substr(loc-4, 4);
+  // double random_num = _drand48();
+  sprintf(txt,"%s/%s_%d_%s.dat",NUM,NUM,RAND,CELLIDENT.c_str()) ; 
+#else
+  sprintf(txt,"%s/%s_%d.dat",NUM,NUM,RAND) ; 
+#endif
+
+  times=fopen(txt,"w") ;
   timesbuffer=new char[(1<<16)] ;
   setvbuf (times , timesbuffer , _IOFBF , (1<<16));  // this is to prevent saving data if no fflush is attempted 
                                                   // (this e.g. allows one to discard N<256)
@@ -745,15 +784,17 @@ void save_data()
   av_migr/=ntot ;
 
   // 1.ntot 2.time  3.#genotypes  4.radius      
+  // ntot = total number of cells
+  // tt = time
 #ifndef CORE_IS_DEAD
-  fprintf(times,"%d %lf %d %lf  ",ntot,tt,genotypes.size(),raver) ; //sqrt(raver2-raver*raver)) ;
+  fprintf(times,"%d %lf %d %lf ",ntot,tt,genotypes.size(),raver) ; //sqrt(raver2-raver*raver)) ;
 #else
-  fprintf(times,"%d %lf %d %lf  ",volume,tt,genotypes.size(),raver) ; //sqrt(raver2-raver*raver)) ;
+  fprintf(times,"%d %lf %d %lf ",volume,tt,genotypes.size(),raver) ; //sqrt(raver2-raver*raver)) ;
 #endif
   //  5.#cells_surf    6.#metas     7.#resistant  8.#resistant_surf
-  fprintf(times,"%d %d %d %d   ",nsurf,lesions.size(),no_resistant,no_resistant_surf) ;
+  fprintf(times,"%d %d %d %d ",nsurf,lesions.size(),no_resistant,no_resistant_surf) ;
   // 9.#drivers   10.#cells_with_drv  11.#cells_with_drv_surf    12.#drv/cell   13.#der/cell_surf
-  fprintf(times,"%d %d %d  %lf %lf  ",drivers.size(),cells_drv,cells_drv_surf,drv_per_cell,drv_per_cell_surf) ;
+  fprintf(times,"%d %d %d %lf %lf ",drivers.size(),cells_drv,cells_drv_surf,drv_per_cell,drv_per_cell_surf) ;
   // 14.growth_rate(n)   15.av_distance   16.pms_per_cell   17.snps_detected  18.<migr>
   fprintf(times,"%lf\t%f\t%lf %d\t %le\t",aver_growth_rate,average_distance_ij(),pms_per_cell,snps_det,av_migr) ;
   // #MBs   time_taken
@@ -970,7 +1011,7 @@ int main_proc(int exit_size, int save_size, double max_time, double wait_time)
 #ifdef DEATH_ON_SURFACE    
     if (genotypes[cells[n].gen]->death[treatment]>0 && _drand48()<tsc*genotypes[cells[n].gen]->death[treatment]*ll->no_free_sites(k,j,i)/float(_nonn))  { // death on the surface
 #else
-    if (_drand48()<tsc*genotypes[cells[n].gen]->death[treatment]) { // death in volume
+    if (_drand48()<tsc*genotypes[cells[n].gen]->death[treatment]) {// death in volume
 #endif
 #ifndef PUSHING
       ll->p[i*wx+j]->unset(k) ;

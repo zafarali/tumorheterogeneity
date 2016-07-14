@@ -49,27 +49,27 @@
 // ------------------------------------------------------------------------------------------------------------------------
 //            CHANGE THESE WHEN EDITING
 // ------------------------------------------------------------------------------------------------------------------------    
-// #define RESEEDING // defined when need to use seeds.
+#define RESEEDING // defined when need to use seeds.
 
 // S_T_D
-// // 1_0_0
-// const float driver_adv=0.01;
-// //#define DEATH_ON_SURFACE ;
-// const float death0=0, growth0=1.0 ;
-
-// // 1_0_1
+// 1_0_0
 const float driver_adv=0.01;
 //#define DEATH_ON_SURFACE ;
-const float death0=0.95, growth0=1.0 ;
+const float death0=0, growth0=1.0 ;
+
+// // // 1_0_1
+// const float driver_adv=0.01;
+// //#define DEATH_ON_SURFACE ;
+// const float death0=0.95, growth0=1.0 ;
 
 
-// // // 1_1_1
+// 1_1_1
 
 // const float driver_adv=0.01;
 // #define DEATH_ON_SURFACE ;
 // const float death0=0.95, growth0=1.0 ;
 
-//#define MAKE_TREATMENT_N // if defined, simulate treatment after reaching given size
+// #define MAKE_TREATMENT_N // if defined, simulate treatment after reaching given size
 //#define MAKE_TREATMENT_T // if defined, simulate treatment after reaching given time
 
 const float gama=1e-2, gama_res=5e-8 ; // these are rates per daughter cell. Rates per diploid exome will be 2x higher (these values are given in the paper)
@@ -91,7 +91,7 @@ const float timescale=1./log(2.) ; // calculates the timescale factor from the d
 // if death on surface:
 // float death1=/*0.1*/0.99, growth1=0.0 ;   // after treatment
 // if death in volume
-const float death1=1., growth1=0.5 ; // after treatment
+const float death1=0.8, growth1=0.5 ; // after treatment
 
 
 const float driver_prob=2e-5 ; // driver probability per haploid genome (should be 2e-5)

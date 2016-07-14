@@ -63,6 +63,7 @@ extern int RAND, sample, treatment, max_size ;
 extern double tt ;
 extern float time_to_treat ;
 extern char* CELLFILE;
+extern string CELLIDENT;
 extern char* GENFILE;
 
 int sample=0 ;
@@ -266,13 +267,19 @@ int main(int argc, char *argv[])
     int *snp_no=new int[L], *snp_drivers=new int[L] ; // array of SNPs abundances
     for (int i=0;i<L;i++) { snp_no[i]=snp_drivers[i]=0 ; } // initialize all values to 0
     for (int i=0;i<genotypes.size();i++) { // run through all genotypes
-      if (genotypes[i]!=NULL && genotypes[i]->number>0) // if this is a valid genotype and the frequency is greater than 0
+      if (genotypes[i]!=NULL && genotypes[i]->number>0){ // if this is a valid genotype and the frequency is greater than 0
+        // if(genotypes[i]->no_drivers > 0){
+        //   printf("i=%d",i);
+        //   printf("number of SNPS: %d, number of drivers: %d,  ", genotypes[i]->sequence.size(), genotypes[i]->no_drivers);
+        //   printf("growth rate: %f, death rate: %f\n", genotypes[i]->growth[0], genotypes[i]->death[0]);
+        // }
         for (int j=0;j<genotypes[i]->sequence.size();j++) { // go over the SNPs
           // select the snp and add the number of genomes that have that particular SNP/genotype combo
           snp_no[((genotypes[i]->sequence[j])&L_PM)]+=genotypes[i]->number ;      
           // check conversion strategy: https://github.com/zafarali/tumorheterogeneity/issues/4
           if (((genotypes[i]->sequence[j])&DRIVER_PM)) snp_drivers[((genotypes[i]->sequence[j])&L_PM)]+=genotypes[i]->number ;
         }
+      }
     }
 
     save_spatial(snp_no) ;
@@ -280,10 +287,20 @@ int main(int argc, char *argv[])
     printf("saving PMs...\n") ;
     int most_abund[100] ;
     // changed the mode here so that we save all SNPs
-    sprintf(name,"%s/all_PMs_%d_%d.dat",NUM,RAND,sample) ; save_snps(name,snp_no,max_size,1,most_abund) ;
+    #ifdef RESEEDING
+      sprintf(name,"%s/all_PMs_%d_%d_%s.dat",NUM,RAND,sample, CELLIDENT.c_str()) ; 
+    #else
+      sprintf(name,"%s/all_PMs_%d_%d.dat",NUM,RAND,sample) ; 
+    #endif
+
+    save_snps(name,snp_no,max_size,1,most_abund) ;
     if (driver_adv>0 || driver_migr_adv>0) { printf("saving driver PMs...\n") ; 
-      sprintf(name,"%s/drv_PMs_%d_%d.dat",NUM,RAND,sample) ; 
-      save_snps(name,snp_drivers,max_size,1,NULL) ; 
+      #ifdef RESEEDING
+        sprintf(name,"%s/drv_PMs_%d_%d_%s.dat",NUM,RAND,sample, CELLIDENT.c_str()) ; 
+      #else
+        sprintf(name,"%s/drv_PMs_%d_%d.dat",NUM,RAND,sample) ; 
+      #endif
+        save_snps(name,snp_drivers,max_size,1,NULL) ; 
     }
     delete [] snp_no ; delete [] snp_drivers ;
 
@@ -304,8 +321,11 @@ int main(int argc, char *argv[])
       sprintf(name2,"%s/driver_SNPS_%d.dat", NUM, max_size) ; 
 
       sprintf(name,"%s/genotypes_%d.dat",NUM,max_size) ; save_genotypes(name, name2) ;
-      
+      #ifdef RESEEDING
+      sprintf(name,"%s/most_abund_gens_%d_%s.dat",NUM,max_size,CELLIDENT.c_str()) ; save_most_abund_gens(name,most_abund) ;
+      #else
       sprintf(name,"%s/most_abund_gens_%d.dat",NUM,max_size) ; save_most_abund_gens(name,most_abund) ;
+      #endif
     }
 #endif
   } 
