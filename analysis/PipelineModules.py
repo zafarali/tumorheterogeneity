@@ -143,96 +143,101 @@ def inline_statistics(pipeline):
 		# for i in xrange( number_of_samples ):
 		i2=0 # holds the number of attempts so far
 		while i != number_of_samples:
-			if i2 > 2000:
-				pipeline.print2('Did not find enough samples for radius='+str(radius)+'.')
-				break
-			# generate a new coordinate
-			centre = rand_coordinate.next()
+			try:
+				if i2 > 2000:
+					pipeline.print2('Did not find enough samples for radius='+str(radius)+'.')
+					break
+				# generate a new coordinate
+				centre = rand_coordinate.next()
 
-			# conduct the sample
-			sample = sampler.sample(radius=radius, centre=centre, with_genotypes=True)
-			cell_data = sampler.sample(radius=radius, centre=centre)
-			genotypes = sample[1]
-			# calculate statistics
+				# conduct the sample
+				sample = sampler.sample(radius=radius, centre=centre, with_genotypes=True)
+				cell_data = sampler.sample(radius=radius, centre=centre)
+				genotypes = sample[1]
+				# calculate statistics
 
-			distance_to_COM = np.sqrt( np.sum( ( np.array(centre) - np.array(pipeline.tumor.COM ) )**2 ) )
-			
-			SNP_counts = Statistics.SNP_count(sample[1])
-
-			n = len(sample[1])
-			
-			i2 += 1
-
-			if n < 2:
-				pipeline.print2('Skipped sample due to only ' + str(n)+ ' individuals')
-				continue
-
-			i+=1
-			# base statistics pi, S, SH, D
-			pi, S, SH, D = Statistics.tajimas_D(SNP_counts, n, return_parts=True)
-
-			# number of SNPs in the sample
-			num_SNPs = len( SNP_counts.keys() )
-
-			# total number of SNPs in the sample
-			mean_SNPs = np.sum( SNP_counts.values() ) / float(n)
-
-			# frequency of driver mutations
-			drivers_count = Statistics.drivers_count(sample[1])
-
-			# number of driver mutations in the sample
-			num_drivers = len( drivers_count.keys() ) 
-
-			# total number of driver mutations:
-			mean_drivers = np.sum( drivers_count.values() ) / float(n)
-
-			# the number of drivers that are unique / total number of drivers
-			unique_drivers = Statistics.unique_driver_proportion(drivers_count)
-
-			# the number of unique haplotypes (combinations of drivers)
-			unique_combos = Statistics.unique_driver_combinations(sample[1])
-			unique_combos_snps = Statistics.unique_snp_combinations(sample[1])
-			unique_combos_res = Statistics.unique_res_combinations(sample[1])
-
-			# the proportion of total SNPs in the data that are drivers
-			driver_enrichment = mean_drivers/float(mean_SNPs) if mean_SNPs > 0 else 0
-			
-			# the number of SNPs that are driver
-			driver_to_SNP_ratio = num_drivers/float(num_SNPs) if num_SNPs > 0 else 0
-
-			stats.append( [radius, distance_to_COM, \
-				n, pi, S, SH, D, pi-SH, \
-				num_SNPs, driver_to_SNP_ratio,\
-				unique_drivers, num_drivers, \
-				unique_combos, unique_combos_snps, unique_combos_res,\
-				mean_drivers, mean_SNPs, driver_enrichment ] )
-
-			if to_save:
-				save_loc = pipeline.FILES['sample_directory'] +'/size'+str(n)+'dist'+str(distance_to_COM)+'haplo'+str(unique_combos)+'i'+str(i)
-				# create the output directory and save specs and sampling there
-				if not os.path.exists( save_loc ):
-					os.makedirs( save_loc )
-					# pipeline.print2('sample dire directory created')
-
-
-				ctc = CTC.prepare_CTC(cell_data, genotypes, dist=distance_to_COM,nhaplotypes=unique_combos,notes='snp_combos:'+str(unique_combos_snps))
+				distance_to_COM = np.sqrt( np.sum( ( np.array(centre) - np.array(pipeline.tumor.COM ) )**2 ) )
 				
-				# using randint() to randomize the file names just in case
-				identifier = str(np.random.randint(10000))
-				with open(save_loc+'/gen'+identifier+'.dat', 'w') as f:
-					for row in ctc.genomes_to_string():
-						f.write(row+'\n')
+				SNP_counts = Statistics.SNP_count(sample[1])
+
+				n = len(sample[1])
 				
-				with open(save_loc+'/cells'+identifier+'.dat', 'w') as f:
-					for row in ctc.cells_to_string():
-						f.write(row+'\n')
+				i2 += 1
 
-				with open(save_loc+'/details'+identifier+'.dat', 'w') as f:
-				    f.write(ctc.details())
+				if n < 2:
+					pipeline.print2('Skipped sample due to only ' + str(n)+ ' individuals')
+					continue
+
+				i+=1
+				# base statistics pi, S, SH, D
+				pi, S, SH, D = Statistics.tajimas_D(SNP_counts, n, return_parts=True)
+
+				# number of SNPs in the sample
+				num_SNPs = len( SNP_counts.keys() )
+
+				# total number of SNPs in the sample
+				mean_SNPs = np.sum( SNP_counts.values() ) / float(n)
+
+				# frequency of driver mutations
+				drivers_count = Statistics.drivers_count(sample[1])
+
+				# number of driver mutations in the sample
+				num_drivers = len( drivers_count.keys() ) 
+
+				# total number of driver mutations:
+				mean_drivers = np.sum( drivers_count.values() ) / float(n)
+
+				# the number of drivers that are unique / total number of drivers
+				unique_drivers = Statistics.unique_driver_proportion(drivers_count)
+
+				# the number of unique haplotypes (combinations of drivers)
+				unique_combos = Statistics.unique_driver_combinations(sample[1])
+				unique_combos_snps = Statistics.unique_snp_combinations(sample[1])
+				unique_combos_res = Statistics.unique_res_combinations(sample[1])
+
+				# the proportion of total SNPs in the data that are drivers
+				driver_enrichment = mean_drivers/float(mean_SNPs) if mean_SNPs > 0 else 0
+				
+				# the number of SNPs that are driver
+				driver_to_SNP_ratio = num_drivers/float(num_SNPs) if num_SNPs > 0 else 0
+
+				stats.append( [radius, distance_to_COM, \
+					n, pi, S, SH, D, pi-SH, \
+					num_SNPs, driver_to_SNP_ratio,\
+					unique_drivers, num_drivers, \
+					unique_combos, unique_combos_snps, unique_combos_res,\
+					mean_drivers, mean_SNPs, driver_enrichment ] )
+
+				if to_save:
+					save_loc = pipeline.FILES['sample_directory'] +'/size'+str(n)+'dist'+str(distance_to_COM)+'haplo'+str(unique_combos)+'i'+str(i)
+					# create the output directory and save specs and sampling there
+					if not os.path.exists( save_loc ):
+						os.makedirs( save_loc )
+						# pipeline.print2('sample dire directory created')
 
 
+					ctc = CTC.prepare_CTC(cell_data, genotypes, dist=distance_to_COM,nhaplotypes=unique_combos,notes='snp_combos:'+str(unique_combos_snps))
+					
+					# using randint() to randomize the file names just in case
+					identifier = str(np.random.randint(10000))
+					with open(save_loc+'/gen'+identifier+'.dat', 'w') as f:
+						for row in ctc.genomes_to_string():
+							f.write(row+'\n')
+					
+					with open(save_loc+'/cells'+identifier+'.dat', 'w') as f:
+						for row in ctc.cells_to_string():
+							f.write(row+'\n')
+
+					with open(save_loc+'/details'+identifier+'.dat', 'w') as f:
+					    f.write(ctc.details())
+
+			except Exception as e:
+				print("exception occured... graceful skip:"+str(e))
+			#end try catch
+
+			# end sampling for loop for certain radius
 		
-		#end sampling for loop
+		#end radius for loop
 
 		pipeline.print2( str(number_of_samples) +' samples conducted and statistics too')
 	# end

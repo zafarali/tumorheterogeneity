@@ -233,7 +233,9 @@ class CTC(Tumor):
 			else:
 				string_builder += '-1'
 			to_return.append(string_builder)
-		to_return.append(str(max(self.snp_mapping.values())+1))
+
+		largest_snp = max(self.snp_mapping.values()) if len(self.snp_mapping.values()) > 0 else 0
+		to_return.append(str(largest_snp+1))
 
 		return to_return
 
