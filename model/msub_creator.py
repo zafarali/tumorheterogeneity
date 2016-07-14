@@ -45,7 +45,7 @@ for binnum,limit in enumerate(bins):
         # local_commands.append('cp '+gen_file+' ./')
         local_commands.append('./'+model+'_reseed.exe reseeded_'+model+'-'+str(binnum)+' 1 1 '+cells_file+' '+gen_file+' \n')
         local_commands.append('cp '+det_file+' ./reseeded_'+model+'-'+str(binnum)+'/ \n')
-    local_commands.append('../freqspec.py '+model+'_reseeded_'+model+'-'+str(binnum)+'/ \n')
+    local_commands.append('../freqspec.py reseeded_'+model+'-'+str(binnum)+'/ \n')
     commands.append(local_commands)
 
     

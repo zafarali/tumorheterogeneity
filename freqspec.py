@@ -7,6 +7,7 @@ import sys
 
 folder = sys.argv[1]
 bins = np.linspace(0,0.5,num=500)
+
 to_be_meaned = []
 for path in glob.glob(folder+'*all_PMs*'):
     data = pd.read_csv(path, sep=' ', names=['Num', 'SNP', 'abundancy'])
