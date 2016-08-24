@@ -165,7 +165,19 @@ def inline_statistics(pipeline):
 				i2 += 1
 
 				if n < 2:
-					pipeline.print2('Skipped sample due to only ' + str(n)+ ' individuals')
+
+					if n > 0:
+						num_SNPs = len(SNP_counts.keys())
+						mean_SNPs = np.sum( SNP_counts.values() ) / float(n)
+						pipeline.print2('Only calculatd num snps due to only ' + str(n)+ ' individuals')
+						stats.append( [radius, distance_to_COM, \
+							n, 0, 0, 0, 0, 0, \
+							num_SNPs, 0,\
+							0, 0, \
+							0, 0, 0,\
+							0, mean_SNPs, 0 ] )
+					else:
+						pipeline.print2('Skipped sampling due to only ' + str(n)+ ' individuals')
 					continue
 
 				i+=1
