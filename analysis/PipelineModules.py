@@ -241,7 +241,7 @@ def inline_statistics(pipeline):
 							f.write(row+'\n')
 
 					with open(save_loc+'/details'+identifier+'.dat', 'w') as f:
-					    f.write(ctc.details())
+						f.write(ctc.details())
 
 			except Exception as e:
 				print("exception occured... graceful skip:"+str(e))
@@ -260,10 +260,10 @@ def inline_statistics(pipeline):
 def density_plot(pipeline):
 	rho, r = np.histogram(np.sqrt(np.sum((pipeline.sampler.cell_positions-pipeline.tumor.COM)**2,axis=1)), bins=np.linspace(0,1000,1000))
 	def neighbour_iterator(arr):
-	    index = 0
-	    while index < len(arr)-1:
-	        yield (arr[index], arr[index+1])
-	        index += 1
+		index = 0
+		while index < len(arr)-1:
+			yield (arr[index], arr[index+1])
+			index += 1
 	r_meaned = np.mean(np.array(list(neighbour_iterator(r))), axis=1)
 	rho2 = rho/ (4*np.pi*r_meaned**2)  
 	plt.figure(figsize=(10,7.5))
@@ -356,36 +356,36 @@ def _driver_stats_plots(pipeline, x_label):
 
 	plt.title('Singleton Drivers vs Distance')
 	for i in radii:
-	    subsample = df[df['radius'] == i]
-	    plt.scatter( subsample[x_label], subsample['unique_driver_propotion'], color=next(colors), label='Radius='+str(i))
-	    plt.xlabel(printlabel)
-	    plt.ylabel('Proportion of Drivers that are Singletons')
+		subsample = df[df['radius'] == i]
+		plt.scatter( subsample[x_label], subsample['unique_driver_propotion'], color=next(colors), label='Radius='+str(i))
+		plt.xlabel(printlabel)
+		plt.ylabel('Proportion of Drivers that are Singletons')
 
 	plt.subplot(2,2,2)
 
 	plt.title('Driver Enrichment vs Distance')
 	for i in radii:
-	    subsample = df[df['radius'] == i]
-	    plt.scatter( subsample[x_label], subsample['driver_enrichment'], color=next(colors), label='Radius='+str(i))
-	    plt.xlabel(printlabel)
-	    plt.ylabel('Mean Drivers per Cell / Mean SNPs per Cell')
-	    
+		subsample = df[df['radius'] == i]
+		plt.scatter( subsample[x_label], subsample['driver_enrichment'], color=next(colors), label='Radius='+str(i))
+		plt.xlabel(printlabel)
+		plt.ylabel('Mean Drivers per Cell / Mean SNPs per Cell')
+		
 	plt.subplot(2,2,3)
 	plt.title('Unique Haplotypes vs Distance')
 	for i in radii:
-	    subsample = df[df['radius'] == i]
-	    plt.scatter( subsample[x_label], subsample['unique_combos'], color=next(colors), label='Radius='+str(i))
-	    plt.xlabel(printlabel)
-	    plt.ylabel('Number of Unique Haplotypes')
+		subsample = df[df['radius'] == i]
+		plt.scatter( subsample[x_label], subsample['unique_combos'], color=next(colors), label='Radius='+str(i))
+		plt.xlabel(printlabel)
+		plt.ylabel('Number of Unique Haplotypes')
 
 	plt.subplot(2,2,4)
 
 	plt.title('Proportion of SNPs that are Driver')
 	for i in radii:
-	    subsample = df[df['radius'] == i]
-	    plt.scatter( subsample[x_label], subsample['proportion_driver'], color=next(colors), label='Radius='+str(i))
-	    plt.xlabel(printlabel)
-	    plt.ylabel('Number of Drivers / Number of SNPs')
+		subsample = df[df['radius'] == i]
+		plt.scatter( subsample[x_label], subsample['proportion_driver'], color=next(colors), label='Radius='+str(i))
+		plt.xlabel(printlabel)
+		plt.ylabel('Number of Drivers / Number of SNPs')
 
 	plt.suptitle('Statistics about Driver SNPs in Samples', fontsize=15)
 	plt.legend(ncol=5, bbox_to_anchor=(0.88,2.38))
@@ -409,37 +409,37 @@ def _mutation_count_plots(pipeline, x_label):
 	plt.title('Mean number of SNPs per cell')
 
 	for i in radii:
-	    subsample = df[df['radius'] == i]
-	    plt.scatter( subsample[x_label], subsample['mean_SNPs'], color=next(colors), label='Radius='+str(i))
-	    plt.xlabel(printlabel)
-	    plt.ylabel('Mean SNPs per Cell')
+		subsample = df[df['radius'] == i]
+		plt.scatter( subsample[x_label], subsample['mean_SNPs'], color=next(colors), label='Radius='+str(i))
+		plt.xlabel(printlabel)
+		plt.ylabel('Mean SNPs per Cell')
 
 	plt.subplot(2,2,2)
 	
 	plt.title('Mean number of Drivers per cell')
 	for i in radii:
-	    subsample = df[df['radius'] == i]
-	    plt.scatter( subsample[x_label], subsample['mean_drivers'], color=next(colors), label='Radius='+str(i))
-	    plt.xlabel(printlabel)
-	    plt.ylabel('Mean Drivers per Cell')
+		subsample = df[df['radius'] == i]
+		plt.scatter( subsample[x_label], subsample['mean_drivers'], color=next(colors), label='Radius='+str(i))
+		plt.xlabel(printlabel)
+		plt.ylabel('Mean Drivers per Cell')
 
 	plt.subplot(2,2,3)
 	
 	plt.title('Number of SNPs in the sample vs Distance')
 	for i in radii:
-	    subsample = df[df['radius'] == i]
-	    plt.scatter( subsample[x_label], subsample['num_SNPs'], color=next(colors), label='Radius='+str(i))
-	    plt.xlabel(printlabel)
-	    plt.ylabel('Number of SNPs')
+		subsample = df[df['radius'] == i]
+		plt.scatter( subsample[x_label], subsample['num_SNPs'], color=next(colors), label='Radius='+str(i))
+		plt.xlabel(printlabel)
+		plt.ylabel('Number of SNPs')
 
 	plt.subplot(2,2,4)
 	
 	plt.title('Number of drivers in the sample vs Distance')
 	for i in radii:
-	    subsample = df[df['radius'] == i]
-	    plt.scatter( subsample[x_label], subsample['num_drivers'], color=next(colors), label='Radius='+str(i))
-	    plt.xlabel(printlabel)
-	    plt.ylabel('Number of Drivers')
+		subsample = df[df['radius'] == i]
+		plt.scatter( subsample[x_label], subsample['num_drivers'], color=next(colors), label='Radius='+str(i))
+		plt.xlabel(printlabel)
+		plt.ylabel('Number of Drivers')
 	
 	plt.savefig( pipeline.FILES['out_directory']+'/mutation_count_plots_'+x_label+'.pdf',\
 		bbox_inches='tight')
@@ -455,38 +455,101 @@ def _pop_gen_stats(pipeline,x_label):
 	plt.subplot(2,2,1)
 	plt.title('D vs Radius')
 	for i in radii:
-	    subsample = df[df['radius'] == i]
-	    plt.scatter( subsample[x_label], subsample['D'], color=next(colors))
-	    plt.xlabel(printlabel)
-	    plt.ylabel('D')
-	    
+		subsample = df[df['radius'] == i]
+		plt.scatter( subsample[x_label], subsample['D'], color=next(colors))
+		plt.xlabel(printlabel)
+		plt.ylabel('D')
+		
 	plt.subplot(2,2,2)
 	plt.title('Tajimas D vs Radius')
 	for i in radii:
-	    subsample = df[df['radius'] == i]
-	    plt.scatter( subsample[x_label], subsample['Tajimas D'], color=next(colors))
-	    plt.xlabel(printlabel)
-	    plt.ylabel('Tajimas D')
-	    
+		subsample = df[df['radius'] == i]
+		plt.scatter( subsample[x_label], subsample['Tajimas D'], color=next(colors))
+		plt.xlabel(printlabel)
+		plt.ylabel('Tajimas D')
+		
 	plt.subplot(2,2,3)
 	plt.title('S/H vs Radius')
 	for i in radii:
-	    subsample = df[df['radius'] == i]
-	    plt.scatter( subsample[x_label], subsample['S/H'], color=next(colors))
-	    plt.xlabel(printlabel)
-	    plt.ylabel('Normalized Number of Segregating Sites (S/H)')
-	    
+		subsample = df[df['radius'] == i]
+		plt.scatter( subsample[x_label], subsample['S/H'], color=next(colors))
+		plt.xlabel(printlabel)
+		plt.ylabel('Normalized Number of Segregating Sites (S/H)')
+		
 	plt.subplot(2,2,4)
 	plt.title('Pi vs Radius')
 	for i in radii:
-	    subsample = df[df['radius'] == i]
-	    plt.scatter( subsample[x_label], subsample['pi'], color=next(colors))
-	    plt.xlabel(printlabel)
-	    plt.ylabel('Proportion of Pairwise Differences (Pi)')
-	    
+		subsample = df[df['radius'] == i]
+		plt.scatter( subsample[x_label], subsample['pi'], color=next(colors))
+		plt.xlabel(printlabel)
+		plt.ylabel('Proportion of Pairwise Differences (Pi)')
+		
 	plt.suptitle('Statistics for Neutrality of Samples', fontsize=15)
 	plt.savefig( pipeline.FILES['out_directory']+'/pop_gen_stats'+x_label+'.pdf',\
 		bbox_inches='tight')
 
+def marginal_counts(pipeline):
+	pipeline.print2('Calculating marginals...')
+	sampler = pipeline.sampler
+	rand_coordinate = sample_coordinate(sampler.cell_positions, deviate=True)
+	all_deltas = []
+	for k in range(500):
+		coord = rand_coordinate.next()
+		samples = list(sampler.sample(radius=5, centre=coord, with_genotypes=True))
+		distance_to_COM = np.sqrt( np.sum( ( np.array(samples[0]) - np.array(pipeline.tumor.COM ) )**2, axis=1 ) )
+		samples[0] = distance_to_COM.tolist()
+		distances_sorted, samples_sorted = zip(*sorted(zip(*samples),key=lambda x:x[0])) # sorts the samples according to distance from COM
+
+		## holds the marginal increases
+		# first entry is the distance from COM of the sample in question
+		delta = [ np.sqrt( np.sum( ( np.array(coord) - np.array(pipeline.tumor.COM ) )**2) ) ] 
+		S_list = [ ] # holds the original S values
+		try:
+			for i in range(1,20): # loop through all sample sizes
+				S = len(Statistics.SNP_count(samples_sorted[:i]).keys())
+				S_list.append(S)
+				if i == 1:
+					delta.append(S)
+				else:
+					delta.append(float(S - S_list[-2])/float(S_list[-1]))
+		except Exception as e:
+			pipeline.print2('Exception occured in marginal_counts: '+str(e))
+			continue
+	#     print delta
+		all_deltas.append(delta)
+
+	pipeline.print2('500 marginal trajectories calculated.')
+
+	all_deltas = np.array(all_deltas)
+	np.save(pipeline.FILES['out_directory']+'/deltas.npy',all_deltas)
+
+	# plt.figure(figsize=(10,10))
+	# plt.title('deltaS vs sample_size (ZOOMED)')
+	# for delta_ in all_deltas:
+	#     plt.plot(delta_[1:], alpha=0.2)
+	# plt.plot(np.mean(np.array(all_deltas)[:,1:],axis=0), color='k', linewidth=2)
+	# plt.xlim([0,10])
+	# plt.ylim([0,4])	
+	
+	# plt.xlim('Sample Size')
+	# plt.ylim('Marginal increase in number of somatic mutations')
+	# plt.savefig( pipeline.FILES['out_directory']+'/mean_delta_plotted_zoomed.pdf',\
+	# 	bbox_inches='tight')
+	
+	# plt.figure(figsize=(10,10))
+	# plt.title('deltaS vs sample_size')
+	# for delta_ in all_deltas:
+	#     plt.plot(delta_[1:], alpha=0.2)
+	# plt.plot(np.mean(np.array(all_deltas)[:,1:],axis=0), color='k', linewidth=2)
+	# plt.xlim([0,10])
+	# # plt.ylim([0,4])	
+	
+	# plt.xlim('Sample Size')
+	# plt.ylim('Marginal increase in number of somatic mutations')
+	# plt.savefig( pipeline.FILES['out_directory']+'/mean_delta_plotted.pdf',\
+	# 	bbox_inches='tight')
+
+
 BASE = [ load_tumor, random_spherical_samples, calculate_statistics, save_statistics ]
-KD_SAMPLING = [ load_tumor, create_sample_directory, inline_statistics, save_statistics, all_plot_combos, mutation_count_plots, driver_stats_plots, pop_gen_plots, density_plot ]
+KD_SAMPLING = [ load_tumor, create_sample_directory, inline_statistics, save_statistics,\
+	all_plot_combos, mutation_count_plots, driver_stats_plots, pop_gen_plots, density_plot, marginal_counts ]
