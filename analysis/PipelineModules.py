@@ -122,6 +122,11 @@ def create_sample_directory(pipeline):
 		raise Exception('Exception occured in create_sample_directory'+str(e))
 
 
+def create_kdsampler(pipeline):
+	pipeline.print2('Creating KDTSphericalSampler')
+	pipeline.sampler = KDTSphericalSampler(pipeline.tumor)
+	pipeline.print2('KDTSphericalSampler created.')
+
 def inline_statistics(pipeline):
 
 	stats = [['radius', 'distance_to_COM', 'sample_size', \
@@ -130,12 +135,8 @@ def inline_statistics(pipeline):
 	'num_drivers', 'unique_combos','unique_combos_snps', 'uniqe_res_combos',\
 	'mean_drivers', 'mean_SNPs', 'driver_enrichment']]
 
-	pipeline.print2('Creating KDTSphericalSampler')
-	sampler = KDTSphericalSampler(pipeline.tumor)
-	pipeline.print2('KDTSphericalSampler created.')
-	rand_coordinate = sample_coordinate(sampler.cell_positions, deviate=True)
+	rand_coordinate = sample_coordinate(pipeline.sampler.cell_positions, deviate=True)
 	number_of_samples = pipeline.specs.get('repeats', 500)
-	pipeline.sampler = sampler
 	to_save = pipeline.specs.get('save_samples', True)
 
 	for radius in pipeline.specs['RADII']:
@@ -152,14 +153,18 @@ def inline_statistics(pipeline):
 				centre = rand_coordinate.next()
 
 				# conduct the sample
-				sample = sampler.sample(radius=radius, centre=centre, with_genotypes=True)
-				cell_data = sampler.sample(radius=radius, centre=centre)
+				sample = pipeline.sampler.sample(radius=radius, centre=centre, with_genotypes=True)
+				cell_data = pipeline.sampler.sample(radius=radius, centre=centre)
 				genotypes = sample[1]
 				# calculate statistics
 
 				distance_to_COM = np.sqrt( np.sum( ( np.array(centre) - np.array(pipeline.tumor.COM ) )**2 ) )
 				
+				# frequency of snps
 				SNP_counts = Statistics.SNP_count(sample[1])
+
+				# frequency of driver mutations
+				drivers_count = Statistics.drivers_count(sample[1])
 
 				n = len(sample[1])
 				
@@ -168,15 +173,20 @@ def inline_statistics(pipeline):
 				if n < 2:
 
 					if n > 0:
+						# snp count
 						num_SNPs = len(SNP_counts.keys())
 						mean_SNPs = np.sum( SNP_counts.values() ) / float(n)
-						pipeline.print2('Only calculatd num snps due to only ' + str(n)+ ' individuals')
+
+						num_drivers = len( drivers_count.keys() ) 
+						mean_drivers = np.sum( drivers_count.values() ) / float(n)
+
+						pipeline.print2('Only calculatd num snps/ and drivers due to only ' + str(n)+ ' individuals')
 						stats.append( [radius, distance_to_COM, \
 							n, 0, 0, 0, 0, 0, \
 							num_SNPs, 0,\
 							0, 0, \
 							0, 0, 0,\
-							0, mean_SNPs, 0 ] )
+							mean_drivers, mean_SNPs, 0 ] )
 					else:
 						pipeline.print2('Skipped sampling due to only ' + str(n)+ ' individuals')
 					continue
@@ -190,9 +200,6 @@ def inline_statistics(pipeline):
 
 				# total number of SNPs in the sample
 				mean_SNPs = np.sum( SNP_counts.values() ) / float(n)
-
-				# frequency of driver mutations
-				drivers_count = Statistics.drivers_count(sample[1])
 
 				# number of driver mutations in the sample
 				num_drivers = len( drivers_count.keys() ) 
@@ -495,7 +502,8 @@ def marginal_counts_ordered(pipeline):
 	rand_coordinate = sample_coordinate(sampler.cell_positions, deviate=True)
 	all_deltas = []
 	all_s_list = []
-	# all_epsilons = []
+	all_d_list = []
+
 	for k in range(500):
 		coord = rand_coordinate.next()
 		samples = list(sampler.sample(radius=5, centre=coord, with_genotypes=True))
@@ -508,11 +516,13 @@ def marginal_counts_ordered(pipeline):
 		delta = [ np.sqrt( np.sum( ( np.array(coord) - np.array(pipeline.tumor.COM ) )**2) ) ] 
 		# epsilon = [ np.sqrt( np.sum( ( np.array(coord) - np.array(pipeline.tumor.COM ) )**2) ) ] 
 		S_list = [ ] # holds the original S values
-		
+		D_list = [ ] # holds the original D values
 		try:
-			for i in range(1,20): # loop through all sample sizes
+			for i in range(1,33): # loop through all sample sizes
 				S = len(Statistics.SNP_count(samples_sorted[:i]).keys())
+				D = len(Statistics.drivers_count(samples_sorted[:i]).keys())
 				S_list.append(S)
+				D_list.append(D)
 				if i == 1:
 					delta.append(S)
 				else:
@@ -523,15 +533,18 @@ def marginal_counts_ordered(pipeline):
 	#     print delta
 		all_deltas.append(delta)
 		all_s_list.append(S_list)
-		# all_epsilons.append(epsilon)
+		all_d_list.append(D_list)
 
 	pipeline.print2('500 ordered marginal trajectories calculated.')
 
 	all_deltas = np.array(all_deltas)
 	S_list = np.array(S_list)
+	D_list = np.array(D_list)
+
 	np.save(pipeline.FILES['out_directory']+'/deltas_ordered.npy',all_deltas)
 	np.save(pipeline.FILES['out_directory']+'/S_list_ordered.npy',all_s_list)
-	# np.save(pipeline.FILES['out_directory']+'/epsilons_ordered.npy',all_epsilons)
+	np.save(pipeline.FILES['out_directory']+'/D_list_ordered.npy',all_d_list)
+	
 
 
 def marginal_counts_unordered(pipeline):
@@ -540,6 +553,7 @@ def marginal_counts_unordered(pipeline):
 	rand_coordinate = sample_coordinate(sampler.cell_positions, deviate=True)
 	all_deltas = []
 	all_s_list = []
+	all_d_list = []
 	all_epsilons = []
 	for k in range(500):
 		
@@ -547,16 +561,19 @@ def marginal_counts_unordered(pipeline):
 		# first entry is the distance from COM of the sample in question
 		delta = [ 0 ] 
 		S_list = [ ] # holds the original S values
-		
+		D_list = [ ] # holds the original D values
 		try:
-			for i in range(1,20): # loop through all sample sizes
+			for i in range(1,33): # loop through all sample sizes
 
 				sample_indicies = random.sample(np.arange( 0, sampler.cell_data.shape[0] ), i)
 				
-				cell_locations, genotypes = sampler.cell_data[ sample_indicies, :3 ], sampler.tumor.get_genotypes(sampler.cell_genotypes[sample_indicies])
+				cell_locations, genotypes = sampler.cell_data[ sample_indicies, :3 ], \
+				sampler.tumor.get_genotypes(sampler.cell_genotypes[sample_indicies])
 
 				S = len(Statistics.SNP_count(genotypes).keys())
+				D = len(Statistics.drivers_count(genotypes).keys())
 				S_list.append(S)
+				D_list.append(D)
 				if i == 1:
 					delta.append(S)
 				else:
@@ -567,20 +584,25 @@ def marginal_counts_unordered(pipeline):
 
 		all_deltas.append(delta)
 		all_s_list.append(S_list)
+		all_d_list.append(D_list)
 
 
 	
 
 	all_deltas = np.array(all_deltas)
+	D_list = np.array(D_list)
 	S_list = np.array(S_list)
 	np.save(pipeline.FILES['out_directory']+'/deltas_unordered.npy',all_deltas)
 	np.save(pipeline.FILES['out_directory']+'/S_list_unordered.npy',all_s_list)
+	np.save(pipeline.FILES['out_directory']+'/D_list_unordered.npy',all_d_list)
 
-	pipeline.print2('500 ordered marginal trajectories calculated.')
+	pipeline.print2('500 unordered marginal trajectories calculated.')
 
 
 
 BASE = [ load_tumor, random_spherical_samples, calculate_statistics, save_statistics ]
-KD_SAMPLING = [ load_tumor, create_sample_directory, inline_statistics, save_statistics,\
+KD_SAMPLING = [ load_tumor, create_sample_directory, create_kdsampler, inline_statistics, save_statistics,\
 	all_plot_combos, mutation_count_plots, driver_stats_plots, pop_gen_plots, density_plot, \
 	marginal_counts_ordered, marginal_counts_unordered ]
+
+ONLY_MARGINALS = [ load_tumor, create_kdsampler, marginal_counts_unordered, marginal_counts_ordered]
