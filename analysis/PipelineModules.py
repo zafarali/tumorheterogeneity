@@ -9,6 +9,7 @@ import itertools
 from BaseObjects import Tumor, CTC
 from Samplers import SphericalSampler, KDTSphericalSampler
 import Statistics
+import random
 import time
 
 # generates a coordinate
@@ -488,11 +489,13 @@ def _pop_gen_stats(pipeline,x_label):
 	plt.savefig( pipeline.FILES['out_directory']+'/pop_gen_stats'+x_label+'.pdf',\
 		bbox_inches='tight')
 
-def marginal_counts(pipeline):
-	pipeline.print2('Calculating marginals...')
+def marginal_counts_ordered(pipeline):
+	pipeline.print2('Calculating ordered marginals...')
 	sampler = pipeline.sampler
 	rand_coordinate = sample_coordinate(sampler.cell_positions, deviate=True)
 	all_deltas = []
+	all_s_list = []
+	# all_epsilons = []
 	for k in range(500):
 		coord = rand_coordinate.next()
 		samples = list(sampler.sample(radius=5, centre=coord, with_genotypes=True))
@@ -503,7 +506,9 @@ def marginal_counts(pipeline):
 		## holds the marginal increases
 		# first entry is the distance from COM of the sample in question
 		delta = [ np.sqrt( np.sum( ( np.array(coord) - np.array(pipeline.tumor.COM ) )**2) ) ] 
+		# epsilon = [ np.sqrt( np.sum( ( np.array(coord) - np.array(pipeline.tumor.COM ) )**2) ) ] 
 		S_list = [ ] # holds the original S values
+		
 		try:
 			for i in range(1,20): # loop through all sample sizes
 				S = len(Statistics.SNP_count(samples_sorted[:i]).keys())
@@ -517,39 +522,63 @@ def marginal_counts(pipeline):
 			continue
 	#     print delta
 		all_deltas.append(delta)
+		all_s_list.append(S_list)
+		# all_epsilons.append(epsilon)
 
-	pipeline.print2('500 marginal trajectories calculated.')
+	pipeline.print2('500 ordered marginal trajectories calculated.')
 
 	all_deltas = np.array(all_deltas)
-	np.save(pipeline.FILES['out_directory']+'/deltas.npy',all_deltas)
+	S_list = np.array(S_list)
+	np.save(pipeline.FILES['out_directory']+'/deltas_ordered.npy',all_deltas)
+	np.save(pipeline.FILES['out_directory']+'/S_list_ordered.npy',all_s_list)
+	# np.save(pipeline.FILES['out_directory']+'/epsilons_ordered.npy',all_epsilons)
 
-	# plt.figure(figsize=(10,10))
-	# plt.title('deltaS vs sample_size (ZOOMED)')
-	# for delta_ in all_deltas:
-	#     plt.plot(delta_[1:], alpha=0.2)
-	# plt.plot(np.mean(np.array(all_deltas)[:,1:],axis=0), color='k', linewidth=2)
-	# plt.xlim([0,10])
-	# plt.ylim([0,4])	
-	
-	# plt.xlim('Sample Size')
-	# plt.ylim('Marginal increase in number of somatic mutations')
-	# plt.savefig( pipeline.FILES['out_directory']+'/mean_delta_plotted_zoomed.pdf',\
-	# 	bbox_inches='tight')
-	
-	# plt.figure(figsize=(10,10))
-	# plt.title('deltaS vs sample_size')
-	# for delta_ in all_deltas:
-	#     plt.plot(delta_[1:], alpha=0.2)
-	# plt.plot(np.mean(np.array(all_deltas)[:,1:],axis=0), color='k', linewidth=2)
-	# plt.xlim([0,10])
-	# # plt.ylim([0,4])	
-	
-	# plt.xlim('Sample Size')
-	# plt.ylim('Marginal increase in number of somatic mutations')
-	# plt.savefig( pipeline.FILES['out_directory']+'/mean_delta_plotted.pdf',\
-	# 	bbox_inches='tight')
+
+def marginal_counts_unordered(pipeline):
+	pipeline.print2('Calculating unordered marginals...')
+	sampler = pipeline.sampler
+	rand_coordinate = sample_coordinate(sampler.cell_positions, deviate=True)
+	all_deltas = []
+	all_s_list = []
+	all_epsilons = []
+	for k in range(500):
+		
+		## holds the marginal increases
+		# first entry is the distance from COM of the sample in question
+		delta = [ np.sqrt( np.sum( ( np.array(coord) - np.array(pipeline.tumor.COM ) )**2) ) ] 
+		S_list = [ ] # holds the original S values
+		
+		try:
+			for i in range(1,20): # loop through all sample sizes
+
+				sample_indicies = random.sample(np.arange( 0, sampler.cell_data.shape[0] ), i)
+				
+				cell_locations, genotypes = sampler.cell_data[ sample_indicies, :3 ], sampler.tumor.get_genotypes(sampler.cell_genotypes[sample_indicies])
+
+				S = len(Statistics.SNP_count(genotypes).keys())
+				S_list.append(S)
+				if i == 1:
+					delta.append(S)
+				else:
+					delta.append(float(S - S_list[-2])/float(S_list[-1]))
+		except Exception as e:
+			pipeline.print2('Exception occured in marginal_counts: '+str(e))
+			continue
+
+		all_deltas.append(delta)
+		all_s_list.append(S_list)
+
+
+	pipeline.print2('500 ordered marginal trajectories calculated.')
+
+	all_deltas = np.array(all_deltas)
+	S_list = np.array(S_list)
+	np.save(pipeline.FILES['out_directory']+'/deltas_unordered.npy',all_deltas)
+	np.save(pipeline.FILES['out_directory']+'/S_list_unordered.npy',all_s_list)
+
 
 
 BASE = [ load_tumor, random_spherical_samples, calculate_statistics, save_statistics ]
 KD_SAMPLING = [ load_tumor, create_sample_directory, inline_statistics, save_statistics,\
-	all_plot_combos, mutation_count_plots, driver_stats_plots, pop_gen_plots, density_plot, marginal_counts ]
+	all_plot_combos, mutation_count_plots, driver_stats_plots, pop_gen_plots, density_plot, \
+	marginal_counts_ordered, marginal_counts_unordered ]
