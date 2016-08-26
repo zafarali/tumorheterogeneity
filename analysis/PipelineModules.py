@@ -137,7 +137,7 @@ def inline_statistics(pipeline):
 
 	rand_coordinate = sample_coordinate(pipeline.sampler.cell_positions, deviate=True)
 	number_of_samples = pipeline.specs.get('repeats', 500)
-	to_save = pipeline.specs.get('save_samples', True)
+	to_save = pipeline.specs.get('save_samples', False)
 
 	for radius in pipeline.specs['RADII']:
 		pipeline.print2('Sampling radius:'+str(radius))
