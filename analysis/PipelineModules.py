@@ -545,7 +545,7 @@ def marginal_counts_unordered(pipeline):
 		
 		## holds the marginal increases
 		# first entry is the distance from COM of the sample in question
-		delta = [ np.sqrt( np.sum( ( np.array(coord) - np.array(pipeline.tumor.COM ) )**2) ) ] 
+		delta = [ 0 ] 
 		S_list = [ ] # holds the original S values
 		
 		try:
@@ -569,12 +569,14 @@ def marginal_counts_unordered(pipeline):
 		all_s_list.append(S_list)
 
 
-	pipeline.print2('500 ordered marginal trajectories calculated.')
+	
 
 	all_deltas = np.array(all_deltas)
 	S_list = np.array(S_list)
 	np.save(pipeline.FILES['out_directory']+'/deltas_unordered.npy',all_deltas)
 	np.save(pipeline.FILES['out_directory']+'/S_list_unordered.npy',all_s_list)
+
+	pipeline.print2('500 ordered marginal trajectories calculated.')
 
 
 
