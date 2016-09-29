@@ -503,8 +503,10 @@ def marginal_counts_ordered(pipeline):
 	all_deltas = []
 	all_s_list = []
 	all_d_list = []
+	all_csnp_list = []
+	all_cdrv_list = []
 
-	for k in range(500):
+	for k in range(1000):
 		coord = rand_coordinate.next()
 		samples = list(sampler.sample(radius=5, centre=coord, with_genotypes=True))
 		distance_to_COM = np.sqrt( np.sum( ( np.array(samples[0]) - np.array(pipeline.tumor.COM ) )**2, axis=1 ) )
@@ -515,8 +517,10 @@ def marginal_counts_ordered(pipeline):
 		# first entry is the distance from COM of the sample in question
 		delta = [ np.sqrt( np.sum( ( np.array(coord) - np.array(pipeline.tumor.COM ) )**2) ) ] 
 		# epsilon = [ np.sqrt( np.sum( ( np.array(coord) - np.array(pipeline.tumor.COM ) )**2) ) ] 
-		S_list = [ ] # holds the original S values
-		D_list = [ ] # holds the original D values
+		S_list = [ ] # holds the original S values, S=number of somatic mutations
+		D_list = [ ] # holds the original D values, D=number of driver mutations
+		combosnp_list = [ ] # holds the number of genotyps
+		combodrv_list = [ ] # holds the number of driver genotypes
 		try:
 			for i in range(1,33): # loop through all sample sizes
 				S = len(Statistics.SNP_count(samples_sorted[:i]).keys())
@@ -527,6 +531,13 @@ def marginal_counts_ordered(pipeline):
 					delta.append(S)
 				else:
 					delta.append(float(S - S_list[-2])/float(S_list[-1]))
+
+				combosnp = Statistics.unique_snp_combinations(samples_sorted[:i])
+				combodrv = Statistics.unique_driver_combinations(samples_sorted[:i])
+
+				combosnp_list.append(combosnp)
+				combodrv_list.append(combodrv)
+
 		except Exception as e:
 			pipeline.print2('Exception occured in marginal_counts: '+str(e))
 			continue
@@ -534,16 +545,24 @@ def marginal_counts_ordered(pipeline):
 		all_deltas.append(delta)
 		all_s_list.append(S_list)
 		all_d_list.append(D_list)
+		all_csnp_list.append(combosnp_list)
+		all_cdrv_list.append(combodrv_list)
 
-	pipeline.print2('500 ordered marginal trajectories calculated.')
+
+	pipeline.print2('1000 ordered marginal trajectories calculated.')
 
 	all_deltas = np.array(all_deltas)
-	S_list = np.array(S_list)
-	D_list = np.array(D_list)
+	all_s_list = np.array(all_s_list)
+	all_d_list = np.array(all_d_list)
+	all_csnp_list = np.array(all_csnp_list)
+	all_cdrv_list = np.array(all_cdrv_list)
+
 
 	np.save(pipeline.FILES['out_directory']+'/deltas_ordered.npy',all_deltas)
 	np.save(pipeline.FILES['out_directory']+'/S_list_ordered.npy',all_s_list)
 	np.save(pipeline.FILES['out_directory']+'/D_list_ordered.npy',all_d_list)
+	np.save(pipeline.FILES['out_directory']+'/cdrv_list_ordered.npy',all_csnp_list)
+	np.save(pipeline.FILES['out_directory']+'/csnp_list_ordered.npy',all_cdrv_list)
 	
 
 
@@ -555,13 +574,20 @@ def marginal_counts_unordered(pipeline):
 	all_s_list = []
 	all_d_list = []
 	all_epsilons = []
-	for k in range(500):
+	all_csnp_list = []
+	all_cdrv_list = []
+
+
+	for k in range(1000):
 		
 		## holds the marginal increases
 		# first entry is the distance from COM of the sample in question
 		delta = [ 0 ] 
 		S_list = [ ] # holds the original S values
 		D_list = [ ] # holds the original D values
+		combosnp_list = [ ] # holds the number of genotyps
+		combodrv_list = [ ] # holds the number of driver genotypes
+
 		try:
 			for i in range(1,33): # loop through all sample sizes
 
@@ -578,6 +604,15 @@ def marginal_counts_unordered(pipeline):
 					delta.append(S)
 				else:
 					delta.append(float(S - S_list[-2])/float(S_list[-1]))
+
+
+				combosnp = Statistics.unique_snp_combinations(genotypes)
+				combodrv = Statistics.unique_driver_combinations(genotypes)
+
+				combosnp_list.append(combosnp)
+				combodrv_list.append(combodrv)
+
+
 		except Exception as e:
 			pipeline.print2('Exception occured in marginal_counts: '+str(e))
 			continue
@@ -585,18 +620,26 @@ def marginal_counts_unordered(pipeline):
 		all_deltas.append(delta)
 		all_s_list.append(S_list)
 		all_d_list.append(D_list)
-
+		all_csnp_list.append(combosnp_list)
+		all_cdrv_list.append(combodrv_list)
 
 	
-
 	all_deltas = np.array(all_deltas)
-	D_list = np.array(D_list)
-	S_list = np.array(S_list)
+	all_s_list = np.array(all_s_list)
+	all_d_list = np.array(all_d_list)
+	all_csnp_list = np.array(all_csnp_list)
+	all_cdrv_list = np.array(all_cdrv_list)
+
+
 	np.save(pipeline.FILES['out_directory']+'/deltas_unordered.npy',all_deltas)
 	np.save(pipeline.FILES['out_directory']+'/S_list_unordered.npy',all_s_list)
 	np.save(pipeline.FILES['out_directory']+'/D_list_unordered.npy',all_d_list)
+	np.save(pipeline.FILES['out_directory']+'/cdrv_list_unordered.npy',all_csnp_list)
+	np.save(pipeline.FILES['out_directory']+'/csnp_list_unordered.npy',all_cdrv_list)
 
-	pipeline.print2('500 unordered marginal trajectories calculated.')
+
+	pipeline.print2('1000 unordered marginal trajectories calculated.')
+
 
 
 
@@ -605,4 +648,5 @@ KD_SAMPLING = [ load_tumor, create_sample_directory, create_kdsampler, inline_st
 	all_plot_combos, mutation_count_plots, driver_stats_plots, pop_gen_plots, density_plot, \
 	marginal_counts_ordered, marginal_counts_unordered ]
 
-ONLY_MARGINALS = [ load_tumor, create_kdsampler, marginal_counts_unordered, marginal_counts_ordered]
+ONLY_MARGINALS = [ load_tumor, create_kdsampler, marginal_counts_unordered, marginal_counts_ordered, density_plot]
+

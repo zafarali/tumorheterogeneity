@@ -10,7 +10,7 @@ import json
 ## set of tools to analyze a sample
 
 class Pipeline(object):
-	def __init__(self, folder, modules=[], **kwargs):
+	def __init__(self, folder, modules=[], append_name='', **kwargs):
 		self.modules = [ open_files, create_output_directory, spec_IO ]
 		self.modules.extend(modules) # add new modules
 		self.folder = folder # folder where the analysis is taking place
@@ -18,7 +18,7 @@ class Pipeline(object):
 		self.event_sequence = 0 # for printing
 		self.FILES = {'specs':glob(self.folder+'/specs.json')[0]} # stores files in this pipeline
 		self.specs = {} # stores specifications of this pipeline
-
+		self.append_name = append_name
 	def execute(self):
 		for module in self.modules:
 			try:
@@ -56,7 +56,7 @@ def create_output_directory(pipeline):
 	"""
 	time_info = '_'.join('_'.join(time.asctime().split(':')).split(' '))
 	try:
-		pipeline.FILES['out_directory'] = pipeline.folder+'/pipe_out_'+time_info
+		pipeline.FILES['out_directory'] = pipeline.folder+'/'+pipeline.append_name+'pipe_out_'+time_info
 		# create the output directory and save specs and sampling there
 		if not os.path.exists( pipeline.FILES['out_directory'] ):
 			os.makedirs( pipeline.FILES['out_directory'] )
