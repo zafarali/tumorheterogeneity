@@ -561,8 +561,8 @@ def marginal_counts_ordered(pipeline):
 	np.save(pipeline.FILES['out_directory']+'/deltas_ordered.npy',all_deltas)
 	np.save(pipeline.FILES['out_directory']+'/S_list_ordered.npy',all_s_list)
 	np.save(pipeline.FILES['out_directory']+'/D_list_ordered.npy',all_d_list)
-	np.save(pipeline.FILES['out_directory']+'/cdrv_list_ordered.npy',all_csnp_list)
-	np.save(pipeline.FILES['out_directory']+'/csnp_list_ordered.npy',all_cdrv_list)
+	np.save(pipeline.FILES['out_directory']+'/csnp_list_ordered.npy',all_csnp_list)
+	np.save(pipeline.FILES['out_directory']+'/cdrv_list_ordered.npy',all_cdrv_list)
 	
 
 
@@ -634,8 +634,8 @@ def marginal_counts_unordered(pipeline):
 	np.save(pipeline.FILES['out_directory']+'/deltas_unordered.npy',all_deltas)
 	np.save(pipeline.FILES['out_directory']+'/S_list_unordered.npy',all_s_list)
 	np.save(pipeline.FILES['out_directory']+'/D_list_unordered.npy',all_d_list)
-	np.save(pipeline.FILES['out_directory']+'/cdrv_list_unordered.npy',all_csnp_list)
-	np.save(pipeline.FILES['out_directory']+'/csnp_list_unordered.npy',all_cdrv_list)
+	np.save(pipeline.FILES['out_directory']+'/csnp_list_unordered.npy',all_csnp_list)
+	np.save(pipeline.FILES['out_directory']+'/cdrv_list_unordered.npy',all_cdrv_list)
 
 
 	pipeline.print2('1000 unordered marginal trajectories calculated.')
