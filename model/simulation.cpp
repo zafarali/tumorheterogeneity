@@ -65,11 +65,13 @@ char *NUM ; // name given as 1st argument from the command line
 char *GENFILE;
 char *CELLFILE;
 string CELLIDENT;
+// float switch_death_time; 
 #include "params.h"
 #include "classes.h"
 int show_init = 1;
+int death_switch_notif = 0;
+int num_divisions = 0;
 
-  
 #if defined __APPLE__
 typedef unsigned int DWORD ;
 int memory_taken()
@@ -428,6 +430,7 @@ void reset()
 {
 
   #ifndef RESEEDING
+    num_divisions = 0;
     tt=0 ; L=0 ; max_growth_rate=growth0 ;
     treatment=0 ; 
     for (int i=0;i<genotypes.size();i++) if (genotypes[i]!=NULL) delete genotypes[i] ;
@@ -752,6 +755,7 @@ void save_data()
   delete [] snp_no ;
 
   for (i=0;i<ntot;i++) {
+
     Lesion *ll=lesions[cells[i].lesion] ;
     int wx=ll->wx ; 
     double rr=SQR(cells[i].x+ll->r.x)+SQR(cells[i].y+ll->r.x)+SQR(cells[i].z+ll->r.x) ;
@@ -763,9 +767,12 @@ void save_data()
 #endif
 
     Genotype *g=genotypes[cells[i].gen] ; if (g==NULL) err("g=NULL)") ;
+
     int free_sites=ll->no_free_sites(cells[i].x+wx/2,cells[i].y+wx/2,cells[i].z+wx/2) ;
     int is_on_surface=(free_sites>0?1:0) ;    
     pms_per_cell+=g->sequence.size() ;
+    // printf("For Cell i: PMS: %lf, ", g->sequence.size());
+    // printf("Number of Generations for Cell i: %f \n", float(g->sequence.size())/gama);
 
     if (g->no_resistant) {
       no_resistant++ ; 
@@ -899,6 +906,7 @@ brk:  continue ;
 
 int main_proc(int exit_size, int save_size, double max_time, double wait_time)
 {
+  num_divisions = 0;
   int i,j,k,n,l,in,jn,kn,ntot;  
   int cc=0, timeout=0 ;
   // sprintf(name,"%s/drivers.dat");
@@ -911,9 +919,10 @@ int main_proc(int exit_size, int save_size, double max_time, double wait_time)
       while (freemem()<PAUSE_WHEN_MEMORY_LOW) { sleep(1) ; } //printf("%d\n",freemem()) ; }
     }    
 #endif
+    // set tsc
     double tsc=0.01*cells.size() ; if (tsc>1./max_growth_rate) tsc=1./max_growth_rate ;
     tt+=tsc*timescale/cells.size() ; 
-    n=_drand48()*cells.size() ;
+    n=_drand48()*cells.size() ; // Pick a random cell
 //    if (cells[n].lesion<0 || cells[n].lesion>=cells.size()) err("l=",cells[n].lesion) ;
     Lesion *ll=lesions[cells[n].lesion] ;
     int wx=ll->wx ; 
@@ -925,8 +934,11 @@ int main_proc(int exit_size, int save_size, double max_time, double wait_time)
 #else
     if (ll->p[i*wx+j]->is_set(k)==0) err("ll->p[i][j][k]==0, wx=",wx) ;
 #endif
-
+    
     if (_drand48()<tsc*genotypes[cells[n].gen]->growth[treatment]) { // reproduction
+    // if (_drand48()<genotypes[cells[n].gen]->growth[treatment]) { // reproduction
+    
+
 #if !defined(CONST_BIRTH_RATE) && !defined(PUSHING)
       int nn=1+int(_drand48()*_nonn) ;
       int in=(wx+i+kz[nn])%wx, jn=(wx+j+ky[nn])%wx, kn=(wx+k+kx[nn])%wx ;
@@ -972,6 +984,7 @@ int main_proc(int exit_size, int save_size, double max_time, double wait_time)
             ll->n0=ll->n ; 
           }
 #endif
+          num_divisions = num_divisions+1;
         } else { // make a new lesion
           int x=kn-wx/2+ll->r.x, y=jn-wx/2+ll->r.y, z=in-wx/2+ll->r.z ;
           if (no_SNPs>0) { 
@@ -1006,12 +1019,24 @@ int main_proc(int exit_size, int save_size, double max_time, double wait_time)
     }
 #endif
 
+
+
 // now we implement death
 //    if (tsc>1./max_growth_rate) tsc=1./max_growth_rate ; // this is an alternative way but it does not change anything so no need to use it
 #ifdef DEATH_ON_SURFACE    
     if (genotypes[cells[n].gen]->death[treatment]>0 && _drand48()<tsc*genotypes[cells[n].gen]->death[treatment]*ll->no_free_sites(k,j,i)/float(_nonn))  { // death on the surface
 #else
+    #ifdef SWITCH_DEATH_RATE
+      // we first check if we have reached a certain timepoint, if not we just go on to regular death
+      if (ntot > switch_death_n && death_switch_notif == 0){
+        printf("SWITCHED! %d\n", ntot);
+        death_switch_notif = 1;
+      }
+      // printf("tt=%lf, switch_death_time=%lf\n", tt, switch_death_time);
+    if ( switch_death_n < ntot &&  _drand48()<tsc*genotypes[cells[n].gen]->death[treatment]) {
+    #else
     if (_drand48()<tsc*genotypes[cells[n].gen]->death[treatment]) {// death in volume
+    #endif
 #endif
 #ifndef PUSHING
       ll->p[i*wx+j]->unset(k) ;

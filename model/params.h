@@ -49,29 +49,28 @@
 // ------------------------------------------------------------------------------------------------------------------------
 //            CHANGE THESE WHEN EDITING
 // ------------------------------------------------------------------------------------------------------------------------    
-#define RESEEDING // defined when need to use seeds.
+// #define RESEEDING // defined when need to use seeds.
+#define CUTOFF_OFF // do not use a cutoff when saving snps.
 
-// S_T_D
-// 1_0_0
-const float driver_adv=0.01;
-//#define DEATH_ON_SURFACE ;
-const float death0=0, growth0=1.0 ;
+// No Turnover: death0 = 0
+// Surface Turnover: death = [0.05, 0.1, 0.2], DEATH_ON_SURFACE
+// Turnover Model:  death = [0.05, 0.1, 0.2 ]
 
-// // // 1_0_1
-// const float driver_adv=0.01;
-// //#define DEATH_ON_SURFACE ;
-// const float death0=0.95, growth0=1.0 ;
+const float growth0=0.69 ;
 
+// Set this to 0 if you want no turnover model
+// otherwise reasonable values are 0.05, 0.1, 0.2
+const float death0=0.0;
 
-// 1_1_1
-
-// const float driver_adv=0.01;
+// // remove this comment if you want death on the surface
+// // i.e surface turnover model
 // #define DEATH_ON_SURFACE ;
-// const float death0=0.95, growth0=1.0 ;
+
+
 
 // #define MAKE_TREATMENT_N // if defined, simulate treatment after reaching given size
 //#define MAKE_TREATMENT_T // if defined, simulate treatment after reaching given time
-
+cont float driver_adv=0.01;
 const float gama=1e-2, gama_res=5e-8 ; // these are rates per daughter cell. Rates per diploid exome will be 2x higher (these values are given in the paper)
 
 //#define MIGRATION_MATRIX

@@ -62,6 +62,7 @@ extern char *NUM ;
 extern int RAND, sample, treatment, max_size ;
 extern double tt ;
 extern float time_to_treat ;
+// extern float switch_death_time ;
 extern char* CELLFILE;
 extern string CELLIDENT;
 extern char* GENFILE;
@@ -268,12 +269,8 @@ int main(int argc, char *argv[])
     for (int i=0;i<L;i++) { snp_no[i]=snp_drivers[i]=0 ; } // initialize all values to 0
     for (int i=0;i<genotypes.size();i++) { // run through all genotypes
       if (genotypes[i]!=NULL && genotypes[i]->number>0){ // if this is a valid genotype and the frequency is greater than 0
-        // if(genotypes[i]->no_drivers > 0){
-        //   printf("i=%d",i);
-        //   printf("number of SNPS: %d, number of drivers: %d,  ", genotypes[i]->sequence.size(), genotypes[i]->no_drivers);
-        //   printf("growth rate: %f, death rate: %f\n", genotypes[i]->growth[0], genotypes[i]->death[0]);
-        // }
-        for (int j=0;j<genotypes[i]->sequence.size();j++) { // go over the SNPs
+
+        for (int j=0;j<genotypes[i]->sequence.size();j++) { // go over the SNPs in this genotype
           // select the snp and add the number of genomes that have that particular SNP/genotype combo
           snp_no[((genotypes[i]->sequence[j])&L_PM)]+=genotypes[i]->number ;      
           // check conversion strategy: https://github.com/zafarali/tumorheterogeneity/issues/4
@@ -292,7 +289,8 @@ int main(int argc, char *argv[])
     #else
       sprintf(name,"%s/all_PMs_%d_%d.dat",NUM,RAND,sample) ; 
     #endif
-
+              // name of file, the list of snp numbers, size of the tumor, 
+              //mode = 1 i.e save all, most_abun to save most abundant genoypes
     save_snps(name,snp_no,max_size,1,most_abund) ;
     if (driver_adv>0 || driver_migr_adv>0) { printf("saving driver PMs...\n") ; 
       #ifdef RESEEDING

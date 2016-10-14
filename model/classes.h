@@ -144,9 +144,9 @@ class IVec  // class of 3d integer vectors
 
 
 struct Cell {
-  short unsigned int lesion ;
-  short int x,y,z ;
-  unsigned int gen ; 
+  short unsigned int lesion ; // lesion #
+  short int x,y,z ;   // location in space
+  unsigned int gen ;  // genotype ID
 };
 
 #ifndef PUSHING

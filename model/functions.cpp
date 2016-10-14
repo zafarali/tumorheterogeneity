@@ -33,23 +33,52 @@
 #include "params.h"
 #include "classes.h"
 
+// name = name of file
+// n = list of SNPs and their counts (index of n is the SNP id)
+// total = max_size of the simulation
+//mode = 1 i.e save all, 
+// most_abun = an array where we save the most abundant genoypes
 void save_snps(char *name,int *n, int total, int mode, int *most_abund) 
 {
   const float cutoff=0.01 ;
   FILE *f=fopen(name,"w") ;
   if (f==NULL) err(name) ;
   int i, j, nsnps=0, nsnpsc=0;
-  for (i=0;i<L;i++) { 
-    if (n[i]>(1e-4)*total) nsnps++ ;
-    if (1.*n[i]/total>cutoff) nsnpsc++ ;
+
+  #ifndef CUTOFF_OFF
+  
+  for (i=0;i<L;i++) { // go over all the mutations available
+    if (n[i]>(1e-4)*total) nsnps++ ; 
+    // if the count of this SNP is greater than (1e-4)*total ... fishy
+    if (1.*n[i]/total>cutoff) nsnpsc++ ; // <-- this line seems to be useless?
   }
+  #else
+   nsnps = L;
+
+  #endif
+  // just creates an array to hold all detected snps. 
+
   float *abund=new float[nsnps], tempd ;
   int *num=new int[nsnps], temp ;
+
   nsnps=0 ;
-  for (i=0;i<L;i++) if (n[i]>(1e-4)*total) { num[nsnps]=i ; abund[nsnps]=float(1.*n[i]/total)*(1+0.000001*i/L) ; nsnps++ ; }
+  
+  for (i=0;i<L;i++) {
+    #ifdef CUTOFF_OFF  
+     num[i]=i ; abund[i]=float(1.*n[i]/total) ; nsnps++ ; 
+    #else
+    if (n[i]>(1e-4)*total) { 
+      num[nsnps]=i ; abund[nsnps]=float(1.*n[i]/total)*(1+0.000001*i/L) ; nsnps++ ; 
+      // not sure what ^ formula is doing? especially the 0.00001*i/L? seems like it's just adding some noise? confused.
+    }
+    
+    #endif
+    
+  }
+
   quicksort2(abund,num,0,nsnps-1) ;
 
-  if (mode) {
+  if (mode) { // mode 1 will save all abundancies
     for (i=0;i<nsnps;i++) fprintf(f,"%d %d %f\n",i,num[i],abund[i]) ;
   } else {
     for (i=0;i<nsnps;i++) if (abund[i]>cutoff || i<100) fprintf(f,"%d %d %f\n",i,num[i],abund[i]) ;
