@@ -6,7 +6,7 @@ L_PM = (1<<30) -1
 D_PM = 1<<30
 R_PM = 1<<31
 
-def SNP_count(genotypes_list):
+def SNP_count(genotypes_list, min_freq=0):
 	"""
 		returns the counts for SNPs in the sample
 		@params:
@@ -16,11 +16,19 @@ def SNP_count(genotypes_list):
 
 	counts = Counter()
 
+
 	map(lambda genotype: counts.update(genotype.snps), genotypes_list)
+	
+	if min_freq >0:
+		uc = []
+		normalization = float( sum( counts.values() ) )
+		for f in filter( lambda c: c[1]/normalization > min_freq, counts.items() ):
+			uc.extend( [ f[0] for i in range(f[1]) ] )
+		counts = Counter(uc)
 
 	return counts
 
-def drivers_count(genotypes_list):
+def drivers_count(genotypes_list, min_freq=0):
 	"""
 		returns the counts for driver SNPs in the sample
 		@params:	
@@ -34,10 +42,17 @@ def drivers_count(genotypes_list):
 			filter( lambda snp: (snp & D_PM) > 0, genotype.snps ) ), \
 		genotypes_list ) 		# ^ checks if a PM is a driver, filter snps accordingly.
 		# only counts the SNPs that pass the check.
+	
+	if min_freq >0:
+		uc = []
+		normalization = float( sum( counts.values() ) )
+		for f in filter( lambda c: c[1]/normalization > min_freq, counts.items() ):
+			uc.extend( [ f[0] for i in range(f[1]) ] )
+		counts = Counter(uc)
 
 	return counts
 
-def unique_driver_combinations(genotypes_list):
+def unique_driver_combinations(genotypes_list, min_freq=0):
 
 	# here we hash a tuple of the driver snps
 	# this hash is unique based on the combination of driver snps
@@ -49,7 +64,7 @@ def unique_driver_combinations(genotypes_list):
 
 	return len(driver_combos)
 
-def unique_snp_combinations(genotypes_list):
+def unique_snp_combinations(genotypes_list, min_freq=0):
 
 	# here we hash a tuple of the snps
 	# this hash is unique based on the combination of snps

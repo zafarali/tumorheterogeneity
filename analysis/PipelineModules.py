@@ -564,7 +564,103 @@ def marginal_counts_ordered(pipeline):
 	np.save(pipeline.FILES['out_directory']+'/csnp_list_ordered.npy',all_csnp_list)
 	np.save(pipeline.FILES['out_directory']+'/cdrv_list_ordered.npy',all_cdrv_list)
 	
+def big_samples(pipeline):
+	pipeline.print2('Calculating big samples...')
+	sampler = pipeline.sampler
+	rand_coordinate = sample_coordinate(sampler.cell_positions, deviate=True)
+	all_deltas = []
+	all_s_list01 = []
+	all_d_list01 = []
+	all_s_list001 = []
+	all_d_list001 = []
+	all_csnp_list = []
+	all_cdrv_list = []
 
+	min_freq = 0.1
+
+	for k in range(30):
+		coord = rand_coordinate.next()
+		found_samples = False
+		radius = 40
+		while not found_samples and radius > 0:
+			try:
+				samples = list(sampler.sample(radius=40, centre=coord, with_genotypes=True))
+				if len(samples) > 100:
+					found_samples = True
+				else:
+					found_samples = False
+					radius = radius - 1
+			except Exception as e:
+				radius = radius - 5
+				if radius < 0:
+					pipeline.print2('FAILED TO FIND CELLS.')
+					return
+
+
+		distance_to_COM = np.sqrt( np.sum( ( np.array(samples[0]) - np.array(pipeline.tumor.COM ) )**2, axis=1 ) )
+		samples[0] = distance_to_COM.tolist()
+		distances_sorted, samples_sorted = zip(*sorted(zip(*samples),key=lambda x:x[0])) # sorts the samples according to distance from COM
+
+		## holds the marginal increases
+		# first entry is the distance from COM of the sample in question
+		delta = [ np.sqrt( np.sum( ( np.array(coord) - np.array(pipeline.tumor.COM ) )**2) ) ] 
+		# epsilon = [ np.sqrt( np.sum( ( np.array(coord) - np.array(pipeline.tumor.COM ) )**2) ) ] 
+		S_list01 = [ ] # holds the original S values, S=number of somatic mutations
+		D_list01 = [ ] # holds the original D values, D=number of driver mutations
+		S_list001 = [ ] # holds the original S values, S=number of somatic mutations
+		D_list001 = [ ] # holds the original D values, D=number of driver mutations
+		combosnp_list = [ ] # holds the number of genotyps
+		combodrv_list = [ ] # holds the number of driver genotypes
+		try:
+			for i in [100, 1000, 10000, 20000]: # loop through all sample sizes
+				try:
+					S01 = len(Statistics.SNP_count(samples_sorted[:i], min_freq=0.1).keys())
+					D01 = len(Statistics.drivers_count(samples_sorted[:i], min_freq=0.1).keys())
+					S001 = len(Statistics.SNP_count(samples_sorted[:i], min_freq=0.01).keys())
+					D001 = len(Statistics.drivers_count(samples_sorted[:i], min_freq=0.01).keys())
+					S_list01.append(S01)
+					D_list01.append(D01)
+					S_list001.append(S001)
+					D_list001.append(D001)
+					combosnp = Statistics.unique_snp_combinations(samples_sorted[:i])
+					combodrv = Statistics.unique_driver_combinations(samples_sorted[:i])
+					combosnp_list.append(combosnp)
+					combodrv_list.append(combodrv)
+				except Exception as e2:
+					pipeline.print2('failed to sample n='+str(i)+' exception:'+str(e2))
+
+		except Exception as e:
+			pipeline.print2('Exception occured in big_samples: '+str(e))
+			continue
+	#     print delta
+		all_deltas.append(delta)
+		all_s_list01.append(S_list01)
+		all_d_list01.append(D_list01)
+		all_s_list001.append(S_list001)
+		all_d_list001.append(D_list001)
+		all_csnp_list.append(combosnp_list)
+		all_cdrv_list.append(combodrv_list)
+
+
+	pipeline.print2('30 big samples calculated!')
+
+	all_deltas = np.array(all_deltas)
+	all_s_list01 = np.array(all_s_list01)
+	all_d_list01 = np.array(all_d_list01)
+	all_s_list001 = np.array(all_s_list001)
+	all_d_list001 = np.array(all_d_list001)
+	all_csnp_list = np.array(all_csnp_list)
+	all_cdrv_list = np.array(all_cdrv_list)
+
+
+	np.save(pipeline.FILES['out_directory']+'/deltas_big.npy',all_deltas)
+	np.save(pipeline.FILES['out_directory']+'/S_list01_big.npy',all_s_list01)
+	np.save(pipeline.FILES['out_directory']+'/D_list01_big.npy',all_d_list01)
+	np.save(pipeline.FILES['out_directory']+'/S_list001_big.npy',all_s_list001)
+	np.save(pipeline.FILES['out_directory']+'/D_list001_big.npy',all_d_list001)
+	np.save(pipeline.FILES['out_directory']+'/csnp_list_big.npy',all_csnp_list)
+	np.save(pipeline.FILES['out_directory']+'/cdrv_list_big.npy',all_cdrv_list)
+	
 
 def marginal_counts_unordered(pipeline):
 	pipeline.print2('Calculating unordered marginals...')
@@ -645,8 +741,10 @@ def marginal_counts_unordered(pipeline):
 
 BASE = [ load_tumor, random_spherical_samples, calculate_statistics, save_statistics ]
 KD_SAMPLING = [ load_tumor, create_sample_directory, create_kdsampler, inline_statistics, save_statistics,\
-	all_plot_combos, mutation_count_plots, driver_stats_plots, pop_gen_plots, density_plot, \
-	marginal_counts_ordered, marginal_counts_unordered ]
+	# all_plot_combos, mutation_count_plots, driver_stats_plots, pop_gen_plots, density_plot, \
+	density_plot, \
+	marginal_counts_ordered, marginal_counts_unordered, big_samples ]
 
-ONLY_MARGINALS = [ load_tumor, create_kdsampler, marginal_counts_unordered, marginal_counts_ordered, density_plot]
+ONLY_MARGINALS = [ load_tumor, create_kdsampler, marginal_counts_unordered, marginal_counts_ordered, density_plot, big_samples]
 
+ONLY_BIG = [ load_tumor, create_kdsampler, big_samples ]
