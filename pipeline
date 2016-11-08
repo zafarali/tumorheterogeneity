@@ -7,5 +7,5 @@ matplotlib.use('Agg') # prevent use of a display
 from analysis.Pipeline import Pipeline
 from analysis.PipelineModules import BASE, KD_SAMPLING, ONLY_MARGINALS, ONLY_BIG
 print('arguments:'+str(sys.argv))
-p = Pipeline(sys.argv[1],append_name='oct25_',modules=KD_SAMPLING)
+p = Pipeline(sys.argv[1],append_name='oct25_',modules=ONLY_BIG)
 p.execute()

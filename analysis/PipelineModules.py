@@ -573,12 +573,13 @@ def big_samples(pipeline):
 	all_d_list01 = []
 	all_s_list001 = []
 	all_d_list001 = []
+	all_s_list00 = []
+	all_d_list00 = []
 	all_csnp_list = []
 	all_cdrv_list = []
 
-	min_freq = 0.1
 
-	for k in range(30):
+	for k in range(100):
 		coord = rand_coordinate.next()
 		found_samples = False
 		radius = 40
@@ -609,19 +610,25 @@ def big_samples(pipeline):
 		D_list01 = [ ] # holds the original D values, D=number of driver mutations
 		S_list001 = [ ] # holds the original S values, S=number of somatic mutations
 		D_list001 = [ ] # holds the original D values, D=number of driver mutations
+		S_list00 = [ ] # holds the original S values, S=number of somatic mutations
+		D_list00 = [ ] # holds the original D values, D=number of driver mutations
 		combosnp_list = [ ] # holds the number of genotyps
 		combodrv_list = [ ] # holds the number of driver genotypes
 		try:
 			for i in [100, 1000, 10000, 20000]: # loop through all sample sizes
 				try:
+					S00 = len(Statistics.SNP_count(samples_sorted[:i], min_freq=0).keys())
 					S01 = len(Statistics.SNP_count(samples_sorted[:i], min_freq=0.1).keys())
 					D01 = len(Statistics.drivers_count(samples_sorted[:i], min_freq=0.1).keys())
+					D00 = len(Statistics.drivers_count(samples_sorted[:i], min_freq=0).keys())
 					S001 = len(Statistics.SNP_count(samples_sorted[:i], min_freq=0.01).keys())
 					D001 = len(Statistics.drivers_count(samples_sorted[:i], min_freq=0.01).keys())
 					S_list01.append(S01)
 					D_list01.append(D01)
 					S_list001.append(S001)
+					S_list00.append(S00)
 					D_list001.append(D001)
+					D_list00.append(D00)
 					combosnp = Statistics.unique_snp_combinations(samples_sorted[:i])
 					combodrv = Statistics.unique_driver_combinations(samples_sorted[:i])
 					combosnp_list.append(combosnp)
@@ -638,17 +645,21 @@ def big_samples(pipeline):
 		all_d_list01.append(D_list01)
 		all_s_list001.append(S_list001)
 		all_d_list001.append(D_list001)
+		all_s_list00.append(S_list00)
+		all_d_list00.append(D_list00)
 		all_csnp_list.append(combosnp_list)
 		all_cdrv_list.append(combodrv_list)
 
 
-	pipeline.print2('30 big samples calculated!')
+	pipeline.print2('100 big samples calculated!')
 
 	all_deltas = np.array(all_deltas)
 	all_s_list01 = np.array(all_s_list01)
 	all_d_list01 = np.array(all_d_list01)
 	all_s_list001 = np.array(all_s_list001)
 	all_d_list001 = np.array(all_d_list001)
+	all_s_list00 = np.array(all_s_list00)
+	all_d_list00 = np.array(all_d_list00)
 	all_csnp_list = np.array(all_csnp_list)
 	all_cdrv_list = np.array(all_cdrv_list)
 
@@ -658,6 +669,8 @@ def big_samples(pipeline):
 	np.save(pipeline.FILES['out_directory']+'/D_list01_big.npy',all_d_list01)
 	np.save(pipeline.FILES['out_directory']+'/S_list001_big.npy',all_s_list001)
 	np.save(pipeline.FILES['out_directory']+'/D_list001_big.npy',all_d_list001)
+	np.save(pipeline.FILES['out_directory']+'/S_list00_big.npy',all_s_list00)
+	np.save(pipeline.FILES['out_directory']+'/D_list00_big.npy',all_d_list00)
 	np.save(pipeline.FILES['out_directory']+'/csnp_list_big.npy',all_csnp_list)
 	np.save(pipeline.FILES['out_directory']+'/cdrv_list_big.npy',all_cdrv_list)
 	
@@ -747,4 +760,4 @@ KD_SAMPLING = [ load_tumor, create_sample_directory, create_kdsampler, inline_st
 
 ONLY_MARGINALS = [ load_tumor, create_kdsampler, marginal_counts_unordered, marginal_counts_ordered, density_plot, big_samples]
 
-ONLY_BIG = [ load_tumor, create_kdsampler, big_samples ]
+ONLY_BIG = [ load_tumor, create_kdsampler, big_samples, density_plot ]
