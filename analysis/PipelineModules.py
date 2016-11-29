@@ -582,20 +582,23 @@ def big_samples(pipeline):
 	for k in range(100):
 		coord = rand_coordinate.next()
 		found_samples = False
-		radius = 40
-		while not found_samples and radius > 0:
+		radius = 20
+		iteration = 0
+		while not found_samples and radius > 0 and iteration < 10001:
+			iteration+=1
 			try:
-				samples = list(sampler.sample(radius=40, centre=coord, with_genotypes=True))
-				if len(samples) > 100:
+				samples = list(sampler.sample(radius=radius, centre=coord, with_genotypes=True))
+				if len(samples) > 9000:
 					found_samples = True
 				else:
 					found_samples = False
-					radius = radius - 1
+					radius = radius + 1
 			except Exception as e:
-				radius = radius - 5
-				if radius < 0:
-					pipeline.print2('FAILED TO FIND CELLS.')
-					return
+				coord = rand_coordinate.next()
+				radius = radius + 1
+			if iteration > 10000:
+				pipeline.print2('FAILED TO FIND CELLS.')
+				return
 
 
 		distance_to_COM = np.sqrt( np.sum( ( np.array(samples[0]) - np.array(pipeline.tumor.COM ) )**2, axis=1 ) )
@@ -615,6 +618,7 @@ def big_samples(pipeline):
 		combosnp_list = [ ] # holds the number of genotyps
 		combodrv_list = [ ] # holds the number of driver genotypes
 		try:
+			pipeline.print2('iteration: '+str(k) +', sample size: '+str(len(samples_sorted)))
 			for i in [100, 1000, 10000, 20000]: # loop through all sample sizes
 				try:
 					S00 = len(Statistics.SNP_count(samples_sorted[:i], min_freq=0).keys())

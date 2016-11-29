@@ -16,13 +16,17 @@ def SNP_count(genotypes_list, min_freq=0):
 
 	counts = Counter()
 
+	number_of_cells = float(len(genotypes_list))
 
 	map(lambda genotype: counts.update(genotype.snps), genotypes_list)
 	
 	if min_freq >0:
 		uc = []
-		normalization = float( sum( counts.values() ) )
-		for f in filter( lambda c: c[1]/normalization > min_freq, counts.items() ):
+		# c[0] = the SNP id
+		# c[1] = the count of that SNP
+		for f in filter( lambda c: c[1]/number_of_cells > min_freq, counts.items() ):
+			# f[0] = the SNP id
+			# f[1] = the count of that SNP
 			uc.extend( [ f[0] for i in range(f[1]) ] )
 		counts = Counter(uc)
 
@@ -43,10 +47,11 @@ def drivers_count(genotypes_list, min_freq=0):
 		genotypes_list ) 		# ^ checks if a PM is a driver, filter snps accordingly.
 		# only counts the SNPs that pass the check.
 	
+	number_of_cells = float(len(genotypes_list))
+
 	if min_freq >0:
 		uc = []
-		normalization = float( sum( counts.values() ) )
-		for f in filter( lambda c: c[1]/normalization > min_freq, counts.items() ):
+		for f in filter( lambda c: c[1]/number_of_cells > min_freq, counts.items() ):
 			uc.extend( [ f[0] for i in range(f[1]) ] )
 		counts = Counter(uc)
 
