@@ -104,3 +104,31 @@ class KDTSphericalSampler(Sampler):
 			return self.cell_data[sample_indicies, :3	], self.tumor.get_genotypes(self.cell_genotypes[sample_indicies])
 		else:
 			return self.cell_data[sample_indicies, :]
+
+	def sample_fixed_points(self, n=1, centre=(0,0,0), with_genotypes=True):
+		"""
+			samples a fixed number of points from the tumor
+			@params:
+				n [=1]: the number of points you want
+				centre [=(0,0,0)]: the location around which to sample
+				with_genotypes [=True]: returns the genotypes as well
+			@returns:
+				if with_genotypes:
+					COM[array], cell_positions[array] , genotypes[list[genotypes]]
+		"""
+		_, sample_indicies = self.kdt.query(centre, n) # returns distances, idx
+
+		cell_positions = self.cell_data[sample_indicies, :3] # cell positions.
+
+		# calculate COM from this
+		COM = calculate_COM(cell_positions)
+
+		if with_genotypes:
+			COM, cell_positions, self.tumor.get_genotypes(self.cell_genotypes[sample_indicies])
+		else:
+			raise NotImplementedError('This method is not available for sample_fixed_points.')
+
+		
+
+
+
