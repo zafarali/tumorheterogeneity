@@ -508,25 +508,40 @@ def marginal_counts_ordered(pipeline):
 
 	for k in range(1000):
 		coord = rand_coordinate.next()
-		samples = list(sampler.sample(radius=5, centre=coord, with_genotypes=True))
-		distance_to_COM = np.sqrt( np.sum( ( np.array(samples[0]) - np.array(pipeline.tumor.COM ) )**2, axis=1 ) )
-		samples[0] = distance_to_COM.tolist()
-		distances_sorted, samples_sorted = zip(*sorted(zip(*samples),key=lambda x:x[0])) # sorts the samples according to distance from COM
 
-		## holds the marginal increases
-		# first entry is the distance from COM of the sample in question
-		delta = [ np.sqrt( np.sum( ( np.array(coord) - np.array(pipeline.tumor.COM ) )**2) ) ] 
-		# epsilon = [ np.sqrt( np.sum( ( np.array(coord) - np.array(pipeline.tumor.COM ) )**2) ) ] 
+		# here we update the "coord" based on the actual COM of the sample
+		# get the 40 nearest cells so that we can sequentially increase the number of cells we use in the next part of the loop
+		coord, cell_positions, cell_genotypes = sampler.sample_fixed_points(40, centre=coord, with_genotypes=True)
+		samples = [ cell_positions, cell_genotypes ]
+
+		# the distance from each cell to the COM of the sample
+		distance_to_COM = np.sqrt( np.sum( ( np.array(samples[0]) - np.array( coord ) )**2, axis=1 ) )
+
+		# use this to sort the cells in increasing distance
+		# TODO: check if this is already done for us in the KdTree sampler?
+		samples[0] = distance_to_COM.tolist()
+		distances_sorted, samples_sorted = zip(*sorted(zip(*samples),key=lambda x:x[0])) # sorts the cells according to distance from COM
+
+		# first entry is the distance between the tumor COM and sample COM
+		delta = [ np.sqrt( np.sum( ( np.array(coord) - np.array( pipeline.tumor.COM ) )**2) ) ] 
+
+
 		S_list = [ ] # holds the original S values, S=number of somatic mutations
 		D_list = [ ] # holds the original D values, D=number of driver mutations
 		combosnp_list = [ ] # holds the number of genotyps
 		combodrv_list = [ ] # holds the number of driver genotypes
 		try:
 			for i in range(1,33): # loop through all sample sizes
-				S = len(Statistics.SNP_count(samples_sorted[:i]).keys())
-				D = len(Statistics.drivers_count(samples_sorted[:i]).keys())
+				samples_selected = samples_sorted[:i]
+
+				assert len(samples_selected) >= i, 'Did not have enough cells to calculate statistics. Wanted: '+str(i)+', Got:'+str(len(samples_selected))
+
+				# calculate statistics
+				S = len(Statistics.SNP_count(samples_selected).keys())
+				D = len(Statistics.drivers_count(samples_selected).keys())
 				S_list.append(S)
 				D_list.append(D)
+
 				if i == 1:
 					delta.append(S)
 				else:
@@ -568,116 +583,88 @@ def big_samples(pipeline):
 	pipeline.print2('Calculating big samples...')
 	sampler = pipeline.sampler
 	rand_coordinate = sample_coordinate(sampler.cell_positions, deviate=True)
-	all_deltas = []
-	all_s_list01 = []
-	all_d_list01 = []
-	all_s_list001 = []
-	all_d_list001 = []
-	all_s_list00 = []
-	all_d_list00 = []
-	all_csnp_list = []
-	all_cdrv_list = []
+	
+	# each of these are kxi matrix with the values of S
+	# the index of the columns correspond to the size of the sample
+	S_000_to_save = []
+	S_001_to_save = []
+	S_010_to_save = []
+
+	# each of these are kxi matrices with the distance to com of the sample
+	# the index of the columns correspond to the size of the sample in S
+	d_000_to_save = []
+	d_001_to_save = []
+	d_010_to_save = []
 
 
 	for k in range(100):
+
+		# global coordinate to use for sampling
 		coord = rand_coordinate.next()
-		found_samples = False
-		radius = 20
-		iteration = 0
-		while not found_samples and radius > 0 and iteration < 10001:
-			iteration+=1
-			try:
-				samples = list(sampler.sample(radius=radius, centre=coord, with_genotypes=True))
-				if len(samples) > 9000:
-					found_samples = True
-				else:
-					found_samples = False
-					radius = radius + 1
-			except Exception as e:
-				coord = rand_coordinate.next()
-				radius = radius + 1
-			if iteration > 10000:
-				pipeline.print2('FAILED TO FIND CELLS.')
-				return
 
+		S_000 = []
+		S_001 = []
+		S_010 = []
 
-		distance_to_COM = np.sqrt( np.sum( ( np.array(samples[0]) - np.array(pipeline.tumor.COM ) )**2, axis=1 ) )
-		samples[0] = distance_to_COM.tolist()
-		distances_sorted, samples_sorted = zip(*sorted(zip(*samples),key=lambda x:x[0])) # sorts the samples according to distance from COM
+		d_000 = []
+		d_001 = []
+		d_010 = []
 
-		## holds the marginal increases
-		# first entry is the distance from COM of the sample in question
-		delta = [ np.sqrt( np.sum( ( np.array(coord) - np.array(pipeline.tumor.COM ) )**2) ) ] 
-		# epsilon = [ np.sqrt( np.sum( ( np.array(coord) - np.array(pipeline.tumor.COM ) )**2) ) ] 
-		S_list01 = [ ] # holds the original S values, S=number of somatic mutations
-		D_list01 = [ ] # holds the original D values, D=number of driver mutations
-		S_list001 = [ ] # holds the original S values, S=number of somatic mutations
-		D_list001 = [ ] # holds the original D values, D=number of driver mutations
-		S_list00 = [ ] # holds the original S values, S=number of somatic mutations
-		D_list00 = [ ] # holds the original D values, D=number of driver mutations
-		combosnp_list = [ ] # holds the number of genotyps
-		combodrv_list = [ ] # holds the number of driver genotypes
 		try:
-			pipeline.print2('iteration: '+str(k) +', sample size: '+str(len(samples_sorted)))
-			for i in [100, 1000, 10000, 20000]: # loop through all sample sizes
+			for i in [100, 1000, 10000, 20000]: 
+
+				# get i cells at this position
+				sample_COM, cell_positions, samples_sorted = sampler.sample_fixed_points(i, centre=coord)
+
+				assert len(samples_sorted) >= i, 'Did not have enough cells to calculate statistics. Wanted: ' + str(i) + ', Got:' + str( len(samples_sorted) )
+
+				# distance from the COM of the sample to the COM of the tumor
+				d_cm = np.sqrt( np.sum( ( np.array(sample_COM) - np.array(pipeline.tumor.COM) )**2) )
+
 				try:
-					S00 = len(Statistics.SNP_count(samples_sorted[:i], min_freq=0).keys())
-					S01 = len(Statistics.SNP_count(samples_sorted[:i], min_freq=0.1).keys())
-					D01 = len(Statistics.drivers_count(samples_sorted[:i], min_freq=0.1).keys())
-					D00 = len(Statistics.drivers_count(samples_sorted[:i], min_freq=0).keys())
-					S001 = len(Statistics.SNP_count(samples_sorted[:i], min_freq=0.01).keys())
-					D001 = len(Statistics.drivers_count(samples_sorted[:i], min_freq=0.01).keys())
-					S_list01.append(S01)
-					D_list01.append(D01)
-					S_list001.append(S001)
-					S_list00.append(S00)
-					D_list001.append(D001)
-					D_list00.append(D00)
-					combosnp = Statistics.unique_snp_combinations(samples_sorted[:i])
-					combodrv = Statistics.unique_driver_combinations(samples_sorted[:i])
-					combosnp_list.append(combosnp)
-					combodrv_list.append(combodrv)
+					# get the statistics necessary
+					S00 = len( Statistics.SNP_count(samples_sorted, min_freq=0).keys() )
+					S001 = len( Statistics.SNP_count(samples_sorted, min_freq=0.01).keys() )
+					S01 = len( Statistics.SNP_count(samples_sorted, min_freq=0.1).keys() )
+
+					# save into our larger array
+					S_000.append( S00 )
+					S_001.append( S001 )
+					S_010.append( S01 )
+
+					d_000.append( d_cm )
+					d_001.append( d_cm )
+					d_010.append( d_cm )
+
 				except Exception as e2:
 					pipeline.print2('failed to sample n='+str(i)+' exception:'+str(e2))
+
+			# save relevant information
+			S_000_to_save.append( S_000 )
+			S_001_to_save.append( S_001 )
+			S_010_to_save.append( S_010 )
+			S_000_to_save.append( S_000 )
+
+			d_000_to_save.append( d_000 )
+			d_001_to_save.append( d_001 )
+			d_010_to_save.append( d_010 )
 
 		except Exception as e:
 			pipeline.print2('Exception occured in big_samples: '+str(e))
 			continue
-	#     print delta
-		all_deltas.append(delta)
-		all_s_list01.append(S_list01)
-		all_d_list01.append(D_list01)
-		all_s_list001.append(S_list001)
-		all_d_list001.append(D_list001)
-		all_s_list00.append(S_list00)
-		all_d_list00.append(D_list00)
-		all_csnp_list.append(combosnp_list)
-		all_cdrv_list.append(combodrv_list)
-
 
 	pipeline.print2('100 big samples calculated!')
 
-	all_deltas = np.array(all_deltas)
-	all_s_list01 = np.array(all_s_list01)
-	all_d_list01 = np.array(all_d_list01)
-	all_s_list001 = np.array(all_s_list001)
-	all_d_list001 = np.array(all_d_list001)
-	all_s_list00 = np.array(all_s_list00)
-	all_d_list00 = np.array(all_d_list00)
-	all_csnp_list = np.array(all_csnp_list)
-	all_cdrv_list = np.array(all_cdrv_list)
+	np.save(pipeline.FILES['out_directory']+'/S_list00_big.npy', np.array(S_000_to_save))
+	np.save(pipeline.FILES['out_directory']+'/S_list001_big.npy', np.array(S_001_to_save))
+	np.save(pipeline.FILES['out_directory']+'/S_list01_big.npy', np.array(S_010_to_save))
 
 
-	np.save(pipeline.FILES['out_directory']+'/deltas_big.npy',all_deltas)
-	np.save(pipeline.FILES['out_directory']+'/S_list01_big.npy',all_s_list01)
-	np.save(pipeline.FILES['out_directory']+'/D_list01_big.npy',all_d_list01)
-	np.save(pipeline.FILES['out_directory']+'/S_list001_big.npy',all_s_list001)
-	np.save(pipeline.FILES['out_directory']+'/D_list001_big.npy',all_d_list001)
-	np.save(pipeline.FILES['out_directory']+'/S_list00_big.npy',all_s_list00)
-	np.save(pipeline.FILES['out_directory']+'/D_list00_big.npy',all_d_list00)
-	np.save(pipeline.FILES['out_directory']+'/csnp_list_big.npy',all_csnp_list)
-	np.save(pipeline.FILES['out_directory']+'/cdrv_list_big.npy',all_cdrv_list)
+	np.save(pipeline.FILES['out_directory']+'/dist_00_big.npy', np.array(d_000_to_save))
+	np.save(pipeline.FILES['out_directory']+'/dist_001_big.npy', np.array(d_001_to_save))
+	np.save(pipeline.FILES['out_directory']+'/dist_01_big.npy', np.array(d_010_to_save))
 	
+
 
 def marginal_counts_unordered(pipeline):
 	pipeline.print2('Calculating unordered marginals...')
@@ -695,6 +682,7 @@ def marginal_counts_unordered(pipeline):
 		
 		## holds the marginal increases
 		# first entry is the distance from COM of the sample in question
+		# here there is no concept of COM since all the cells are randomly drawn.
 		delta = [ 0 ] 
 		S_list = [ ] # holds the original S values
 		D_list = [ ] # holds the original D values
@@ -704,6 +692,7 @@ def marginal_counts_unordered(pipeline):
 		try:
 			for i in range(1,33): # loop through all sample sizes
 
+				# randomly i cells sample from the tumor
 				sample_indicies = random.sample(np.arange( 0, sampler.cell_data.shape[0] ), i)
 				
 				cell_locations, genotypes = sampler.cell_data[ sample_indicies, :3 ], \
