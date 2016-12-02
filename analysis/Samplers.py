@@ -118,17 +118,39 @@ class KDTSphericalSampler(Sampler):
 		"""
 		_, sample_indicies = self.kdt.query(centre, n) # returns distances, idx
 
+		# make sure we got the right number of cells.
+		assert sample_indicies.shape[0] == n, 'got ' + str(sample_indicies.shape[0]) + ' cells when asked for ' + str(n)
+
 		cell_positions = self.cell_data[sample_indicies, :3] # cell positions.
 
-		# calculate COM from this
-		COM = calculate_COM(cell_positions)
+		# calculate Center Of Mass from this
+		_COM = COM(cell_positions)
 
 		if with_genotypes:
-			COM, cell_positions, self.tumor.get_genotypes(self.cell_genotypes[sample_indicies])
+			return _COM, cell_positions, self.tumor.get_genotypes(self.cell_genotypes[sample_indicies])
 		else:
 			raise NotImplementedError('This method is not available for sample_fixed_points.')
 
-		
 
+def COM(cell_positions):
+	"""
+		calculates the center of mass of a group of cells.
+		here the mass of each point is 1 therefore we have the 
+		formula for N cells:
+		x_cm = sum(x_i)/N
+		y_cm = sum(y_i)/N
+		z_cm = sum(z_i)/N
+
+		or more concisely: R_cm = column_wise_sum(r_i)/N
+		@params:
+			cells_positions, an (N,3) numpyarray of coordinates
+		@returns:
+			tuple containing the COM
+			( x , y , z )
+	"""
+
+	R_CM = np.sum( cell_positions , axis = 0 ) / float( cell_positions.shape[0] )
+
+	return ( R_CM[0] , R_CM[1] , R_CM[2] )
 
 

@@ -76,3 +76,16 @@ def spec_IO(pipeline):
 	with open(pipeline.FILES['out_directory']+'/specs.json', 'w') as f:
 		json.dump(pipeline.specs, f)
 		pipeline.print2('sampling specs saved in folder.')
+
+
+def create_test_pipeline(folder):
+	"""
+		Creates a basic pipeline for prototyping a module
+		@params:
+			folder
+		@returns:
+			Pipeline executed
+	"""
+	from PipelineModules import load_tumor, create_kdsampler
+	p = Pipeline(folder, modules=[load_tumor, create_kdsampler])
+	return p.execute()
