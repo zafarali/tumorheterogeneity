@@ -61,6 +61,7 @@ const float growth0=0.69 ;
 // Set this to 0 if you want no turnover model
 // otherwise reasonable values are 0.05, 0.1, 0.2
 const float death0=0.0;
+// to reproduce waclaw, set this to 0.95*growth0.
 
 // // remove this comment if you want death on the surface
 // // i.e surface turnover model
@@ -71,7 +72,11 @@ const float death0=0.0;
 // #define MAKE_TREATMENT_N // if defined, simulate treatment after reaching given size
 //#define MAKE_TREATMENT_T // if defined, simulate treatment after reaching given time
 cont float driver_adv=0.01;
+// this is to reproduce Waclaw results:
 const float gama=1e-2, gama_res=5e-8 ; // these are rates per daughter cell. Rates per diploid exome will be 2x higher (these values are given in the paper)
+// This is for the second half of the paper to match data from HCC:
+// const float gama=1875e-5, gama_res=5e-8 ; 
+// we want mu=0.0375, therefore we should have mu=0.01875 to this ==> 1875*10^-5
 
 //#define MIGRATION_MATRIX
 
