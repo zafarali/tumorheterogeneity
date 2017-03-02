@@ -643,7 +643,6 @@ def big_samples(pipeline):
 			S_000_to_save.append( S_000 )
 			S_001_to_save.append( S_001 )
 			S_010_to_save.append( S_010 )
-			S_000_to_save.append( S_000 )
 
 			d_000_to_save.append( d_000 )
 			d_001_to_save.append( d_001 )
