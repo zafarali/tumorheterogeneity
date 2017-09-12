@@ -71,7 +71,7 @@ const float death0=0.0;
 
 // #define MAKE_TREATMENT_N // if defined, simulate treatment after reaching given size
 //#define MAKE_TREATMENT_T // if defined, simulate treatment after reaching given time
-cont float driver_adv=0.01;
+const float driver_adv=0.01;
 // this is to reproduce Waclaw results:
 const float gama=1e-2, gama_res=5e-8 ; // these are rates per daughter cell. Rates per diploid exome will be 2x higher (these values are given in the paper)
 // This is for the second half of the paper to match data from HCC:
@@ -105,7 +105,7 @@ const int driver_mode = 0 ; // 0== drivers affect bd only, 1==drivers affect sim
 
 const float cutoff=0.1 ;
 #ifdef __MAIN
-int max_size=int(1e6) ; // this is ignored when MAKE_TREATMENT_T is defined
+int max_size=int(1e8) ; // this is ignored when MAKE_TREATMENT_T is defined
 float time_to_treat=10*(365./12) ; // this is ignored when MAKE_TREATMENT_N is defined
 
 #endif
