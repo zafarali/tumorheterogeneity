@@ -3,6 +3,8 @@ from Statistics import centre_of_mass
 import csv
 import pandas as pd
 import numpy as np
+# make this really fast:
+import multiprocessing.dummy as multiprocessing
 
 D_PM = 1<<30 # convert to driver
 R_PM = 1<<31 # convert to resistant
@@ -80,6 +82,7 @@ class Tumor(object):
 		self.number_of_cells = len(cells)
 		self.number_of_genotypes = len(genotypes)
 		self.COM = centre_of_mass(self.cells)
+		self._snp_lookup_efficient = False
 		# print self.drivers
 		
 	def get_genotypes( self, genotype_indicies ):
@@ -97,6 +100,74 @@ class Tumor(object):
 				genotype_index: the index of the genotype wanted
 		"""
 		return self.genotypes[genotype_index]
+
+	def _make_snp_lookup_efficient(self):
+		"""
+		Makes looking up snps efficient.
+		"""
+		print('Making snp lookup efficient.')
+		snp_to_genotypes = {}
+
+		# loop through genomes
+		for gid, genotype in enumerate(self.genotypes):
+			# loop through snps
+			for snp_id in genotype.snps:
+				# store in a list corresponding to that snp
+				# the id and original id of this snp
+				genotypes_with_snp = snp_to_genotypes.get(snp_id, [])
+				genotypes_with_snp.append((gid, genotype.original_id))
+				snp_to_genotypes[snp_id] = genotypes_with_snp
+
+		self._snp_lookup_efficient = True
+		self.snp_to_genotypes = snp_to_genotypes
+		
+
+	def genotype_idx_with_snp(self, snp_id ):
+		"""
+		Looks up the genotypes with the snp_id
+		@params:
+			snp_id: the snp_id to lookup
+		@returns:
+			list of tuples containing (index_in_internal_list, original_id)
+		"""
+		if not self._snp_lookup_efficient:
+			self._make_snp_lookup_efficient()
+		
+		return self.snp_to_genotypes[snp_id]
+
+	def _cells_with_genotype(self, args):
+		"""
+		Internal lookup function
+		"""
+		_, original_genotype_id = args
+		return set(np.where(self.cells[:, 3]==original_genotype_id)[0].tolist())
+
+	def cells_with_snp(self, snp_id):
+		"""
+		Looks up the cells that contain snp_id
+		@params:
+			snp_id: the snp_id to lookup
+		@returns:
+			cell_idx a list containing ids
+			np.array containing cell information
+		"""
+		if not self._snp_lookup_efficient:
+			self._make_snp_lookup_efficient()
+
+		indices = self.genotype_idx_with_snp(snp_id)
+		cell_ids = set()
+		
+		pool = multiprocessing.Pool() 
+		[cell_ids.update(cells_with_genotype) for cells_with_genotype in pool.map(self._cells_with_genotype, indices)]
+			
+		# for (internal_index, original_id) in indices:
+		# 	cells_with_that_genotype = set(np.where(self.cells[:, 3]==original_id)[0].tolist())
+			# cell_ids.update(cells_with_that_genotype)
+		
+		cell_ids = list(cell_ids)
+
+		return cell_ids, self.cells[cell_ids]
+
 
 	@staticmethod
 	def from_files( cell_file, genome_file ):
