@@ -127,7 +127,9 @@ class KDTSphericalSampler(Sampler):
 		_COM = centre_of_mass(cell_positions)
 
 		if with_genotypes:
-			return _COM, cell_positions, self.tumor.get_genotypes(self.cell_genotypes[sample_indicies])
+			genotypes = self.tumor.get_genotypes(self.cell_genotypes[sample_indicies])
+			assert len(genotypes) == cell_positions.shape[0]
+			return _COM, cell_positions, genotypes
 		else:
 			raise NotImplementedError('This method is not available for sample_fixed_points.')
 
