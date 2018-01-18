@@ -156,11 +156,12 @@ class Tumor(object):
 		indices = self.genotype_idx_with_snp(snp_id)
 		cell_ids = set()
 		
-		pool = multiprocessing.Pool() 
+		pool = multiprocessing.Pool(4) 
 		[cell_ids.update(cells_with_genotype) for cells_with_genotype in pool.map(self._cells_with_genotype, indices)]
 		
 		cell_ids = list(cell_ids)
-
+		pool.close()
+		pool.join()
 		return indices, cell_ids, self.cells[cell_ids]
 
 
