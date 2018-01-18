@@ -64,7 +64,7 @@ class Genotype(Genotype_):
 		n_resistant, n_driver = numbers.split(' ')
 		sequence = filter( lambda SNP: len(SNP), sequence.split(' ') ) # remove blank SNPs
 		sequence = map( int , sequence ) # convert everything into ints
-		genotypes.append( Genotype( int(original_id), int(parent_genotype), int(n_resistant), \
+		genotypes.append(Genotype( int(original_id), int(parent_genotype), int(n_resistant), \
 					   int(n_driver), int(frequency), sequence ) )
 	return genotypes
 
@@ -112,10 +112,10 @@ class Tumor(object):
 		for gid, genotype in enumerate(self.genotypes):
 			# loop through snps
 			for snp_id in genotype.snps:
-				# store in a list corresponding to that snp
-				# the id and original id of this snp
+				# store in a list of genomes corresponding to that snp
+				# the id of the genome is found at gid
 				genotypes_with_snp = snp_to_genotypes.get(snp_id, [])
-				genotypes_with_snp.append((gid, genotype.original_id))
+				genotypes_with_snp.append(gid)
 				snp_to_genotypes[snp_id] = genotypes_with_snp
 
 		self._snp_lookup_efficient = True
@@ -135,12 +135,11 @@ class Tumor(object):
 		
 		return self.snp_to_genotypes[snp_id]
 
-	def _cells_with_genotype(self, args):
+	def _cells_with_genotype(self, genotype_index):
 		"""
 		Internal lookup function
 		"""
-		_, original_genotype_id = args
-		return set(np.where(self.cells[:, 3]==original_genotype_id)[0].tolist())
+		return set(np.where(self.cells[:, 3]==genotype_index)[0].tolist())
 
 	def cells_with_snp(self, snp_id):
 		"""
@@ -159,14 +158,10 @@ class Tumor(object):
 		
 		pool = multiprocessing.Pool() 
 		[cell_ids.update(cells_with_genotype) for cells_with_genotype in pool.map(self._cells_with_genotype, indices)]
-			
-		# for (internal_index, original_id) in indices:
-		# 	cells_with_that_genotype = set(np.where(self.cells[:, 3]==original_id)[0].tolist())
-			# cell_ids.update(cells_with_that_genotype)
 		
 		cell_ids = list(cell_ids)
 
-		return cell_ids, self.cells[cell_ids]
+		return indices, cell_ids, self.cells[cell_ids]
 
 
 	@staticmethod

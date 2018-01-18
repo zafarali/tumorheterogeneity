@@ -21,12 +21,12 @@ class Pipeline(object):
 		self.append_name = append_name
 	def execute(self):
 		for module in self.modules:
-			try:
+			 try:
 				module(self)
-			except Exception as e:
-				self.print2('An exception occured in module:'+str(module)+'\n'+str(e))
-				return False
-				break
+			 except Exception as e:
+				# self.print2('An exception occured in module:'+str(module)+'\n'+str(e))
+		 		return False
+		 		break
 		return self
 
 	def print2(self, string):
@@ -43,7 +43,8 @@ def open_files(pipeline):
 		pipeline.FILES.update({
 			'cells' : glob(pipeline.folder+'/cells*')[0],
 			'genotypes' : glob(pipeline.folder+'/genotypes*')[0],
-			# 'drivers' : glob(pipeline.folder+'/driver_SNPS*')[0],
+			'all_PMs' : glob(pipeline.folder+'/all_PMs*')[0],
+			'drv_PMs' : glob(pipeline.folder+'/drv_PMs*')[0],
 		})
 	except IndexError as e:
 		sys.exit('(!) Certain files were missing')
