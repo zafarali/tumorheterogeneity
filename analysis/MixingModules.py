@@ -14,6 +14,11 @@ import time
 import json
 
 EPS = np.finfo(float).eps
+MAX_CELLS_RANGE = 50
+INTERVAL = 5
+LARGE_CLUSTERS = [100, 1000, 10000, 20000]
+SMALL_CLUSTERS = range(2, MAX_CELLS_RANGE, INTERVAL)
+CLUSTER_SIZES = SMALL_CLUSTERS + LARGE_CLUSTERS
 
 def load_snps(datafile):
     mutations = pd.read_csv(datafile, sep=' ', names=['Num', 'SNP', 'abundancy'])
@@ -39,7 +44,7 @@ def perform_mixing_analysis(pipeline):
     mutations = load_snps(pipeline.FILES['all_PMs'])
 
     # 2) sample snps according to frequency
-    mutation_idx = np.random.choice(mutations['Num'], size=10, replace=False, p=mutations['sampling_prob'])
+    mutation_idx = np.random.choice(mutations['Num'], size=100, replace=False, p=mutations['sampling_prob'])
     mutations_to_analyze = mutations.iloc[mutation_idx]
 
     # 3) perform analysis for each of those snps
@@ -64,8 +69,6 @@ def _snp_mixing_analysis(pipeline, snp_id):
     Does the analysis for a single snp
     """
 
-    MAX_CELLS = 50
-    INTERVAL = 5
     tumor = pipeline.tumor
     sampler = pipeline.sampler
 
@@ -78,7 +81,7 @@ def _snp_mixing_analysis(pipeline, snp_id):
     # if there are too many, montecarlo this
     if len(cell_ids) > 500:
         pipeline.print2('Monte Carlo Sampling')
-        subset = random.sample(cell_ids, 500)
+        cell_ids = random.sample(cell_ids, 500)
     
     # obtain the "original_id" of the genotypes we have
     special_original_genotype_ids = set([g.original_id for g in tumor.get_genotypes(genotype_idx)])
@@ -98,9 +101,9 @@ def _snp_mixing_analysis(pipeline, snp_id):
         _special_proportion = []
         _COMS = []
         cell_position = tumor.cells[cell_id, 0:3]
-        _, cell_positions_all, genotypes_all = sampler.sample_fixed_points(MAX_CELLS, centre=cell_position)
+        _, cell_positions_all, genotypes_all = sampler.sample_fixed_points(max(CLUSTER_SIZES), centre=cell_position)
         # 2) go through each "special cell" and look at small radius around it
-        for n in range(2, MAX_CELLS, INTERVAL): 
+        for n in CLUSTER_SIZES:
             # pick the first n cell positions:
             cell_positions = cell_positions_all[:n, :]
             sample_original_genotype_ids = set(map(lambda g : g.original_id, genotypes_all[:n]))
@@ -123,7 +126,7 @@ def _snp_mixing_analysis(pipeline, snp_id):
     special_proportion = np.array(special_proportion).mean(axis=0).tolist()
     COMS = np.array(COMS).mean(axis=0).tolist()
 
-    results['sample_sizes'] = range(2, MAX_CELLS, INTERVAL)
+    results['sample_sizes'] = CLUSTER_SIZES
     results['COMs'] = COMS
     results['special_proportion'] = special_proportion
 
