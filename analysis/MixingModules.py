@@ -44,7 +44,7 @@ def perform_mixing_analysis(pipeline):
     mutations = load_snps(pipeline.FILES['all_PMs'])
 
     # 2) sample snps according to frequency
-    mutation_idx = np.random.choice(mutations['Num'], size=100, replace=False, p=mutations['sampling_prob'])
+    mutation_idx = np.random.choice(mutations['Num'], size=50, replace=False, p=mutations['sampling_prob'])
     mutations_to_analyze = mutations.iloc[mutation_idx]
 
     # 3) perform analysis for each of those snps
@@ -79,9 +79,9 @@ def _snp_mixing_analysis(pipeline, snp_id):
     # cells: the cell object
 
     # if there are too many, montecarlo this
-    if len(cell_ids) > 500:
+    if len(cell_ids) > 100:
         pipeline.print2('Monte Carlo Sampling')
-        cell_ids = random.sample(cell_ids, 500)
+        cell_ids = random.sample(cell_ids, 100)
     
     # obtain the "original_id" of the genotypes we have
     special_original_genotype_ids = set([g.original_id for g in tumor.get_genotypes(genotype_idx)])
