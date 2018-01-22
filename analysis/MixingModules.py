@@ -17,7 +17,7 @@ EPS = np.finfo(float).eps
 MAX_CELLS_RANGE = 50
 INTERVAL = 5
 LARGE_CLUSTERS = [100, 1000, 10000, 20000]
-SMALL_CLUSTERS = range(2, MAX_CELLS_RANGE, INTERVAL)
+SMALL_CLUSTERS = [2, 6, 27, 50]
 CLUSTER_SIZES = SMALL_CLUSTERS + LARGE_CLUSTERS
 
 def load_snps(datafile):
@@ -94,12 +94,12 @@ def _snp_mixing_analysis(pipeline, snp_id):
         }
 
     special_proportion = []
-    COMS = []
+    # COMS = []
 
     pipeline.print2('Performing mixing analysis on ' +str(len(cell_ids)) +' cells for SNP: '+str(snp_id))
     for cell_id in cell_ids:
         _special_proportion = []
-        _COMS = []
+        # _COMS = []
         cell_position = tumor.cells[cell_id, 0:3]
         _, cell_positions_all, genotypes_all = sampler.sample_fixed_points(max(CLUSTER_SIZES), centre=cell_position)
         # 2) go through each "special cell" and look at small radius around it
@@ -116,19 +116,19 @@ def _snp_mixing_analysis(pipeline, snp_id):
             # 3) what proportion of it contains special cells? (can be done via genotype cross check)
             special_proportion_measured = len(special_genotypes_in_sample) / float(len(sample_original_genotype_ids))
             
-            COM = Statistics.centre_of_mass(cell_positions).tolist()
-            _COMS.append(COM)
             _special_proportion.append(special_proportion_measured)
-
+        
         special_proportion.append(_special_proportion)
-        COMS.append(_COMS)
+        # COMS.append(cell_position)
 
-    special_proportion = np.array(special_proportion).mean(axis=0).tolist()
-    COMS = np.array(COMS).mean(axis=0).tolist()
+    special_proportion = np.array(special_proportion)
+    std_special_proportion = special_proportion.std(axis=0).tolist()
+    special_proportion = special_proportion.mean(axis=0).tolist()
 
     results['sample_sizes'] = CLUSTER_SIZES
-    results['COMs'] = COMS
+    # results['COMs'] = COMS
     results['special_proportion'] = special_proportion
+    results['std_special_proportion'] = std_special_proportion
 
     return results
 
