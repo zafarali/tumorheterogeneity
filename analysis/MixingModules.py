@@ -12,6 +12,7 @@ import Statistics
 import random
 import time
 import json
+import multiprocessing.dummy as multiprocessing
 
 EPS = np.finfo(float).eps
 MAX_CELLS_RANGE = 50
@@ -47,41 +48,65 @@ def perform_mixing_analysis(pipeline):
     mutation_idx = np.random.choice(mutations['Num'], size=50, replace=False, p=mutations['sampling_prob'])
     mutations_to_analyze = mutations.iloc[mutation_idx]
 
+    # print('Sampled SNPS: {}'.format(mutations_to_analyze))
+
     # 3) perform analysis for each of those snps
 
     all_results = []
+    pool = multiprocessing.Pool(4)
+
     for row in mutations_to_analyze.iterrows():
         data = row[1]
         abundancy, snp_id = data.abundancy, int(data.SNP)
-        results = _snp_mixing_analysis(pipeline, snp_id)
-        results['frequency'] = abundancy
+        results = _snp_mixing_analysis(pipeline, snp_id, abundancy, pool)
+        # results['frequency'] = 
         all_results.append(results)
 
     pipeline.print2('Mixing analysis complete. Now saving.')
     with open(os.path.join(pipeline.FILES['out_directory'], 'mixing_analysis.json'), 'w') as f:
         json.dump(all_results, f, indent=3)
-
+    
+    pool.close()
+    pool.join()
+    
     pipeline.print2('Mixing analysis saving complete.')
 
 
-def _snp_mixing_analysis(pipeline, snp_id):
+def _snp_mixing_analysis(pipeline, snp_id, abundancy, pool=None):
     """
     Does the analysis for a single snp
     """
+    if pool is None:
+        private_pool = True
+        pool = multiprocessing.Pool(4)
+    else:
+        private_pool = False
 
     tumor = pipeline.tumor
     sampler = pipeline.sampler
 
     # 1) find cells that contain snp_id: "special" cells
-    genotype_idx, cell_ids, cells = tumor.cells_with_snp(snp_id)
+    genotype_idx, cell_ids, cells = tumor.cells_with_snp(snp_id, pool)
     # genotype_idx: the genotypes that contain the snp_id in question
     # cell_ids: a list of all cells that have one of the genotypes in genotype_idx
     # cells: the cell object
 
     # if there are too many, montecarlo this
+    pipeline.print2('Performing mixing analysis on ' +str(len(cell_ids)) +' cells for SNP: '+str(snp_id))
+
+    """
+    In [12]: list_to_sample = [MyObject()] * 5000000
+    In [13]: %timeit random.sample(list_to_sample, 100)
+    10000 loops, best of 3: 30.5 \mus per loop
+    In [15]: %yimeit [list_to_sample[i] for i in np.random.randint(0, 5000000, 100)]
+    100000 loops, best of 3: 17.3 \mus per loop
+
+    Using numpy to generate indicies for sampling is much faster than using random.sample
+    """
     if len(cell_ids) > 100:
         pipeline.print2('Monte Carlo Sampling')
-        cell_ids = random.sample(cell_ids, 100)
+        cell_ids = [cell_ids[i] for i in np.random.randint(0, len(cell_ids), 100)]
+        # cell_ids = random.sample(cell_ids, 100)
     
     # obtain the "original_id" of the genotypes we have
     special_original_genotype_ids = set([g.original_id for g in tumor.get_genotypes(genotype_idx)])
@@ -90,37 +115,39 @@ def _snp_mixing_analysis(pipeline, snp_id):
 
     results = {
             'snp_id': snp_id,
-            'COM': all_cells_COM
+            'COM': all_cells_COM,
+            'frequency': abundancy
         }
 
-    special_proportion = []
+    # special_proportion = []
     # COMS = []
 
-    pipeline.print2('Performing mixing analysis on ' +str(len(cell_ids)) +' cells for SNP: '+str(snp_id))
-    for cell_id in cell_ids:
-        _special_proportion = []
-        # _COMS = []
-        cell_position = tumor.cells[cell_id, 0:3]
-        _, cell_positions_all, genotypes_all = sampler.sample_fixed_points(max(CLUSTER_SIZES), centre=cell_position)
-        # 2) go through each "special cell" and look at small radius around it
-        for n in CLUSTER_SIZES:
-            # pick the first n cell positions:
-            cell_positions = cell_positions_all[:n, :]
-            sample_original_genotype_ids = set(map(lambda g : g.original_id, genotypes_all[:n]))
+    arguments_prepared = [(pipeline, cell_id, special_original_genotype_ids) for cell_id in cell_ids]
 
-            special_genotypes_in_sample = sample_original_genotype_ids.intersection(special_original_genotype_ids)
-            # print('specials in sample:',special_genotypes_in_sample)
-            # print('all genotypes in samples',sample_original_genotype_ids)
-            # print('specials for this snp', special_original_genotype_ids)
-            assert len(special_genotypes_in_sample) >= 1, 'the sample must have at LEAST the original special cell'
-            # 3) what proportion of it contains special cells? (can be done via genotype cross check)
-            special_proportion_measured = len(special_genotypes_in_sample) / float(len(sample_original_genotype_ids))
+    # for cell_id in cell_ids:
+    #     _special_proportion = []
+    #     # _COMS = []
+    #     cell_position = tumor.cells[cell_id, 0:3]
+    #     _, cell_positions_all, genotypes_all = sampler.sample_fixed_points(max(CLUSTER_SIZES), centre=cell_position)
+    #     # 2) go through each "special cell" and look at small radius around it
+    #     for n in CLUSTER_SIZES:
+    #         # pick the first n cell positions:
+    #         cell_positions = cell_positions_all[:n, :]
+    #         sample_original_genotype_ids = set(map(lambda g : g.original_id, genotypes_all[:n]))
+
+    #         special_genotypes_in_sample = sample_original_genotype_ids.intersection(special_original_genotype_ids)
+    #         # print('specials in sample:',special_genotypes_in_sample)
+    #         # print('all genotypes in samples',sample_original_genotype_ids)
+    #         # print('specials for this snp', special_original_genotype_ids)
+    #         assert len(special_genotypes_in_sample) >= 1, 'the sample must have at LEAST the original special cell'
+    #         # 3) what proportion of it contains special cells? (can be done via genotype cross check)
+    #         special_proportion_measured = len(special_genotypes_in_sample) / float(len(sample_original_genotype_ids))
             
-            _special_proportion.append(special_proportion_measured)
+    #         _special_proportion.append(special_proportion_measured)
         
-        special_proportion.append(_special_proportion)
-        # COMS.append(cell_position)
+    special_proportion = pool.map(_individual_cell_snp_mixing_analysis, arguments_prepared)
 
+    
     special_proportion = np.array(special_proportion)
     std_special_proportion = special_proportion.std(axis=0).tolist()
     special_proportion = special_proportion.mean(axis=0).tolist()
@@ -130,10 +157,41 @@ def _snp_mixing_analysis(pipeline, snp_id):
     results['special_proportion'] = special_proportion
     results['std_special_proportion'] = std_special_proportion
 
+    if private_pool:
+        # only close these processes if we created them
+        pool.close()
+        pool.join()
+
     return results
 
+def _individual_cell_snp_mixing_analysis(arguments):
+    """
+    Use for multiprocessing
+    """
+    pipeline, cell_id, special_original_genotype_ids = arguments
 
+    sampler = pipeline.sampler
+    tumor = pipeline.tumor
 
+    _special_proportion = []
+    # _COMS = []
+    cell_position = tumor.cells[cell_id, 0:3]
+    _, cell_positions_all, genotypes_all = sampler.sample_fixed_points(max(CLUSTER_SIZES), centre=cell_position)
+    # 2) go through each "special cell" and look at small radius around it
+    for n in CLUSTER_SIZES:
+        # pick the first n cell positions:
+        cell_positions = cell_positions_all[:n, :]
+        sample_original_genotype_ids = set(map(lambda g : g.original_id, genotypes_all[:n]))
 
+        special_genotypes_in_sample = sample_original_genotype_ids.intersection(special_original_genotype_ids)
+        # print('specials in sample:',special_genotypes_in_sample)
+        # print('all genotypes in samples',sample_original_genotype_ids)
+        # print('specials for this snp', special_original_genotype_ids)
+        assert len(special_genotypes_in_sample) >= 1, 'the sample must have at LEAST the original special cell'
+        # 3) what proportion of it contains special cells? (can be done via genotype cross check)
+        special_proportion_measured = len(special_genotypes_in_sample) / float(len(sample_original_genotype_ids))
+        
+        _special_proportion.append(special_proportion_measured)
+    
+    return _special_proportion
 
-MIXING_MODULES = [prepare_tumor_for_mixing_analysis, perform_mixing_analysis]
