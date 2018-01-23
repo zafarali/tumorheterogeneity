@@ -141,7 +141,7 @@ class Tumor(object):
 		"""
 		return set(np.where(self.cells[:, 3]==genotype_index)[0].tolist())
 
-	def cells_with_snp(self, snp_id):
+	def cells_with_snp(self, snp_id, pool=None):
 		"""
 		Looks up the cells that contain snp_id
 		@params:
@@ -155,13 +155,20 @@ class Tumor(object):
 
 		indices = self.genotype_idx_with_snp(snp_id)
 		cell_ids = set()
-		
-		pool = multiprocessing.Pool(4) 
+		if pool is None:
+			private_pool = True
+			pool = multiprocessing.Pool(4)
+		else:
+			private_pool = False
+
 		[cell_ids.update(cells_with_genotype) for cells_with_genotype in pool.map(self._cells_with_genotype, indices)]
 		
 		cell_ids = list(cell_ids)
-		pool.close()
-		pool.join()
+		
+		if private_pool:
+			# only close these processes if we created them
+			pool.close()
+			pool.join()
 		return indices, cell_ids, self.cells[cell_ids]
 
 
