@@ -44,7 +44,7 @@ def open_files(pipeline):
 			'cells' : glob(pipeline.folder+'/cells*')[0],
 			'genotypes' : glob(pipeline.folder+'/genotypes*')[0],
 			'all_PMs' : glob(pipeline.folder+'/all_PMs*')[0],
-			'drv_PMs' : glob(pipeline.folder+'/drv_PMs*')[0],
+			# 'drv_PMs' : glob(pipeline.folder+'/drv_PMs*')[0],
 		})
 	except IndexError as e:
 		sys.exit('(!) Certain files were missing')
