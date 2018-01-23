@@ -182,16 +182,16 @@ def _individual_cell_snp_mixing_analysis(arguments):
     cell_position = tumor.cells[cell_id, 0:3]
     _, cell_positions_all, genotypes_all = sampler.sample_fixed_points(max(CLUSTER_SIZES), centre=cell_position)
 
-    pipeline.print2('CellID {}. Obtained a neighbourhood of size {}'.format(cell_id, len(cell_positions_all)))
+    # pipeline.print2('CellID {}. Obtained a neighbourhood of size {}'.format(cell_id, len(cell_positions_all)))
     container_indicators = np.zeros(max(CLUSTER_SIZES), dtype=np.bool8)
 
     # this is O(max(CLUSTER_SIZES)) since set lookup is O(1)
     for i, genotype in enumerate(genotypes_all):
         container_indicators[i] = int(genotype.original_id in special_original_genotype_ids)
-    pipeline.print2('CellID {}. filled in indicators'.format(cell_id))
+    # pipeline.print2('CellID {}. filled in indicators'.format(cell_id))
     # this is O(max(CLUSTER_SIZES))
     special_counts = np.cumsum(container_indicators)
-    pipeline.print2('CellID {}. cum sum calculated'.format(cell_id))
+    # pipeline.print2('CellID {}. cum sum calculated'.format(cell_id))
     assert special_counts[0] == 1, 'the first cell must be special by construction'
     for n in CLUSTER_SIZES:
         special_proportion_measured = special_counts[n-1] / float(n)
