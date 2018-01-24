@@ -14,6 +14,7 @@ import time
 import json
 import multiprocessing.dummy as multiprocessing
 
+CPU_COUNT = multiprocessing.cpu_count()
 EPS = np.finfo(float).eps
 MAX_CELLS_RANGE = 50
 INTERVAL = 5
@@ -56,7 +57,7 @@ def perform_mixing_analysis(pipeline):
     # 3) perform analysis for each of those snps
 
     all_results = []
-    pool = multiprocessing.Pool(4)
+    pool = multiprocessing.Pool(CPU_COUNT)
 
     for row in mutations_to_analyze.iterrows():
         data = row[1]
@@ -81,7 +82,7 @@ def _snp_mixing_analysis(pipeline, snp_id, abundancy, pool=None):
     """
     if pool is None:
         private_pool = True
-        pool = multiprocessing.Pool(4)
+        pool = multiprocessing.Pool(CPU_COUNT)
     else:
         private_pool = False
 
@@ -89,13 +90,14 @@ def _snp_mixing_analysis(pipeline, snp_id, abundancy, pool=None):
     sampler = pipeline.sampler
 
     # 1) find cells that contain snp_id: "special" cells
+    pipeline.print2('Searching for cells with the snp.')
     genotype_idx, cell_ids, cells = tumor.cells_with_snp(snp_id, pool)
     # genotype_idx: the genotypes that contain the snp_id in question
     # cell_ids: a list of all cells that have one of the genotypes in genotype_idx
     # cells: the cell object
 
     # if there are too many, montecarlo this
-    pipeline.print2('Performing mixing analysis on ' +str(len(cell_ids)) +' cells for SNP: '+str(snp_id))
+    pipeline.print2('Found ' +str(len(cell_ids)) +' cells for SNP: '+str(snp_id))
 
     """
     In [12]: list_to_sample = [MyObject()] * 5000000
@@ -108,9 +110,9 @@ def _snp_mixing_analysis(pipeline, snp_id, abundancy, pool=None):
     """
     if len(cell_ids) > 100:
         pipeline.print2('Monte Carlo Sampling')
-        cell_ids = [cell_ids[i] for i in np.random.randint(0, len(cell_ids), 100)]
+        cell_ids = [cell_ids[i] for i in np.random.choice(len(cell_ids), 100)]
         # cell_ids = random.sample(cell_ids, 100)
-    pipeline.print2('Sampled {} cells'.format(len(cell_ids)))
+    pipeline.print2('Sampled {} cells. Now performing mixing analysis'.format(len(cell_ids)))
 
     # obtain the "original_id" of the genotypes we have
     special_original_genotype_ids = set([g.original_id for g in tumor.get_genotypes(genotype_idx)])
@@ -125,9 +127,9 @@ def _snp_mixing_analysis(pipeline, snp_id, abundancy, pool=None):
 
     # special_proportion = []
     # COMS = []
-    pipeline.print2('Entering multiprocessing loop.')
+    pipeline.print2('Preparing multiprocessing loop.')
     arguments_prepared = [(pipeline, cell_id, special_original_genotype_ids) for cell_id in cell_ids]
-
+    pipeline.print2('Entering multiprocessing loop.')
     # for cell_id in cell_ids:
     #     _special_proportion = []
     #     # _COMS = []

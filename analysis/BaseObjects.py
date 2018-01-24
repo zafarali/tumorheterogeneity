@@ -5,6 +5,7 @@ import pandas as pd
 import numpy as np
 # make this really fast:
 import multiprocessing.dummy as multiprocessing
+CPU_COUNT = multiprocessing.cpu_count()
 
 D_PM = 1<<30 # convert to driver
 R_PM = 1<<31 # convert to resistant
@@ -139,7 +140,7 @@ class Tumor(object):
 		"""
 		Internal lookup function
 		"""
-		return set(np.where(self.cells[:, 3]==genotype_index)[0].tolist())
+		return np.where(self.cells[:, 3]==genotype_index)[0]
 
 	def cells_with_snp(self, snp_id, pool=None):
 		"""
@@ -147,17 +148,17 @@ class Tumor(object):
 		@params:
 			snp_id: the snp_id to lookup
 		@returns:
-			cell_idx a list containing ids
-			np.array containing cell information
+			indices the indicies of the cells in the self.cells array
+			cell_idx a list containing ids for efficient lookup
 		"""
 		if not self._snp_lookup_efficient:
 			self._make_snp_lookup_efficient()
 
-		indices = self.genotype_idx_with_snp(snp_id)
+		indices = self.genotype_idx_with_snp(snp_id) # O(1)
 		cell_ids = set()
 		if pool is None:
 			private_pool = True
-			pool = multiprocessing.Pool(4)
+			pool = multiprocessing.Pool(CPU_COUNT)
 		else:
 			private_pool = False
 
@@ -169,7 +170,7 @@ class Tumor(object):
 			# only close these processes if we created them
 			pool.close()
 			pool.join()
-		return indices, cell_ids, self.cells[cell_ids]
+		return indices, cell_ids, np.take(self.cells, cell_ids, axis=0)
 
 
 	@staticmethod
