@@ -16,7 +16,7 @@ import json
 EPS = np.finfo(float).eps
 MAX_CELLS_RANGE = 50
 INTERVAL = 5
-LARGE_CLUSTERS = [100, 1000, 10000, 20000]
+LARGE_CLUSTERS = [100, 1000, 10000]
 SMALL_CLUSTERS = [2, 6, 27, 50]
 CLUSTER_SIZES = SMALL_CLUSTERS + LARGE_CLUSTERS
 
@@ -81,8 +81,8 @@ def _snp_mixing_analysis(pipeline, snp_id):
     # if there are too many, montecarlo this
     if len(cell_ids) > 100:
         pipeline.print2('Monte Carlo Sampling')
-        cell_ids = random.sample(cell_ids, 100)
-    
+        cell_ids = [cell_ids[i] for i in np.random.choice(len(cell_ids), 100)] # faster than random.sample()
+
     # obtain the "original_id" of the genotypes we have
     special_original_genotype_ids = set([g.original_id for g in tumor.get_genotypes(genotype_idx)])
 
@@ -102,24 +102,27 @@ def _snp_mixing_analysis(pipeline, snp_id):
         # _COMS = []
         cell_position = tumor.cells[cell_id, 0:3]
         _, cell_positions_all, genotypes_all = sampler.sample_fixed_points(max(CLUSTER_SIZES), centre=cell_position)
-        # 2) go through each "special cell" and look at small radius around it
-        for n in CLUSTER_SIZES:
-            # pick the first n cell positions:
-            cell_positions = cell_positions_all[:n, :]
-            sample_original_genotype_ids = set(map(lambda g : g.original_id, genotypes_all[:n]))
 
-            special_genotypes_in_sample = sample_original_genotype_ids.intersection(special_original_genotype_ids)
-            # print('specials in sample:',special_genotypes_in_sample)
-            # print('all genotypes in samples',sample_original_genotype_ids)
-            # print('specials for this snp', special_original_genotype_ids)
-            assert len(special_genotypes_in_sample) >= 1, 'the sample must have at LEAST the original special cell'
-            # 3) what proportion of it contains special cells? (can be done via genotype cross check)
-            special_proportion_measured = len(special_genotypes_in_sample) / float(len(sample_original_genotype_ids))
-            
-            _special_proportion.append(special_proportion_measured)
+        # this will indicate if the ith closest cell has the snp in question
+        container_indicators = np.zeros(max(CLUSTER_SIZES), dtype=np.bool8)
+
+        # we fill in this container
+        # this is O(max(CLUSTER_SIZES)) since set lookup is O(1)
+        for i, genotype in enumerate(genotypes_all):
+            container_indicators[i] = int(genotype.original_id in special_original_genotype_ids)
         
+        # we now calculate the total number of snps for the i closest cells that are special
+        # this is O(max(CLUSTER_SIZES))
+        special_counts = np.cumsum(container_indicators)
+        
+        # we now divide by the cluster size to get the special proportion
+        assert special_counts[0] == 1, 'the first cell must be special by construction'
+        for n in CLUSTER_SIZES:
+            special_proportion_measured = special_counts[n-1] / float(n)
+            _special_proportion.append(special_proportion_measured)
+
+
         special_proportion.append(_special_proportion)
-        # COMS.append(cell_position)
 
     special_proportion = np.array(special_proportion)
     std_special_proportion = special_proportion.std(axis=0).tolist()

@@ -139,7 +139,7 @@ class Tumor(object):
 		"""
 		Internal lookup function
 		"""
-		return set(np.where(self.cells[:, 3]==genotype_index)[0].tolist())
+		return np.where(self.cells[:, 3]==genotype_index)[0]
 
 	def cells_with_snp(self, snp_id):
 		"""
