@@ -59,12 +59,22 @@ def perform_mixing_analysis(pipeline):
     all_results = []
     pool = multiprocessing.Pool(CPU_COUNT)
 
+    count = 0
     for row in mutations_to_analyze.iterrows():
         data = row[1]
         abundancy, snp_id = data.abundancy, int(data.SNP)
         results = _snp_mixing_analysis(pipeline, snp_id, abundancy, pool)
         # results['frequency'] = 
         all_results.append(results)
+        count += 1
+        if count % 10 == 0:
+            with open(os.path.join(pipeline.FILES['out_directory'], 'mixing_analysis_partial.json'), 'w') as f:
+                json.dump(all_results, f, indent=3)
+
+    try:
+        os.remove(os.path.join(pipeline.FILES['out_directory'], 'mixing_analysis_partial.json'))
+    except Exception as e:
+        pass
 
     pipeline.print2('Mixing analysis complete. Now saving.')
     with open(os.path.join(pipeline.FILES['out_directory'], 'mixing_analysis.json'), 'w') as f:
