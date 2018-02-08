@@ -14,7 +14,7 @@ import time
 import json
 import multiprocessing.dummy as multiprocessing
 
-CPU_COUNT = multiprocessing.cpu_count()
+CPU_COUNT = 12
 EPS = np.finfo(float).eps
 MAX_CELLS_RANGE = 50
 INTERVAL = 5
@@ -57,7 +57,7 @@ def perform_mixing_analysis(pipeline):
     # 3) perform analysis for each of those snps
 
     all_results = []
-    pool = multiprocessing.Pool(CPU_COUNT)
+    pool = multiprocessing.Pool(CPU_COUNT, maxtasksperchild=1)
 
     count = 0
     for row in mutations_to_analyze.iterrows():
@@ -67,7 +67,7 @@ def perform_mixing_analysis(pipeline):
         # results['frequency'] = 
         all_results.append(results)
         count += 1
-        if count % 10 == 0:
+        if count % 2 == 0:
             with open(os.path.join(pipeline.FILES['out_directory'], 'mixing_analysis_partial.json'), 'w') as f:
                 json.dump(all_results, f, indent=3)
 
@@ -92,7 +92,7 @@ def _snp_mixing_analysis(pipeline, snp_id, abundancy, pool=None):
     """
     if pool is None:
         private_pool = True
-        pool = multiprocessing.Pool(CPU_COUNT)
+        pool = multiprocessing.Pool(CPU_COUNT,maxtasksperchild=1)
     else:
         private_pool = False
 
