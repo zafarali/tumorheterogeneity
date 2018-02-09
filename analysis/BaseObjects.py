@@ -3,6 +3,9 @@ from Statistics import centre_of_mass
 import csv
 import pandas as pd
 import numpy as np
+# make this really fast:
+import multiprocessing.dummy as multiprocessing
+CPU_COUNT = multiprocessing.cpu_count()
 
 D_PM = 1<<30 # convert to driver
 R_PM = 1<<31 # convert to resistant
@@ -62,7 +65,7 @@ class Genotype(Genotype_):
 		n_resistant, n_driver = numbers.split(' ')
 		sequence = filter( lambda SNP: len(SNP), sequence.split(' ') ) # remove blank SNPs
 		sequence = map( int , sequence ) # convert everything into ints
-		genotypes.append( Genotype( int(original_id), int(parent_genotype), int(n_resistant), \
+		genotypes.append(Genotype( int(original_id), int(parent_genotype), int(n_resistant), \
 					   int(n_driver), int(frequency), sequence ) )
 	return genotypes
 
@@ -80,6 +83,7 @@ class Tumor(object):
 		self.number_of_cells = len(cells)
 		self.number_of_genotypes = len(genotypes)
 		self.COM = centre_of_mass(self.cells)
+		self._snp_lookup_efficient = False
 		# print self.drivers
 		
 	def get_genotypes( self, genotype_indicies ):
@@ -97,6 +101,77 @@ class Tumor(object):
 				genotype_index: the index of the genotype wanted
 		"""
 		return self.genotypes[genotype_index]
+
+	def _make_snp_lookup_efficient(self):
+		"""
+		Makes looking up snps efficient.
+		"""
+		print('Making snp lookup efficient.')
+		snp_to_genotypes = {}
+
+		# loop through genomes
+		for gid, genotype in enumerate(self.genotypes):
+			# loop through snps
+			for snp_id in genotype.snps:
+				# store in a list of genomes corresponding to that snp
+				# the id of the genome is found at gid
+				genotypes_with_snp = snp_to_genotypes.get(snp_id, [])
+				genotypes_with_snp.append(gid)
+				snp_to_genotypes[snp_id] = genotypes_with_snp
+
+		self._snp_lookup_efficient = True
+		self.snp_to_genotypes = snp_to_genotypes
+		
+
+	def genotype_idx_with_snp(self, snp_id ):
+		"""
+		Looks up the genotypes with the snp_id
+		@params:
+			snp_id: the snp_id to lookup
+		@returns:
+			list of tuples containing (index_in_internal_list, original_id)
+		"""
+		if not self._snp_lookup_efficient:
+			self._make_snp_lookup_efficient()
+		
+		return self.snp_to_genotypes[snp_id]
+
+	def _cells_with_genotype(self, genotype_index):
+		"""
+		Internal lookup function
+		"""
+		return np.where(self.cells[:, 3]==genotype_index)[0]
+
+	def cells_with_snp(self, snp_id, pool=None):
+		"""
+		Looks up the cells that contain snp_id
+		@params:
+			snp_id: the snp_id to lookup
+		@returns:
+			indices the indicies of the cells in the self.cells array
+			cell_idx a list containing ids for efficient lookup
+		"""
+		if not self._snp_lookup_efficient:
+			self._make_snp_lookup_efficient()
+
+		indices = self.genotype_idx_with_snp(snp_id) # O(1)
+		cell_ids = set()
+		if pool is None:
+			private_pool = True
+			pool = multiprocessing.Pool(CPU_COUNT)
+		else:
+			private_pool = False
+
+		[cell_ids.update(cells_with_genotype) for cells_with_genotype in pool.map(self._cells_with_genotype, indices)]
+		
+		cell_ids = list(cell_ids)
+		
+		if private_pool:
+			# only close these processes if we created them
+			pool.close()
+			pool.join()
+		return indices, cell_ids, np.take(self.cells, cell_ids, axis=0)
+
 
 	@staticmethod
 	def from_files( cell_file, genome_file ):
