@@ -57,7 +57,7 @@ def perform_mixing_analysis(pipeline):
     # 3) perform analysis for each of those snps
 
     all_results = []
-    pool = multiprocessing.Pool(CPU_COUNT, maxtasksperchild=1)
+    pool = multiprocessing.Pool(CPU_COUNT)
 
     count = 0
     pipeline.print2('Starting loop.')
