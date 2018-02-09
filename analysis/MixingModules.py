@@ -51,7 +51,7 @@ def perform_mixing_analysis(pipeline):
     mutations_to_analyze = mutations.iloc[mutation_idx]
 
     pipeline.print2('Sampled 50 mutations. Investigating them individually.')
-
+    print(mutations_to_analyze)
     # print('Sampled SNPS: {}'.format(mutations_to_analyze))
 
     # 3) perform analysis for each of those snps
@@ -60,12 +60,16 @@ def perform_mixing_analysis(pipeline):
     pool = multiprocessing.Pool(CPU_COUNT, maxtasksperchild=1)
 
     count = 0
+    pipeline.print2('Starting loop.')
     for row in mutations_to_analyze.iterrows():
-        data = row[1]
-        abundancy, snp_id = data.abundancy, int(data.SNP)
-        results = _snp_mixing_analysis(pipeline, snp_id, abundancy, pool)
-        # results['frequency'] = 
-        all_results.append(results)
+        try:
+            data = row[1]
+            abundancy, snp_id = data.abundancy, int(data.SNP)
+            results = _snp_mixing_analysis(pipeline, snp_id, abundancy, pool)
+            # results['frequency'] = 
+            all_results.append(results)
+        except Exception as e:
+            pipeline.print2('An exception happened:{}'.format(e))
         count += 1
         if count % 2 == 0:
             with open(os.path.join(pipeline.FILES['out_directory'], 'mixing_analysis_partial.json'), 'w') as f:
