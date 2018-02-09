@@ -96,7 +96,7 @@ def _snp_mixing_analysis(pipeline, snp_id, abundancy, pool=None):
     """
     if pool is None:
         private_pool = True
-        pool = multiprocessing.Pool(CPU_COUNT,maxtasksperchild=1)
+        pool = multiprocessing.Pool(CPU_COUNT)
     else:
         private_pool = False
 
