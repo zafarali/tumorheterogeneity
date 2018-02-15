@@ -50,7 +50,7 @@
 //            CHANGE THESE WHEN EDITING
 // ------------------------------------------------------------------------------------------------------------------------    
 // #define RESEEDING // defined when need to use seeds.
-#define CUTOFF_OFF // do not use a cutoff when saving snps.
+//#define CUTOFF_OFF // do not use a cutoff when saving snps.
 
 // No Turnover: death0 = 0
 // Surface Turnover: death = [0.05, 0.1, 0.2], DEATH_ON_SURFACE
