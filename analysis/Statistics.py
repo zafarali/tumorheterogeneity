@@ -241,7 +241,6 @@ def diff_GAs(reference_genotype, genotype_list):
     percentage_private_gas = [1]
     number_private_gas = [len(reference_genotype.snps)]
     number_shared_gas = [len(reference_genotype.snps)]
-    percentage_shared_gas = []
 
     # pre-hash the list of reference genotype snps
     reference_genotype_snps = set(reference_genotype.snps)
@@ -259,6 +258,6 @@ def diff_GAs(reference_genotype, genotype_list):
         percentage_private_gas.append(private_ga/all_gas if all_gas >0 else 0)
         number_private_gas.append(private_ga)
         number_shared_gas.append(shared_ga)
-    
+
     return percentage_shared_gas, number_shared_gas, percentage_private_gas, number_private_gas
 
