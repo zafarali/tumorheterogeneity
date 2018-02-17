@@ -224,3 +224,41 @@ def tajimas_D(SNP_counts, n, return_parts=False):
 
 	return (pi, S, float(S)/an, D) if return_parts else D
 
+def diff_GAs(reference_genotype, genotype_list):
+    """
+    Calculates the number of shared, private GAs, percentage of shared and private GAs
+    @params:
+    	reference_genotype: the reference to do the differential calculations with
+    	genotype_list: the list of genotypes to do the analysis on
+    @returns:
+    	percentage_shared_gas: the % of shared GAS between the reference and every genotype
+    	number_shared_gas: the # of shared GAS between the reference and every genotype
+    	percentage_private_gas: the % of private GAS between the reference and every genotype
+    	number_private_gas: the % of private GAS between the reference and every genotype
+    """
+    # intialize the lists
+    percentage_shared_gas = [1]
+    percentage_private_gas = [1]
+    number_private_gas = [len(reference_genotype.snps)]
+    number_shared_gas = [len(reference_genotype.snps)]
+    percentage_shared_gas = []
+
+    # pre-hash the list of reference genotype snps
+    reference_genotype_snps = set(reference_genotype.snps)
+    # loop
+    for gen_ in genotype_list:
+        other_genotype_snps = set(gen_.snps)
+
+        # calculations
+        shared_ga = len(reference_genotype_snps.intersection(other_genotype_snps))
+        private_ga = len(reference_genotype_snps - other_genotype_snps)
+        all_gas = float(len(reference_genotype_snps.union(other_genotype_snps)))
+        
+        # stashing
+        percentage_shared_gas.append(shared_ga/all_gas if all_gas >0 else 0)
+        percentage_private_gas.append(private_ga/all_gas if all_gas >0 else 0)
+        number_private_gas.append(private_ga)
+        number_shared_gas.append(shared_ga)
+    
+    return percentage_shared_gas, number_shared_gas, percentage_private_gas, number_private_gas
+
