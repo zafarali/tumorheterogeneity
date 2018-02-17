@@ -1,4 +1,4 @@
-from MixingModules import prepare_tumor_for_mixing_analysis, perform_mixing_analysis
+from MixingModules import perform_mixing_analysis
 from PipelineModules import (
     load_tumor,
     create_kdsampler,
@@ -14,6 +14,5 @@ PAPER_PIPELINE = [
     marginal_counts_ordered, 
     density_plot,
     big_samples,
-    prepare_tumor_for_mixing_analysis,
     perform_mixing_analysis
 ]
