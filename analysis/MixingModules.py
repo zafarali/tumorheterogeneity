@@ -33,7 +33,7 @@ def load_snps(datafile):
     return mutations 
 
 # convinience functions to store information and save it in np format
-cluster_information = namedtuple('cluster_information','distance_from_tumor_COM cell_distance_from_cluster_COM p_shared_gas n_shared_gas p_private_gas n_private_gas')
+cluster_information = namedtuple('cluster_information','distance_from_tumor_COM cell_distance_from_cluster_COM p_shared_gas n_shared_gas p_private_gas n_private_gas cumulative_S')
 def save_cluster_information(ci):
     to_save = []
     to_save.append([ci.distance_from_tumor_COM] * len(ci.cell_distance_from_cluster_COM))
@@ -42,6 +42,7 @@ def save_cluster_information(ci):
     to_save.append(ci.n_shared_gas)
     to_save.append(ci.p_private_gas)
     to_save.append(ci.n_private_gas)
+    to_save.append(ci.cumulative_S)
     return np.array(to_save)
 
 
@@ -59,7 +60,9 @@ def perform_mixing_analysis(pipeline):
             cluster_COM, _, genotypes, cell_distances = outs
             distance_to_tumor_COM = np.sqrt(np.sum((np.array(cluster_COM) - np.array(pipeline.tumor.COM))**2))
             psgas, nsgas, ppgas, npgas = Statistics.diff_GAs(genotypes[0], genotypes[1:])
-            ci = cluster_information(distance_to_tumor_COM, cell_distances, psgas, nsgas, ppgas, npgas)
+
+            cumulative_S = [0]+[len(Statistics.SNP_count(genotypes[:k]).keys()) for k in range(1,len(genotypes))]
+            ci = cluster_information(distance_to_tumor_COM, cell_distances, psgas, nsgas, ppgas, npgas, cumulative_S)
             results.append(save_cluster_information(ci))
         except Exception as e:
             pipeline.print2('1/2 Exception occured: '+str(sys.exc_info()))
@@ -71,3 +74,4 @@ def perform_mixing_analysis(pipeline):
     pipeline.print2('Saving mixing analysis...')
     np.save(save_loc, results)
     pipeline.print2('Saved mixing analysis!')
+
