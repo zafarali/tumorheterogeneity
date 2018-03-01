@@ -50,6 +50,7 @@ def perform_mixing_analysis(pipeline):
     results = []
     pipeline.print2('Performing mixing analysis:')
     rand_coordinate = sample_coordinate(pipeline.sampler.cell_positions)
+    cluster_informations = []
     for i in range(100):
         try:
             outs = pipeline.sampler.sample_fixed_points(n=100,
@@ -58,12 +59,19 @@ def perform_mixing_analysis(pipeline):
                                                         with_distances=True)
 
             cluster_COM, _, genotypes, cell_distances = outs
+
             distance_to_tumor_COM = np.sqrt(np.sum((np.array(cluster_COM) - np.array(pipeline.tumor.COM))**2))
             psgas, nsgas, ppgas, npgas = Statistics.diff_GAs(genotypes[0], genotypes[1:])
 
             cumulative_S = [0]+[len(Statistics.SNP_count(genotypes[:k]).keys()) for k in range(1,len(genotypes))]
             ci = cluster_information(distance_to_tumor_COM, cell_distances, psgas, nsgas, ppgas, npgas, cumulative_S)
             results.append(save_cluster_information(ci))
+
+            # save cluster information
+            cluster_informations.append({'COM':cluster_COM.tolist(),
+                                         'genotypes': [genotype.snps for genotype in genotypes],
+                                         'cell_distances': cell_distances.tolist() })
+
         except Exception as e:
             pipeline.print2('1/2 Exception occured: '+str(sys.exc_info()))
             pipeline.print2('2/2 Exception occured:'+str(e))
@@ -73,5 +81,10 @@ def perform_mixing_analysis(pipeline):
     save_loc = pipeline.FILES['out_directory'] +'/mixing_analysis.npy'
     pipeline.print2('Saving mixing analysis...')
     np.save(save_loc, results)
+    try:
+        with open(pipeline.FILES['out_directory'] + '/cluster_data.json', 'w') as f:
+            json.dump(cluster_informations, f, indent=3)
+    except Exception as e:
+        print(e)
     pipeline.print2('Saved mixing analysis!')
 
