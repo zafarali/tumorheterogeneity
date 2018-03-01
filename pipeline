@@ -8,5 +8,5 @@ from analysis.Pipeline import Pipeline
 from analysis import PAPER_PIPELINE
 
 print('arguments:'+str(sys.argv))
-p = Pipeline(sys.argv[1],append_name='Jan19',modules=PAPER_PIPELINE)
+p = Pipeline(sys.argv[1],append_name='Mar1',modules=PAPER_PIPELINE)
 p.execute()
