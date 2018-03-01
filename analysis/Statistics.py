@@ -250,7 +250,7 @@ def diff_GAs(reference_genotype, genotype_list):
 
         # calculations
         shared_ga = len(reference_genotype_snps.intersection(other_genotype_snps))
-        private_ga = len(reference_genotype_snps - other_genotype_snps)
+        private_ga = len(reference_genotype_snps.symmetric_difference(other_genotype_snps))
         all_gas = float(len(reference_genotype_snps.union(other_genotype_snps)))
         
         # stashing
