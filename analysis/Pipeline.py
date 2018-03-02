@@ -24,7 +24,7 @@ class Pipeline(object):
 			 try:
 				module(self)
 			 except Exception as e:
-				# self.print2('An exception occured in module:'+str(module)+'\n'+str(e))
+				self.print2('An exception occured in module:'+str(module)+'\n'+str(e))
 		 		return False
 		 		break
 		return self
