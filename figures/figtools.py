@@ -282,11 +282,10 @@ RED, BLUE, GREEN = sns.xkcd_palette(["amber", "dusty purple", "faded green"])
 sns.set_context('paper', font_scale=1.5)
 
 
-def freq_plot(ax, mappings):
+def freq_plot(ax, mappings, colors_ = [RED, GREEN, BLUE], labels_ = ['No Turnover', 'Surface Turnover', 'Turnover']):
     lines = []
     labels = []
-    for mapping, color, model_name in zip(mappings, [RED, GREEN, BLUE],
-                                          ['No Turnover', 'Surface Turnover', 'Turnover']):
+    for mapping, color, model_name in zip(mappings, colors_,labels_):
 
         replicates = glob(mapping)
 
