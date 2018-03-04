@@ -2,6 +2,9 @@ import sys
 import numpy as np
 
 
+sys.path.append('..')
+
+
 import matplotlib
 matplotlib.use('Agg') # prevent use of a display
 
