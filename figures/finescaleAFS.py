@@ -82,9 +82,9 @@ class AFS(object):
         
 
 if sys.argv[2] == 'close':
-	coord = (0,0,0)
+    coord = (0,0,0)
 else:
-	coord = (-145.35, 201.64, 163.64)
+    coord = (-145.35, 201.64, 163.64)
 
 
 sampler = p.sampler
