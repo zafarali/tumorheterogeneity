@@ -5,8 +5,8 @@ import statsmodels.api as sm
 import json
 
 
-NOTURNOVER_FOLDER  = '../model/experiments/u0.01875/1_0_0_outs_10/Mar1pipe_out_Fri_Mar__2_20_42_31_2018'
-TURNOVER_FOLDER  = '../model/experiments/u0.01875/1_0_02_outs_10/Mar1pipe_out_Fri_Mar__2_20_42_31_2018'
+NOTURNOVER_FOLDER  = '../model/experiments/u0.01875/1_0_0_outs_10/Mar1pipe_out_Fri_Mar__2_20_42_31_2018/'
+TURNOVER_FOLDER  = '../model/experiments/u0.01875/1_0_02_outs_10/Mar1pipe_out_Fri_Mar__2_20_42_31_2018/'
 
 FOLDER = TURNOVER_FOLDER
 
