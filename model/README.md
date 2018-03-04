@@ -6,22 +6,32 @@ _A spatial model predicts that dispersal and cell turnover limit intratumour het
 
 # Reproducing Results
 
-To compile these simulations, one must change the `params.h` file and then run `./compile.sh SIMULATION_NAME`. You can then use `/run.sh SIMULATION_NAME SEED` to run a simulation with the `SEED`.
+The first step is to compile the executable files:
 
-Our parameters are shown in `./params.h` on lines `56-57`. To use one of these parameters, modify line `63` to the death rate you want and uncomment `68` to use surface turnover mode.
+```
+bash compile_all_experiments.sh
+```
 
-To modify the mutation rate to reproduce the data from the HCC paper, change `gama` on line `76` to what is written on `78`
+You will now see `./experiments/` folder with all the compiled executables.
 
-We used the following seeds:
 
-1. `0`
-1. `1`
-1. `2`
-1. `3`
-1. `4`
-1. `5`
-1. `6`
-1. `101`
-1. `102`
-1. `12151`
-1. `12152`
+To run experiment you will need to do the following:
+
+```
+bash run.sh 1_0_0 u0.01 1
+```
+
+where `1_0_0` is the name of the executable, `u0.01` is the mutation rate and `1` is the seed.
+This will run the file in `./experiments/u0.01/1_0_0.exe` and save data into `./experiments/u0.01/1_0_0_outs_1/`
+
+
+To run all of these on a cluster in a batch use:
+
+```
+bash submit_all_experiments.sh u0.01 1 DRY
+```
+
+which will run all the experiments with mutation rate 0.01 and seed 1.
+
+Note this uses an internal Qmsub (quick msub) submission script so you will need to modify this based on your cluster.
+
