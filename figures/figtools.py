@@ -3,8 +3,8 @@ Most of the code in this file is just a copy-paste from
 different ipython notebooks. It runs in python2.7
 """
 import random
-import matplotlib
-matplotlib.use('Agg')
+import matplotlib as mpl
+mpl.use('Agg')
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -44,8 +44,7 @@ def create_colormap(colormap_name='cubehelix_r', with_yellow=False, n_colors=8, 
         return mpl.colors.ListedColormap(col_list)
 
     def c_mapper(i):
-        print
-        i
+        print i
         try:
             if i == 1 and with_yellow:
                 return YELLOW
@@ -363,3 +362,32 @@ def freq_plot(ax, mappings):
     return lines, labels
 
 
+def alternating_power_plot(power_plots, ax):
+    cmapa = create_colormap()
+    HUGE_KEYS_ = ['powhuge100', 'powhuge1000', 'powhuge10000']
+    KEYS_ = ['pow2001', 'pow7001', 'pow12001', 'pow17001', 'pow22001', 'powbig001'] + HUGE_KEYS_
+    COLORS_ = [YELLOW, cmapa(4), cmapa(9), cmapa(14), cmapa(20), cmapa(24), small_c, big_c, biggest_c]
+    LABELS_ = ['size=1', 'size=(2,7)', 'size=(8,12)', 'size=(13,17)', 'size=(18,22)', 'size=(23,30)', 'size=100',
+               'size=1000', 'size=10000']
+
+    for k, color, label in zip(KEYS_, COLORS_, LABELS_):
+        x_ = power_plots['x_h'] if k in HUGE_KEYS_ else power_plots['x']
+
+        pos = np.array(power_plots[k]['pos'])
+        neg = np.array(power_plots[k]['neg'])
+        pos_tot = np.sum(pos)
+        neg_tot = np.sum(neg)
+
+        if np.any(power_plots[k]['pos']) and pos_tot > neg_tot:
+            ax.scatter(x_, power_plots[k]['pos'], color=color, marker='o', label=label)
+        if np.any(power_plots[k]['neg']) and neg_tot > pos_tot:
+            ax.scatter(x_, -np.array(power_plots[k]['neg']), color=color, marker='^', label=label)
+
+    ax.legend(loc=1, labelspacing=0, handlelength=0, frameon=True)
+    ax.plot(np.ones(30) * 23, np.linspace(-1.5, 1.5, 30), '--', color='gray')
+    ax.set_xlim([0, 80])
+    ax.set_ylim([-1.1, 1.1])
+    ax.set_xlabel('Number of samples')
+    ax.set_ylabel('Signed Proportion of \nSignificant Regressions')
+
+    return ax
