@@ -36,7 +36,7 @@ HCC = HCC.sort(columns='r')
 
 SELECTED_1_0_0  = '../model/experiments/u0.01875/1_0_0_outs_10/Mar1pipe_out_Fri_Mar__2_20_42_31_2018'
 SELECTED_1_0_02 = '../model/experiments/u0.01875/1_0_02_outs_10/Mar1pipe_out_Fri_Mar__2_21_18_46_2018'
-
+# S_list_ordered.npy
 def empirical_compare_plot(root_folder, seeds):
     NT_folder = root_folder + '/1_0'
     ST_folder = root_folder + '/1_1'

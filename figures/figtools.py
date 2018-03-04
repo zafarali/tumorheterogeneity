@@ -322,8 +322,7 @@ def freq_plot(ax, mappings, colors_ = [RED, GREEN, BLUE], labels_ = ['No Turnove
                 all_drvs.append(y)
 
             except Exception as e:
-                print
-                'Could not find file:' + str(replicate_folder) + ' ' + str(e)
+                print 'Could not find file:' + str(replicate_folder) + ' ' + str(e)
 
         y = np.mean(np.array(all_muts), axis=0)
         y2 = np.mean(np.array(all_drvs), axis=0)
@@ -340,16 +339,12 @@ def freq_plot(ax, mappings, colors_ = [RED, GREEN, BLUE], labels_ = ['No Turnove
         y2_x_plt = np.log10(x_meaned[y2_keep])
         y2_plt = np.log10(y2[y2_keep]).astype(np.float)
 
-        print
-        model_name + ':'
+        print model_name + ':'
         f_sum = np.around(np.sum(y_or), decimals=2)
         d_sum = np.around(np.sum(y2_or), decimals=2)
-        print
-        'FREQ_SUM:' + str(f_sum)
-        print
-        'DRV_SUM:' + str(d_sum)
-        print
-        'PROP DRV:' + str(d_sum / f_sum)
+        print 'FREQ_SUM:' + str(f_sum)
+        print 'DRV_SUM:' + str(d_sum)
+        print 'PROP DRV:' + str(d_sum / f_sum)
 
         lines += ax.plot(y1_x_plt, y1_plt, 'o', color=color, alpha=1, label=str(model_name) + ' $S$=' + str(f_sum))
         labels += [str(model_name) + ' $S$=' + str(f_sum)]
