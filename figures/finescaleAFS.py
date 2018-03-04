@@ -22,9 +22,9 @@ print 'mode=',sys.argv[1]
 print 'distance=',sys.argv[2]
 
 if sys.argv[1] == 'turnover':
-	filename = sys.argv[3] + '/1_0_02_outs_101'
+	filename = sys.argv[3] + '/1_0_02_outs_10'
 else:
-	filename = sys.argv[3] + '/1_0_0_outs_101'
+	filename = sys.argv[3] + '/1_0_0_outs_10'
 
 # surface_turnover = sys.argv[1]
 p = Pipeline(filename,append_name='AFS_big_test',modules=[load_tumor,create_kdsampler])

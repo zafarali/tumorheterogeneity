@@ -53,7 +53,7 @@ def cluster_adv(ax, mappings, loglog=True):
         all_unordered = []
         for replicate_folder in replicates:
             try:
-                S_ordered, S_unordered = glob(replicate_folder + '/Dec*/S_list*red.npy')
+                S_ordered, S_unordered = glob(replicate_folder + '/Mar*/S_list*red.npy')
                 S_ordered_loaded = np.load(S_ordered).astype(np.float)
                 S_unordered_loaded = np.load(S_unordered).astype(np.float)
                 if model_name in ['No Turnover', 'Turnover', 'Surface Turnover']:
@@ -72,10 +72,8 @@ def cluster_adv(ax, mappings, loglog=True):
                 all_ordered.append(S_ordered_data)
                 all_unordered.append(S_unordered_data)
             except Exception as e:
-                print
-                'Exception: ' + str(e)
-                print
-                'Skipped Folder: ' + str(glob(replicate_folder + '/Dec*/S_list*red.npy'))
+                print 'Exception: ' + str(e)
+                print 'Skipped Folder: ' + str(glob(replicate_folder + '/Mar*/S_list*red.npy'))
 
         #     print all_ordered
         S_ordered_mean = np.mean(np.array(all_ordered), axis=0) - 1
@@ -91,8 +89,7 @@ def cluster_adv(ax, mappings, loglog=True):
                 ax.plot(xaxis, S_ordered_mean, color=color, linestyle='--', label=model_name + ' (Cluster)')
                 ax.plot(xaxis, S_unordered_mean, color=color, linestyle='-', label=model_name + ' (Random Set)')
         except Exception as e:
-            print
-            'skipped:' + str(e)
+            print 'skipped:' + str(e)
     if loglog:
         ax.loglog(xaxis, [(harmonic_number(n) + 1) / float(harmonic_number(1) + 1) - 1 for n in xaxis], ':',
                   color=(0, 0, 0, 0.75), label='Standard Neutral Model')
@@ -122,7 +119,7 @@ ax.set_title('d=0.'+death_rate[1:])
 f.savefig('cluster_advantage003.pdf')
 
 death_rate = '005'
-root_folder = '/Volumes/Stockage/u0.03simulations/'
+
 mappings = [ root_folder+'1_0_0_outs*',
             root_folder+'1_1_'+death_rate+'_*',
            root_folder+'1_0_'+death_rate+'_*']

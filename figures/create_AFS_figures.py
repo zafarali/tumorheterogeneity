@@ -115,7 +115,7 @@ plt.savefig('./AFS-d001.pdf')
 
 
 """
-how does death rate in no selection simulations change the from the theoretical prediction?¶
+how does death rate in no selection simulations change the from the theoretical prediction?
 """
 
 

@@ -3,6 +3,7 @@ Table S1 data comes from this file.
 """
 import numpy as np
 from glob import glob
+import pandas as pd
 
 mutation_rate = 0.02  # this is the mutation rate in the simulations
 
@@ -27,6 +28,7 @@ for death_rate in ['005', '01', '02', '065']:
                 mean_SNPs_in_clusters = np.mean(pd.read_csv(datafile)['mean_SNPs']) / mutation_rate
                 all_data.append(mean_SNPs_in_clusters)
             except Exception as e:
+                print('Exception occured:'+str(e))
                 pass
         #             print 'Exception: '+str(e)
         #             print 'Folder Skipped: '+replicate_folder

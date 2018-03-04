@@ -252,7 +252,7 @@ def plot_density(ax, folder, seeds, d='005'):
     ax1_r.set_ylabel('Tumor Cell Density', rotation=-90,labelpad=15)
 
 
- RED =  sns.xkcd_rgb["pale red"]
+RED =  sns.xkcd_rgb["pale red"]
 # GREEN = sns.xkcd_rgb["medium green"]
 # BLUE = sns.xkcd_rgb["denim blue"]
 
