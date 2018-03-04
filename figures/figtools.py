@@ -126,7 +126,7 @@ def prepare_data2(folder, yaxis='S_list_ordered', k=0.01, pts=100):
 
     ISBIG = yaxis in ['S_list01_big', 'S_list001_big', 'S_list00_big']
     dist_file = 'dist_' + yaxis.split('_list')[1] if ISBIG else 'deltas_ordered'
-    if len(glob(folder + 'Dec2*/' + dist_file + '.npy')) == 0:
+    if len(glob(folder + 'Mar*/' + dist_file + '.npy')) == 0:
         raise Exception('No files found in ' + folder)
 
     distances = np.load(glob(folder + 'Mar*/' + dist_file + '.npy')[0])
@@ -134,7 +134,7 @@ def prepare_data2(folder, yaxis='S_list_ordered', k=0.01, pts=100):
     if not ISBIG:
         distances = distances[:, 0]
 
-    S = np.load(glob(folder + 'Dec*/' + yaxis + '.npy')[0])
+    S = np.load(glob(folder + 'Mar*/' + yaxis + '.npy')[0])
     prepped = {}
     all_sizes = [1, 2, 3, 4] if yaxis in ['S_list01_big', 'S_list001_big', 'S_list00_big'] else list([1] + CTC_SIZES)
     for ctc_size in all_sizes:
@@ -201,7 +201,7 @@ def data_to_plot(folder, seeds, yaxis='unique_combos', k=0.01, pts=100, mode=1, 
 #         print this_folder
         try:
             if mode == 1:
-                samples.append(prepare_data1(this_folder, yaxis=yaxis, k=k, pts=pts))
+                raise DeprecationWarning('Cannot use prepare_data1 anymore.')
             else:
                 samples.append(prepare_data2(this_folder, yaxis=yaxis, k=k, pts=pts))
         except Exception as e:
@@ -236,8 +236,8 @@ def plot_density(ax, folder, seeds, d='005'):
         this_folder = folder+'_'+d+'_outs_'+seed+'/'
 #         print this_folder
         try:
-            r_samples.append(np.load(glob(this_folder+'/Dec*/r_meaned.npy')[0]))
-            rho_samples.append(np.load(glob(this_folder+'/Dec*/rho2.npy')[0]))
+            r_samples.append(np.load(glob(this_folder+'/Mar*/r_meaned.npy')[0]))
+            rho_samples.append(np.load(glob(this_folder+'/Mar*/rho2.npy')[0]))
         except Exception as e:
             print 'Exception: '+str(e)
             print 'Skipped Folder: '+this_folder
