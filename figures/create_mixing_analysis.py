@@ -17,59 +17,6 @@ ALL_SEEDS = ['10','100','102','15','3','3318','33181','33185','33186','34201810'
 import json
 from analysis.newick import loads
 
-"""
-Fanning Plots
-"""
-
-# plots the "fanning" plots
-def plot_diffs(root_folder, seeds, k=0.01, pts=100, cutoff='00'):
-    fig = plt.figure(figsize=(13, 3))
-
-    ax = fig.add_subplot(131)
-    folder = root_folder + '/1_0'
-    d2 = '0'
-    No_turnover = data_to_plot(folder, seeds, yaxis='S_list_ordered', mode=2, d=d2)
-    Turnover = data_to_plot(folder, seeds, yaxis='S_list_ordered', mode=2, d='005')
-    to_plot = {}
-    for k in No_turnover.keys():
-        avg = np.mean(k)
-        to_plot[k] = [Turnover[(1,)][0], avg * (Turnover[(1,)][1] - No_turnover[(1,)][1]) + No_turnover[k][1]]
-
-    plot_it(to_plot, ax)
-    plot_it(Turnover, ax, '--')
-    ax.set_title('d=0.05')
-    ax.set_xlabel('Distance from COM of Tumor')
-    ax.set_ylabel('S')
-    Turnover = data_to_plot(folder, seeds, yaxis='S_list_ordered', mode=2, d='01')
-
-    ax = fig.add_subplot(132)
-    to_plot = {}
-    for k in No_turnover.keys():
-        avg = np.mean(k)
-        to_plot[k] = [Turnover[(1,)][0], avg * (Turnover[(1,)][1] - No_turnover[(1,)][1]) + No_turnover[k][1]]
-
-    plot_it(to_plot, ax)
-    plot_it(Turnover, ax, '--')
-    ax.set_xlabel('Distance from COM of Tumor')
-    ax.set_title('d=0.1')
-    ax.set_ylabel('S')
-    ax = fig.add_subplot(133)
-    Turnover = data_to_plot(folder, seeds, yaxis='S_list_ordered', mode=2, d='02')
-
-    to_plot = {}
-    for k in No_turnover.keys():
-        avg = np.mean(k)
-        to_plot[k] = [Turnover[(1,)][0], avg * (Turnover[(1,)][1] - No_turnover[(1,)][1]) + No_turnover[k][1]]
-
-    plot_it(to_plot, ax)
-    plot_it(Turnover, ax, '--')
-    ax.set_title('d=0.2')
-    ax.set_xlabel('Distance from COM of Tumor')
-    ax.set_ylabel('S')
-    fig.tight_layout(h_pad=1)
-    return fig
-
-plot_diffs('../model/experiments/u0.01875/',ALL_SEEDS).savefig('./Splot-fanning.pdf')
 
 """
 Ranked Distance plots
@@ -139,9 +86,9 @@ def plot_ranked_mixing_analysis(root_folder, label, ax, to_plot, color='r'):
         fig.savefig('./ranked_mixing_{}_{}.pdf'.format(label, to_plot))
         break
 
-plot_ranked_mixing_analysis('../model/experiments/u0.01875/1_0_0_outs_10', 'No Turnover', None, 'n_pgas')
-plot_ranked_mixing_analysis('../model/experiments/u0.01875/1_0_0_outs_10', 'No Turnover', None, 'p_pgas')
-plot_ranked_mixing_analysis('../model/experiments/u0.01875/1_0_0_outs_10', 'No Turnover', None, 'cum_S')
-plot_ranked_mixing_analysis('../model/experiments/u0.01875/1_0_065_outs_10', 'Turnover 065', None, 'n_pgas')
-plot_ranked_mixing_analysis('../model/experiments/u0.01875/1_0_065_outs_10', 'Turnover 065', None, 'p_pgas')
-plot_ranked_mixing_analysis('../model/experiments/u0.01875/1_0_065_outs_10', 'Turnover 065', None, 'cum_S')
+
+PATH, SEED, title = sys.argv[1], sys.argv[2], sys.argv[3]
+
+plot_ranked_mixing_analysis(PATH+'_outs_'+SEED, title, None, 'n_pgas')
+plot_ranked_mixing_analysis(PATH+'_outs_'+SEED, title, None, 'p_pgas')
+plot_ranked_mixing_analysis(PATH+'_outs_'+SEED, title, None, 'cum_S')
