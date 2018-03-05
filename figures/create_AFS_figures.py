@@ -138,7 +138,7 @@ ax = fig.add_subplot(131)
 
 freq_plot(ax,
           mappings,
-          colors_=sns.color_palette('colorblind',n_colors=5),labels_=['d=0', 'd=0.05', 'd=0.1', 'd=0.2', 'd=0.65'],
+          colors_=COLORS,labels_=['d=0', 'd=0.05', 'd=0.1', 'd=0.2', 'd=0.65'],
           neutral=True)
 
 ax.set_xlabel('$log_{10}(frequency)$')
@@ -163,7 +163,7 @@ mappings = [ root_folder+'1_0_0_*',
 
 ax = fig.add_subplot(132)
 
-freq_plot(ax, mappings, colors_=sns.color_palette('colorblind', n_colors=5),
+freq_plot(ax, mappings, colors_=COLORS,
           labels_=['d=0', 'd=0.05', 'd=0.1', 'd=0.2', 'd=0.65'],neutral=True)
 
 ax.set_xlabel('$log_{10}(frequency)$')
@@ -192,7 +192,7 @@ mappings = [ root_folder+'/10_0_0_outs*',
 ax = fig.add_subplot(133)
 
 freq_plot(ax, mappings, neutral=True,
-          colors_=sns.color_palette('colorblind', n_colors=5),
+          colors_=COLORS,
           labels_=['d=0', 'd=0.05', 'd=0.1', 'd=0.2', 'd=0.65'])
 
 ax.set_xlabel('$log_{10}(frequency)$')
