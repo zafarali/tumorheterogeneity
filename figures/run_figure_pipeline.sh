@@ -21,7 +21,6 @@ python2 create_Splots_figures.py
 python2 create_cluster_advantage_plots.py
 python2 create power_analysis_big.py
 python2 create_fanning_plots.py
-python2 create_mixing_analysis.py
 python2 create_mixing_analysis.py "../model/experiments/u0.01875/1_0_0" "10" "No turnover"
 python2 create_mixing_analysis.py "../model/experiments/u0.01875/1_0_005_outs" "10" "Turnover005"
 python2 create_mixing_analysis.py "../model/experiments/u0.01875/1_0_01_outs" "10" "Turnover01"
