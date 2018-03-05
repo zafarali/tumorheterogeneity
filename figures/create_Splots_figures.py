@@ -14,7 +14,7 @@ from glob import glob
 import json
 from figtools import *
 
-ALL_SEEDS = ['10', '102', '100', '15', '3', '3318', '33181', '33185', '9', '99', '33186']
+ALL_SEEDS = ['10','100','102','15','3','3318','33181','33185','33186','34201810','342018101','342018102','8','9','99']
 
 sns.set_style('white')
 sns.set_context('paper', font_scale=1.5)

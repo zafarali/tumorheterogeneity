@@ -13,7 +13,6 @@ sns.set_context('paper', font_scale=1.5)
 from glob import glob
 from figtools import *
 from analysis.newick_tree_maker import neighbor_joining_tree
-ALL_SEEDS = ['10', '102', '100', '15', '3', '3318', '33181', '33185', '9', '99', '33186']
 import json
 from analysis.newick import loads
 

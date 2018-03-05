@@ -13,7 +13,7 @@ sns.set_context('paper', font_scale=1.5)
 from glob import glob
 from figtools import *
 from analysis.newick_tree_maker import neighbor_joining_tree
-ALL_SEEDS = ['10', '102', '100', '15', '3', '3318', '33181', '33185', '9', '99', '33186']
+ALL_SEEDS = ['10','100','102','15','3','3318','33181','33185','33186','34201810','342018101','342018102','8','9','99']
 import json
 from analysis.newick import loads
 
@@ -140,6 +140,8 @@ def plot_ranked_mixing_analysis(root_folder, label, ax, to_plot, color='r'):
         break
 
 plot_ranked_mixing_analysis('../model/experiments/u0.01875/1_0_0_outs_10', 'No Turnover', None, 'n_pgas')
+plot_ranked_mixing_analysis('../model/experiments/u0.01875/1_0_0_outs_10', 'No Turnover', None, 'p_pgas')
 plot_ranked_mixing_analysis('../model/experiments/u0.01875/1_0_0_outs_10', 'No Turnover', None, 'cum_S')
 plot_ranked_mixing_analysis('../model/experiments/u0.01875/1_0_065_outs_10', 'Turnover 065', None, 'n_pgas')
+plot_ranked_mixing_analysis('../model/experiments/u0.01875/1_0_065_outs_10', 'Turnover 065', None, 'p_pgas')
 plot_ranked_mixing_analysis('../model/experiments/u0.01875/1_0_065_outs_10', 'Turnover 065', None, 'cum_S')
