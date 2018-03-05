@@ -214,11 +214,11 @@ def data_to_plot(folder, seeds, yaxis='unique_combos', k=0.01, pts=100, mode=1, 
     return cross_sample_averaged
 
 
-def plot_it(cross_sample_averaged, ax):
+def plot_it(cross_sample_averaged, ax, linestyle='-'):
     colors = create_colormap(with_yellow=True)
     for ctc_size in cross_sample_averaged.keys():
         x, y = cross_sample_averaged[ctc_size]
-        ax.plot(x, y, color=colors(ctc_size[0]))
+        ax.plot(x, y, color=colors(ctc_size[0]), linestyle=linestyle)
 
         if ctc_size[0] == 1:
             print 'mean(s(1))', np.mean(y)
