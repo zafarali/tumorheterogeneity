@@ -39,7 +39,7 @@ ax.semilogx(np.arange(0,len(S),1)[S>0], S[S>0], 'xg', label='>10%')
 ax.set_title('Turnover, center')
 ax.set_xlabel('CTC Size')
 ax.set_ylabel('S')
-ax.set_ylim([0,400])
+# ax.set_ylim([0,400])
 
 
 ax = f.add_subplot(222)
@@ -52,12 +52,7 @@ ax.semilogx(np.arange(0,len(S),1)[S>0], S[S>0], 'xg', label='>10%')
 ax.set_title('Turnover, edge')
 ax.set_xlabel('CTC Size')
 ax.set_ylabel('S')
-ax.set_ylim([0,400])
-
-f.savefig('SvN.pdf')
-
-
-
+# ax.set_ylim([0,400])
 
 ax = f.add_subplot(223)
 S = np.load('./noturnover_close_0.npy')
@@ -70,7 +65,7 @@ ax.semilogx(np.arange(0,len(S),1)[S>0], S[S>0], 'xg', label='>10%')
 ax.set_title('No Turnover, center')
 ax.set_xlabel('CTC Size')
 ax.set_ylabel('S')
-ax.set_ylim([0,80])
+# ax.set_ylim([0,80])
 # plt.legend()
 
 
@@ -85,10 +80,11 @@ ax.semilogx(np.arange(0,len(S),1)[S>0], S[S>0], 'xg', label='>10%')
 ax.set_title('No Turnover, edge')
 ax.set_xlabel('CTC Size')
 ax.set_ylabel('S')
-ax.set_ylim([0,80])
+# ax.set_ylim([0,80])
 ax.legend(loc=2)
 
 f.set_tight_layout({'pad':0.5})
 
 f.savefig('SvsN.pdf')
+
 

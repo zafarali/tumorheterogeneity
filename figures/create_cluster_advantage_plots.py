@@ -140,7 +140,7 @@ ax = f.add_subplot(122)
 cluster_adv(ax, mappings)
 
 ax.set_title('d=0.'+death_rate[1:])
-
+ax.set_xlim([-0.01,  10**2+0.5])
 
 # plt.title('E[S(n)]/E[S(1)]')
 f.savefig('cluster_advantage_supp.pdf')
