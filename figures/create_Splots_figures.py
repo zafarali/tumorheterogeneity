@@ -166,7 +166,7 @@ def S_plot_paper(root_folder, seeds, k=0.01, pts=100, cutoff='00'):
     ax.set_title('(a) No Turnover')
     ax.set_xlim([50, 325])
     ax.set_ylim([0, 30])
-    ax.set_ylabel('Mean # Somatic Mutations')
+    ax.set_ylabel('Mean S(n)')
     ax.set_xlabel('Distance from Centre \n of Tumor (cells)')
 
     cmap_ax = ax  # for later use
@@ -181,7 +181,7 @@ def S_plot_paper(root_folder, seeds, k=0.01, pts=100, cutoff='00'):
 
     ax.set_title('(b) Turnover, d=0.' + d[1:])
     ax.set_xlim([50, 325])
-    ax.set_ylabel('Mean # Somatic Mutations')
+    ax.set_ylabel('Mean S(n)')
     ax.set_xlabel('Distance from Centre \n of Tumor (cells)')
     #     ax.set_ylim([0,1])
 
@@ -193,7 +193,7 @@ def S_plot_paper(root_folder, seeds, k=0.01, pts=100, cutoff='00'):
     plot_density(ax, folder, seeds, d=d)
 
     ax.set_title('(c) Turnover, d=0.' + d[1:])
-    ax.set_ylabel('Mean # Somatic Mutations')
+    ax.set_ylabel('Mean S(n)')
     x_max = 350 if d == '02' else 325
     x_max = 750 if d == '065' else x_max
     ax.set_xlim([50, x_max])
@@ -208,7 +208,7 @@ def S_plot_paper(root_folder, seeds, k=0.01, pts=100, cutoff='00'):
     plot_density(ax, folder, seeds, d=d)
 
     ax.set_title('(d) Turnover, d=0.' + d[1:])
-    ax.set_ylabel('Mean # Somatic Mutations')
+    ax.set_ylabel('Mean S(n)')
     x_max = 350 if d == '02' else 325
     x_max = 750 if d == '065' else x_max
     ax.set_xlim([50, x_max])
@@ -250,7 +250,7 @@ def S_plot_paper_supp(root_folder, seeds, k=0.01, pts=100, cutoff='00'):
 
     ax.set_title('(b) Surface Turnover, d=0.' + d[1:])
     ax.set_xlim([50, 325])
-    ax.set_ylabel('Mean # Somatic Mutations')
+    ax.set_ylabel('Mean S(n)')
     ax.set_xlabel('Distance from Centre \n of Tumor (cells)')
     #     ax.set_ylim([0,1])
 
@@ -262,7 +262,7 @@ def S_plot_paper_supp(root_folder, seeds, k=0.01, pts=100, cutoff='00'):
     plot_density(ax, folder, seeds, d=d)
 
     ax.set_title('(c) Surface Turnover, d=0.' + d[1:])
-    ax.set_ylabel('Mean # Somatic Mutations')
+    ax.set_ylabel('Mean S(n)')
     x_max = 350 if d == '02' else 325
     x_max = 750 if d == '065' else x_max
     ax.set_xlim([50, x_max])
@@ -277,7 +277,7 @@ def S_plot_paper_supp(root_folder, seeds, k=0.01, pts=100, cutoff='00'):
     plot_density(ax, folder, seeds, d=d)
 
     ax.set_title('(d) Surface Turnover, d=0.' + d[1:])
-    ax.set_ylabel('Mean # Somatic Mutations')
+    ax.set_ylabel('Mean S(n)')
     x_max = 350 if d == '02' else 325
     x_max = 750 if d == '065' else x_max
     ax.set_xlim([50, x_max])
@@ -293,7 +293,7 @@ def S_plot_paper_supp(root_folder, seeds, k=0.01, pts=100, cutoff='00'):
     plot_density(ax, folder, seeds, d=d)
 
     ax.set_title('(e) Surface Turnover, d=0.' + d[1:])
-    ax.set_ylabel('Mean # Somatic Mutations')
+    ax.set_ylabel('Mean S(n)')
     x_max = 350 if d == '02' else 325
     #     x_max = 750 if d=='065' else x_max
     ax.set_xlim([50, x_max])
@@ -331,7 +331,7 @@ create_colorbar(subaxes,with_yellow=True)
 ax.set_ylim([0.01, 450])
 ax.set_xlim([10, 725])
 ax.set_xlabel('Distance from Centre of Tumor (cells)')
-ax.set_ylabel('Mean # Somatic Mutations')
+ax.set_ylabel('Mean S(n)')
 ax.set_title('Turnover d=0.65')
 f.savefig('t065_supp.pdf')
 print('---SUPP FIG END---')

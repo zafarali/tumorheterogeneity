@@ -118,6 +118,7 @@ plt.savefig('./AFS-d001.pdf')
 how does death rate in no selection simulations change the from the theoretical prediction?
 """
 
+sns.set_context('paper', font_scale=0.75)
 
 pi = np.pi
 mu = 0.02

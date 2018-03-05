@@ -269,7 +269,7 @@ def neighbour_iterator(arr):
         yield (arr[index], arr[index+1])
         index += 1
 
-numbins = 100
+numbins = 50
 
 binrange = np.logspace(np.log10(0.0001), np.log10(1), num=numbins)
 
@@ -300,7 +300,7 @@ def freq_plot(ax, mappings,
             try:
                 datafile = glob(replicate_folder + '/all_PMs*.dat')[0]
                 muts = pd.read_csv(datafile, sep=' ', names=['Num', 'SNP', 'abundancy'])
-                datafile = glob(replicate_folder + '/drv_PMs_*.dat')[0]
+                if not neutral: datafile = glob(replicate_folder + '/drv_PMs_*.dat')[0]
 
                 if not neutral:
                     drvs = pd.read_csv(datafile, sep=' ', names=['Num', 'SNP', 'abundancy'])
@@ -344,7 +344,7 @@ def freq_plot(ax, mappings,
         if not neutral: d_sum = np.around(np.sum(y2_or), decimals=2)
         print 'FREQ_SUM:' + str(f_sum)
         if not neutral: print 'DRV_SUM:' + str(d_sum)
-        print 'PROP DRV:' + str(d_sum / f_sum)
+        if not neutral: print 'PROP DRV:' + str(d_sum / f_sum)
 
         lines += ax.plot(y1_x_plt, y1_plt, 'o', color=color, alpha=1, label=str(model_name) + ' $S$=' + str(f_sum))
         labels += [str(model_name) + ' $S$=' + str(f_sum)]
