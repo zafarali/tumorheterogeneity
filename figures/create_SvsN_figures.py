@@ -53,7 +53,9 @@ ax.set_title('Turnover, edge')
 ax.set_xlabel('CTC Size')
 ax.set_ylabel('S')
 ax.set_ylim([0,400])
-# ax.setlegend()
+
+f.savefig('SvN.pdf')
+
 
 
 

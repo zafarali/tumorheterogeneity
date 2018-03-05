@@ -46,13 +46,12 @@ freq_plot(ax, mappings)
 ax.set_xlabel('$log_{10}(frequency)$')
 ax.set_ylabel('$log_{10}(count)$')
 ax.set_xlim([-4.1, 0.05])
-ax.legend(fontsize=12,loc=(0.4,0.5))
 sns.despine()
 ax.set_title('(a) d=0.'+death_rate[1:])
 # analytic line
 freq_support = np.linspace(0.000001,0.21,num=1000)
 ax.plot(np.log10(freq_support), np.log10((alpha*mu/(4*np.sqrt(np.pi)))*freq_support**(-2.5)), '--', label='Analytic Result Assuming $\alpha=$ '+str(alpha))
-
+ax.legend(fontsize=12,loc=(0.4,0.5))
 death_rate = '065'
 
 mappings = [ root_folder+'1_0_0_*',
@@ -137,7 +136,7 @@ ax = fig.add_subplot(131)
 
 freq_plot(ax,
           mappings,
-          colors_=sns.color_palette(n_colors=5),labels_=['d=0', 'd=0.05', 'd=0.1', 'd=0.2', 'd=0.65'],
+          colors_=sns.color_palette('colorblind',n_colors=5),labels_=['d=0', 'd=0.05', 'd=0.1', 'd=0.2', 'd=0.65'],
           neutral=True)
 
 ax.set_xlabel('$log_{10}(frequency)$')
@@ -162,7 +161,7 @@ mappings = [ root_folder+'1_0_0_*',
 
 ax = fig.add_subplot(132)
 
-freq_plot(ax, mappings, colors_=sns.color_palette(n_colors=5),labels_=['d=0', 'd=0.05', 'd=0.1', 'd=0.2', 'd=0.65'])
+freq_plot(ax, mappings, colors_=sns.color_palette('colorblind', n_colors=5),labels_=['d=0', 'd=0.05', 'd=0.1', 'd=0.2', 'd=0.65'])
 
 ax.set_xlabel('$log_{10}(frequency)$')
 ax.set_ylabel('$log_{10}($count density)')
@@ -189,7 +188,7 @@ mappings = [ root_folder+'/10_0_0_outs*',
 
 ax = fig.add_subplot(133)
 
-freq_plot(ax, mappings, colors_=sns.color_palette(n_colors=5),labels_=['d=0', 'd=0.05', 'd=0.1', 'd=0.2', 'd=0.65'])
+freq_plot(ax, mappings, colors_=sns.color_palette('colorblind', n_colors=5),labels_=['d=0', 'd=0.05', 'd=0.1', 'd=0.2', 'd=0.65'])
 
 ax.set_xlabel('$log_{10}(frequency)$')
 ax.set_ylabel('$log_{10}($count density)')
@@ -198,8 +197,6 @@ freq_support = np.linspace(0.000001,0.21,num=1000)
 ax.plot(np.log10(freq_support), np.log10((mu/(4*np.sqrt(np.pi)))*freq_support**(-2.5)), '--', label='Assuming $E[i^{3/2}]=1$')
 ax.plot(np.log10(freq_support), np.log10((15*mu/(4*np.sqrt(np.pi)))*freq_support**(-2.5)), '--', label='Assuming $E[i^{3/2}]=15$', color=BLUE)
 ax.plot(np.log10(freq_support), np.log10(freq_support**(-2)), '--', label='$f^-2$', color='r')
-# ax.plot(np.log10(f), np.log10(f**(-2)*1/(4*np.sqrt(np.pi))), '--', label='f^-2$')
-# ax.plot(np.log10(f), np.log10(1/f*(f+1)), '--', label='1/f(f+1)$')
 
 ax.set_xlim([-4.15, 0.])
 ax.set_ylim(bottom=0)
