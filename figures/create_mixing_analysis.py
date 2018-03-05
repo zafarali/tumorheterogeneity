@@ -105,28 +105,37 @@ def plot_ranked_mixing_analysis(root_folder, label, ax, to_plot, color='r'):
 
             if to_plot == 'n_pgas':
                 ax.scatter(np.arange(0, ranked_n_pgas.shape[0], 1), ranked_n_pgas, \
-                            label='{} (distance: {:3g})'.format(label, distance_to_tumor_COM), color=color)
+                            label='{}'.format(label), color=color)
                 ax.set_ylabel('# Private GAS')
+                ax.set_title(' distance: {:3g}'.format(distance_to_tumor_COM))
             elif to_plot == 'p_pgas':
                 ax.scatter(np.arange(0, ranked_p_pgas.shape[0], 1), ranked_p_pgas, \
-                            label='{} (distance: {:3g})'.format(label, distance_to_tumor_COM), color=color)
+                            label='{}'.format(label, distance_to_tumor_COM), color=color)
                 ax.set_ylabel('% Private GAS')
+                ax.set_title(' distance: {:3g}'.format(distance_to_tumor_COM))
+
             elif to_plot == 'n_sgas':
                 ax.scatter(np.arange(0, ranked_n_sgas.shape[0], 1), ranked_n_sgas, \
-                            label='{} (distance: {:3g})'.format(label, distance_to_tumor_COM), color=color)
+                            label='{}'.format(label, distance_to_tumor_COM), color=color)
                 ax.set_ylabel('# Shared GAS')
+                ax.set_title(' distance: {:3g}'.format(distance_to_tumor_COM))
+
             elif to_plot == 'p_sgas':
                 ax.scatter(np.arange(0, ranked_p_sgas.shape[0], 1), ranked_p_sgas, \
-                            label='{} (distance: {:3g})'.format(label, distance_to_tumor_COM), color=color)
+                            label='{}'.format(label, distance_to_tumor_COM), color=color)
                 ax.set_ylabel('% Shared GAS')
+                ax.set_title(' distance: {:3g}'.format(distance_to_tumor_COM))
+
             elif to_plot == 'cum_S':
                 ax.plot(np.arange(0, ranked_cum_S.shape[0], 1), ranked_cum_S, \
-                            label='{} (distance: {:3g})'.format(label, distance_to_tumor_COM), color=color)
+                            label='{}'.format(label, distance_to_tumor_COM), color=color)
                 ax.set_ylabel('S(n)')
+                ax.set_title(' distance: {:3g}'.format(distance_to_tumor_COM))
+
 
             ax.set_xlabel('Ranked Distance \nfrom Cluster center')
             ax.legend()
-
+        fig.tight_layout(h_pad=1)
         fig.savefig('./ranked_mixing_{}_{}.pdf'.format(label, to_plot))
         break
 
