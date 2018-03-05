@@ -64,6 +64,8 @@ def plot_diffs(root_folder, seeds, k=0.01, pts=100, cutoff='00'):
     ax.set_xlabel('Distance from COM of Tumor')
     ax.set_ylabel('S')
 
+    return fig
+
 plot_diffs('../model/experiments/u0.01875/',ALL_SEEDS).savefig('./Splot-fanning.pdf')
 
 """
