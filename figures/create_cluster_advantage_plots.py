@@ -111,7 +111,7 @@ f = plt.figure(figsize=(7,5))
 ax = f.add_subplot(111)
 cluster_adv(ax, mappings)
 ax.legend(loc=(0.0,0.6),fontsize=11)
-# ax.set_xlim([10**0.25,10**1.5])
+ax.set_xlim([-0.01,  10**2+0.5])
 ax.set_title('d=0.'+death_rate[1:])
 
 
@@ -128,7 +128,7 @@ f = plt.figure(figsize=(10,5))
 ax = f.add_subplot(121)
 cluster_adv(ax, mappings)
 ax.legend(loc=(0,0.5),fontsize=11)
-
+ax.set_xlim([-0.01,  10**2+0.5])
 ax.set_title('d=0.'+death_rate[1:])
 
 death_rate = '01'
