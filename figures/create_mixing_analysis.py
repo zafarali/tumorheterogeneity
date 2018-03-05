@@ -164,7 +164,7 @@ def create_trees(root_folder, seeds):
                 print(mapper)
                 print(distance_from_COM)
                 print(tree_string)
-                print(loads(tree_string)[0].ascii_art())
+                print(loads(tree_string)[0].ascii_art().encode('utf-8'))
                 print('END'*40)
 
 # create_trees('../model/no_death', ['1'])
