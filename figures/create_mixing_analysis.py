@@ -127,7 +127,7 @@ def plot_ranked_mixing_analysis(root_folder, label, ax, to_plot, color='r'):
             ax.set_xlabel('Ranked Distance \nfrom Cluster center')
             ax.legend()
 
-        fig.savefig('./ranked_mixing_{}_{}_{}.pdf'.format(root_folder, label, to_plot))
+        fig.savefig('./ranked_mixing_{}_{}.pdf'.format(label, to_plot))
         break
 
 plot_ranked_mixing_analysis('../model/experiments/u0.01875/1_0_0_outs_10', 'No Turnover', None, 'n_pgas')
