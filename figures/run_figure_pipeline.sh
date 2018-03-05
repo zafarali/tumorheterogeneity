@@ -21,4 +21,7 @@ python2 create_Splots_figures.py
 python2 create_cluster_advantage_plots.py
 python2 create power_analysis_big.py
 python2 create_mixing_analysis.py
+python2 create_trees.py "../model/experiments/u0.01875/1_0_065" "10" > turnover_trees.txt
+python2 create_trees.py "../model/experiments/u0.01875/1_0_0" "10" > no_turnover_trees.txt
+
 

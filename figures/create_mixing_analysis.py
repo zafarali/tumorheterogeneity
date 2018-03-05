@@ -82,10 +82,10 @@ def plot_ranked_mixing_analysis(root_folder, label, ax, to_plot, color='r'):
         data = np.load(file_)
         data = data[np.argsort(data[:, 0, 0])] # sort the data according to how far from center.
 
-        fig = plt.figure()
-        subplots = '23'
+        fig = plt.figure(figsize=(15, 8))
+        subplots = '24'
 
-        for idx, i in enumerate([0, 1, 2, -3, -2, -1]): #TODO: for now just go in backward direction
+        for idx, i in enumerate([0, 1, 2, 3, -4, -3, -2, -1]): #TODO: for now just enumerate through the extremes
             ax = fig.add_subplot(subplots+str(idx+1))
             distance_to_tumor_COM, distance_to_cluster_COM, p_sgas, n_sgas, p_pgas, n_pgas, cum_S = data[i]
             distance_to_tumor_COM = distance_to_tumor_COM[0]
@@ -143,32 +143,3 @@ plot_ranked_mixing_analysis('../model/experiments/u0.01875/1_0_0_outs_10', 'No T
 plot_ranked_mixing_analysis('../model/experiments/u0.01875/1_0_0_outs_10', 'No Turnover', None, 'cum_S')
 plot_ranked_mixing_analysis('../model/experiments/u0.01875/1_0_065_outs_10', 'Turnover 065', None, 'n_pgas')
 plot_ranked_mixing_analysis('../model/experiments/u0.01875/1_0_065_outs_10', 'Turnover 065', None, 'cum_S')
-
-
-"""
-Trees
-"""
-
-def create_trees(root_folder, seeds):
-    for seed in seeds:
-        folder_search = root_folder +'_outs_'+seed+'/Mar*/cluster_data.json'
-        print(folder_search)
-        cluster_data = glob(folder_search)
-        print(cluster_data)
-        for cluster_data_ in cluster_data:
-            data = json.load(open(cluster_data_, 'r'))
-            for data_ in data:
-                distance_from_COM = np.sqrt(np.sum(np.array(data_['COM'])**2))
-                tree_string, mapper = neighbor_joining_tree(data_['genotypes'])
-                print('START'*20)
-                print(mapper)
-                print(distance_from_COM)
-                print(tree_string)
-                print(loads(tree_string)[0].ascii_art().encode('utf-8'))
-                print('END'*40)
-
-# create_trees('../model/no_death', ['1'])
-create_trees('../model/experiments/u0.01875/1_0_0', ['10'])
-create_trees('../model/experiments/u0.01875/1_0_065', ['10'])
-
-
