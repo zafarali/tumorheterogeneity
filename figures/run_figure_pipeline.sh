@@ -22,10 +22,10 @@ PATH_TO_ALL_SIMS="../model/experiments/u0.01875"
 #python2 create power_analysis_big.py
 #python2 create_fanning_plots.py
 python2 create_mixing_analysis.py "../model/experiments/u0.01875/1_0_0" "10" "Noturnover"
-python2 create_mixing_analysis.py "../model/experiments/u0.01875/1_0_005_outs" "10" "Turnover005"
-python2 create_mixing_analysis.py "../model/experiments/u0.01875/1_0_01_outs" "10" "Turnover01"
-python2 create_mixing_analysis.py "../model/experiments/u0.01875/1_0_02_outs" "10" "Turnover02"
-python2 create_mixing_analysis.py "../model/experiments/u0.01875/1_0_065_outs" "10" "Turnover065"
+python2 create_mixing_analysis.py "../model/experiments/u0.01875/1_0_005" "10" "Turnover005"
+python2 create_mixing_analysis.py "../model/experiments/u0.01875/1_0_01" "10" "Turnover01"
+python2 create_mixing_analysis.py "../model/experiments/u0.01875/1_0_02" "10" "Turnover02"
+python2 create_mixing_analysis.py "../model/experiments/u0.01875/1_0_065" "10" "Turnover065"
 python2 create_trees.py "../model/experiments/u0.01875/1_0_065" "10" > turnover065_trees_10.txt
 python2 create_trees.py "../model/experiments/u0.01875/1_0_02" "10" > turnover02_trees_10.txt
 python2 create_trees.py "../model/experiments/u0.01875/1_0_01" "10" > turnover01_trees_10.txt

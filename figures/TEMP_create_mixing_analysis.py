@@ -22,7 +22,7 @@ from analysis.newick import loads
 Ranked Distance plots
 """
 def plot_ranked_mixing_analysis(root_folder, label, ax, to_plot, color='r', sort=True):
-    search_folder = root_folder+'*/Mar*/mixing_analysis.npy'
+    search_folder = root_folder+'*/MarMixingAnalysisOnly*/mixing_analysis.npy'
     print('Search foler:', search_folder)
     mixing_files = glob(search_folder)
 
@@ -49,14 +49,14 @@ def plot_ranked_mixing_analysis(root_folder, label, ax, to_plot, color='r', sort
 
             if sort:
                 sorted_distances = np.argsort(distance_to_cluster_COM)
-                p_pgas = p_pgas[sorted_distances][1:]
-                n_pgas = n_pgas[sorted_distances][1:]
-                n_sgas = n_sgas[sorted_distances][1:]
-                p_sgas = p_sgas[sorted_distances][1:]
-                cum_S = cum_S[sorted_distances][1:]
-                distances = np.arange(0, n_sgas.shape[0], 1)[1:]
+                p_pgas = p_pgas[sorted_distances]
+                n_pgas = n_pgas[sorted_distances]
+                n_sgas = n_sgas[sorted_distances]
+                p_sgas = p_sgas[sorted_distances]
+                cum_S = cum_S[sorted_distances]
+                distances = np.arange(0, n_sgas.shape[0], 1)
             else:
-                distances = distance_to_cluster_COM[1:]
+                distances = distance_to_cluster_COM
 
             if to_plot == 'n_pgas':
                 ax.scatter(distances, n_pgas, \
@@ -87,6 +87,7 @@ def plot_ranked_mixing_analysis(root_folder, label, ax, to_plot, color='r', sort
                 ax.set_ylabel('S(n)')
                 ax.set_title(' distance: {:3g}'.format(distance_to_tumor_COM))
 
+
             ax.set_xlabel('Ranked Distance \nfrom Cluster center')
             ax.legend()
         fig.tight_layout(h_pad=1)
@@ -94,8 +95,11 @@ def plot_ranked_mixing_analysis(root_folder, label, ax, to_plot, color='r', sort
         break
 
 
-PATH, SEED, title = sys.argv[1], sys.argv[2], sys.argv[3]
+PATH, title = sys.argv[1], sys.argv[2]
 
-plot_ranked_mixing_analysis(PATH+'_outs_'+SEED, title, None, 'n_pgas')
-plot_ranked_mixing_analysis(PATH+'_outs_'+SEED, title, None, 'p_pgas')
-plot_ranked_mixing_analysis(PATH+'_outs_'+SEED, title, None, 'cum_S')
+plot_ranked_mixing_analysis(PATH, title, None, 'n_pgas', sort=True)
+plot_ranked_mixing_analysis(PATH, title, None, 'p_pgas', sort=True)
+plot_ranked_mixing_analysis(PATH, title, None, 'cum_S', sort=True)
+plot_ranked_mixing_analysis(PATH, title, None, 'n_pgas', sort=False)
+plot_ranked_mixing_analysis(PATH, title, None, 'p_pgas', sort=False)
+plot_ranked_mixing_analysis(PATH, title, None, 'cum_S', sort=False)

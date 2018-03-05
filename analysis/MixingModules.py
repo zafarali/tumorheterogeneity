@@ -53,7 +53,7 @@ def perform_mixing_analysis(pipeline):
     cluster_informations = []
     for i in range(100):
         try:
-            outs = pipeline.sampler.sample_fixed_points(n=100,
+            outs = pipeline.sampler.sample_fixed_points(n=500,
                                                         centre=rand_coordinate.next(),
                                                         with_genotypes=True,
                                                         with_distances=True)
@@ -69,6 +69,7 @@ def perform_mixing_analysis(pipeline):
 
             # save cluster information
             cluster_informations.append({'COM':cluster_COM.tolist(),
+                                         'distance_to_tumor_COM':distance_to_tumor_COM,
                                          'genotypes': [genotype.snps for genotype in genotypes],
                                          'cell_distances': cell_distances.tolist() })
 
