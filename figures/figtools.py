@@ -271,11 +271,7 @@ def neighbour_iterator(arr):
 
 numbins = 100
 
-# binrange = np.linspace(0.00006, 0.005, num=40, endpoint=False).tolist() + np.linspace(0.005,1,num=500).tolist()
-
-# binrange = np.linspace(0, 1, num=100)*(np.exp(0.1)-1)
-
-binrange = np.logspace(np.log10(0.0001), np.log10(1), num=50)
+binrange = np.logspace(np.log10(0.0001), np.log10(1), num=numbins)
 
 # _, GREEN, RED, _, _, BLUE = sns.color_palette('colorblind')
 RED, BLUE, GREEN = sns.xkcd_palette(["amber", "dusty purple", "faded green"])
