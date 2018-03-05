@@ -87,19 +87,21 @@ def plot_ranked_mixing_analysis(root_folder, label, ax, to_plot, color='r'):
 
         for idx, i in enumerate([0, 1, 2, -3, -2, -1]): #TODO: for now just go in backward direction
             ax = fig.add_subplot(subplots+str(idx+1))
-            distance_to_tumor_COM, distance_to_cluster_COM, p_sgas, n_sgas, p_pgas, n_pgas = data[i]
+            distance_to_tumor_COM, distance_to_cluster_COM, p_sgas, n_sgas, p_pgas, n_pgas, cum_S = data[i]
             distance_to_tumor_COM = distance_to_tumor_COM[0]
 
             p_pgas = np.array(p_pgas)
             p_sgas = np.array(p_sgas)
             n_pgas = np.array(n_pgas)
             n_sgas = np.array(n_sgas)
+            cum_S = np.array(cum_S)
 
             sorted_distances = np.argsort(distance_to_cluster_COM)
             ranked_p_pgas = p_pgas[sorted_distances]
             ranked_n_pgas = n_pgas[sorted_distances]
             ranked_n_sgas = n_sgas[sorted_distances]
             ranked_p_sgas = p_sgas[sorted_distances]
+            ranked_cum_S = cum_S[sorted_distances]
 
             if to_plot == 'n_pgas':
                 ax.scatter(np.arange(0, ranked_n_pgas.shape[0], 1), ranked_n_pgas, \
@@ -117,6 +119,10 @@ def plot_ranked_mixing_analysis(root_folder, label, ax, to_plot, color='r'):
                 ax.scatter(np.arange(0, ranked_p_sgas.shape[0], 1), ranked_p_sgas, \
                             label='{} (distance: {:3g})'.format(label, distance_to_tumor_COM), color=color)
                 ax.set_ylabel('% Shared GAS')
+            elif to_plot == 'cum_S':
+                ax.plot(np.arange(0, ranked_cum_S.shape[0], 1), ranked_cum_S, \
+                            label='{} (distance: {:3g})'.format(label, distance_to_tumor_COM), color=color)
+                ax.set_ylabel('S(n)')
 
             ax.set_xlabel('Ranked Distance \nfrom Cluster center')
             ax.legend()
@@ -125,7 +131,10 @@ def plot_ranked_mixing_analysis(root_folder, label, ax, to_plot, color='r'):
         break
 
 plot_ranked_mixing_analysis('../model/experiments/u0.01875/1_0_0_outs_10', 'No Turnover', None, 'n_pgas')
+plot_ranked_mixing_analysis('../model/experiments/u0.01875/1_0_0_outs_10', 'No Turnover', None, 'cum_S')
 plot_ranked_mixing_analysis('../model/experiments/u0.01875/1_0_065_outs_10', 'Turnover 065', None, 'n_pgas')
+plot_ranked_mixing_analysis('../model/experiments/u0.01875/1_0_065_outs_10', 'Turnover 065', None, 'cum_S')
+
 
 """
 Trees
