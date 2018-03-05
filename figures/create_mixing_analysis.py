@@ -22,9 +22,13 @@ from analysis.newick import loads
 Ranked Distance plots
 """
 def plot_ranked_mixing_analysis(root_folder, label, ax, to_plot, color='r'):
-    mixing_files = glob(root_folder+'*/Mar*/mixing_analysis.npy')
+    search_folder = root_folder+'*/Mar*/mixing_analysis.npy'
+    print('Search foler:', search_folder)
+    mixing_files = glob(search_folder)
 
     all_data = []
+    print(mixing_files)
+
     for file_ in mixing_files:
         data = np.load(file_)
         data = data[np.argsort(data[:, 0, 0])] # sort the data according to how far from center.
