@@ -15,7 +15,7 @@ from figtools import *
 from analysis.newick_tree_maker import neighbor_joining_tree
 ALL_SEEDS = ['10', '102', '100', '15', '3', '3318', '33181', '33185', '9', '99', '33186']
 import json
-from newick import loads
+from analysis.newick import loads
 
 """
 Fanning Plots
