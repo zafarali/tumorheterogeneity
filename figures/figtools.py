@@ -331,13 +331,13 @@ def freq_plot(ax, mappings,
         x_meaned = np.mean(np.array(all_xs), axis=0)
 
         y_keep = y != 0
-        y2_keep = y2 != 0
+        if not neutral: y2_keep = y2 != 0
 
         y1_x_plt = np.log10(x_meaned[y_keep])
         y1_plt = np.log10(y[y_keep]).astype(np.float)
 
-        y2_x_plt = np.log10(x_meaned[y2_keep])
-        y2_plt = np.log10(y2[y2_keep]).astype(np.float)
+        if not neutral: y2_x_plt = np.log10(x_meaned[y2_keep])
+        if not neutral: y2_plt = np.log10(y2[y2_keep]).astype(np.float)
 
         print model_name + ':'
         f_sum = np.around(np.sum(y_or), decimals=2)
