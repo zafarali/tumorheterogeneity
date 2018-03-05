@@ -14,10 +14,3 @@ python2 finescaleAFS.py noturnover close $PATH_TO_ALL_SIMS
 python2 finescaleAFS.py noturnover notclose $PATH_TO_ALL_SIMS
 python2 create_SvsN_figures.py
 
-
-"""
-Log file in log/o_finescaleAFS.sh--1520199391 and log/e_finescaleAFS.sh--1520199391\n
-args; finescaleAFS.sh
-
-6613903
-"""
