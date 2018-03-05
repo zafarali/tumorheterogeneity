@@ -20,5 +20,5 @@ python2 create_SvsN_figures.py
 python2 create_Splots_figures.py
 python2 create_cluster_advantage_plots.py
 python2 create power_analysis_big.py
-
+python2 create_mixing_analysis.py
 

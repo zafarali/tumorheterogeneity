@@ -1,7 +1,12 @@
 from collections import Counter
-from newick import loads
 import string
+import re
 
+def number_yielder():
+    counter = 0
+    while True:
+        yield str(counter)
+        counter += 1
 
 def neighbor_joining_tree(genomes):
     """
@@ -9,7 +14,7 @@ def neighbor_joining_tree(genomes):
     :param genomes: a list of genomes
     """
     counter = Counter()
-    [counter.update(genome.snps) for genome in genomes]
+    [counter.update(genome) for genome in genomes]
     count_order = counter.most_common()
 
     def split(genomes_L, genomes_R, count_order, split_on):
@@ -22,7 +27,7 @@ def neighbor_joining_tree(genomes):
 
             for genome in genomes_L:
                 #                 genome.print_tree_form_true()
-                if snp_id in genome.snps:
+                if snp_id in genome:
                     genomes_in_L.append(genome)
                 else:
                     genomes_not_L.append(genome)
@@ -37,7 +42,7 @@ def neighbor_joining_tree(genomes):
 
             for genome in genomes_R:
                 #                 genome.print_tree_form_true()
-                if snp_id in genome.snps:
+                if snp_id in genome:
                     genomes_in_R.append(genome)
                 else:
                     genomes_not_R.append(genome)
@@ -55,8 +60,11 @@ def neighbor_joining_tree(genomes):
 
     computed = str(split(genomes, [], count_order, 0)[0])
     computed = computed.replace(',)', '').replace('\'', '')
+    mapper = dict(zip(map(str, genomes), number_yielder()))
     for genome in genomes:
-        computed = computed.replace(str(genome), str(genome.original_id))
+        computed = computed.replace(str(genome), mapper[str(genome)])
 
     computed = computed.replace(']', ')').replace('[', '(')
-    return computed
+    computed = re.sub('(((\d+,) )+)', lambda g: '', computed)
+    computed = re.sub('(\(\d+\))', lambda g: g.group(0).replace(')', '').replace('(', ''), computed)
+    return computed, mapper
