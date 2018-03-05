@@ -24,10 +24,9 @@ def create_trees(root_folder, seeds):
     for seed in seeds:
         cluster_search = root_folder +'_outs_'+seed+'/Mar*/cluster_data.json'
         mixing_search = root_folder +'_outs_'+seed+'/Mar*/mixing_analysis.npy'
-
+        print('looking in:',cluster_search, mixing_search)
         cluster_data = glob(cluster_search)
         mixing_data = glob(mixing_search)
-        print(cluster_data)
         for cluster_data_,mixing_data_ in zip(cluster_data, mixing_data):
             data = json.load(open(cluster_data_, 'r'))
             mixing_data = np.load(mixing_data_)
