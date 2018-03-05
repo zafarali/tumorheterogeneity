@@ -24,14 +24,13 @@ for death_rate in ['005', '01', '02', '065']:
         all_data = []
         for replicate_folder in replicates:
             try:
-                datafile = glob(replicate_folder + '/*/statistics.csv')[0]
-                mean_SNPs_in_clusters = np.mean(pd.read_csv(datafile)['mean_SNPs']) / mutation_rate
-                all_data.append(mean_SNPs_in_clusters)
+                datafile = glob(replicate_folder+'/*/S_list_ordered.npy')[0]
+                SNPs_per_cell = np.load(datafile).mean(axis=0)[0]
+                number_of_divisions = SNPs_per_cell/mutation_rate
+                all_data.append(number_of_divisions)
             except Exception as e:
                 print('Exception occured:'+str(e))
                 pass
-        #             print 'Exception: '+str(e)
-        #             print 'Folder Skipped: '+replicate_folder
 
         print model_name + ' mean number of divisions: ' + str(np.mean(all_data))
         print model_name + ' SD number of divisions: ' + str(np.std(all_data))

@@ -118,7 +118,7 @@ plt.savefig('./AFS-d001.pdf')
 how does death rate in no selection simulations change the from the theoretical prediction?
 """
 
-sns.set_context('paper', font_scale=0.75)
+sns.set_context('paper', font_scale=1.5)
 
 pi = np.pi
 mu = 0.02
@@ -150,7 +150,7 @@ ax.plot(np.log10(freq_support), np.log10(freq_support**(-2)), '--', label='$f^-2
 
 ax.set_xlim([-4.15, 0.])
 ax.set_ylim(bottom=0)
-ax.legend(fontsize=12,loc=(0.4,0.33))
+ax.legend(loc=(0.4,0.33))
 sns.despine()
 ax.set_title('(a) No Selection')
 
@@ -176,7 +176,7 @@ ax.plot(np.log10(freq_support), np.log10(freq_support**(-2)), '--', label='$f^-2
 
 ax.set_xlim([-4.15, 0.])
 ax.set_ylim(bottom=0)
-ax.legend(fontsize=12,loc=(0.4,0.33))
+ax.legend(loc=(0.4,0.33))
 sns.despine()
 ax.set_title('(b) Selection = 1%')
 
@@ -203,7 +203,7 @@ ax.plot(np.log10(freq_support), np.log10(freq_support**(-2)), '--', label='$f^-2
 
 ax.set_xlim([-4.15, 0.])
 ax.set_ylim(bottom=0)
-ax.legend(fontsize=12,loc=(0.4,0.33))
+ax.legend(loc=(0.4,0.33))
 sns.despine()
 ax.set_title('(c) Selection = 10%')
 fig.tight_layout()
