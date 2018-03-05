@@ -236,19 +236,6 @@ Supplementary figure for SPlots
 def S_plot_paper_supp(root_folder, seeds, k=0.01, pts=100, cutoff='00'):
     fig = plt.figure(figsize=(13, 3))
 
-    #     ax = fig.add_subplot(141)
-    #     folder = root_folder+'/1_0'
-    #     d2='065'
-
-    #     plot_it(data_to_plot(folder, seeds, yaxis='S_list_ordered', mode=2, d=d2), ax)
-    # #     plot_it(data_to_plot(folder, seeds, yaxis='S_list'+cutoff+'_big', mode=2, d=d2), ax)
-    #     plot_density(ax, folder, seeds, d=d2)
-
-    #     ax.set_title('(a) No Turnover')
-    #     ax.set_xlim([50,325])
-    #     ax.set_ylim([0,30])
-    #     ax.set_ylabel('Mean # Somatic Mutations')
-    #     ax.set_xlabel('Distance from Centre of Tumor')
 
     d = '005'
     ax = fig.add_subplot(141)

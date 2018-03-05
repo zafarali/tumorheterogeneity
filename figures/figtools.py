@@ -109,7 +109,7 @@ def exponential_mean_function(x_i, y_i, k=1):
             @returns
                 <y(x)> : average value at position x
         """
-        w = exp(-k * (x - x_i) ** 2)
+        w = np.exp(-k * (x - x_i) ** 2)
         return np.dot(w, y_i) / np.sum(w)
 
     return exponential_mean_at
@@ -205,6 +205,7 @@ def data_to_plot(folder, seeds, yaxis='unique_combos', k=0.01, pts=100, mode=1, 
             else:
                 samples.append(prepare_data2(this_folder, yaxis=yaxis, k=k, pts=pts))
         except Exception as e:
+            # TODO: there is an error going on here
             print 'data_to_plot Exception:'+str(e)
             print 'Skipped Folder:'+this_folder
 #             raise e
@@ -281,8 +282,11 @@ RED, BLUE, GREEN = sns.xkcd_palette(["amber", "dusty purple", "faded green"])
 # RED, BLUE, GREEN = sns.color_palette("cubehelix", 3)
 sns.set_context('paper', font_scale=1.5)
 
-
-def freq_plot(ax, mappings, colors_ = [RED, GREEN, BLUE], labels_ = ['No Turnover', 'Surface Turnover', 'Turnover']):
+# TODO: neutral simultations do not have drv files, need to fork this into two different things
+def freq_plot(ax, mappings,
+              colors_ = [RED, GREEN, BLUE],
+              labels_ = ['No Turnover', 'Surface Turnover', 'Turnover'],
+              neutral=False):
     lines = []
     labels = []
     for mapping, color, model_name in zip(mappings, colors_,labels_):
@@ -302,7 +306,8 @@ def freq_plot(ax, mappings, colors_ = [RED, GREEN, BLUE], labels_ = ['No Turnove
                 muts = pd.read_csv(datafile, sep=' ', names=['Num', 'SNP', 'abundancy'])
                 datafile = glob(replicate_folder + '/drv_PMs_*.dat')[0]
 
-                drvs = pd.read_csv(datafile, sep=' ', names=['Num', 'SNP', 'abundancy'])
+                if not neutral:
+                    drvs = pd.read_csv(datafile, sep=' ', names=['Num', 'SNP', 'abundancy'])
 
                 #                 print(np.min(muts.abundancy))
                 y, x = np.histogram(muts.abundancy, bins=binrange)
@@ -314,12 +319,11 @@ def freq_plot(ax, mappings, colors_ = [RED, GREEN, BLUE], labels_ = ['No Turnove
                 all_muts.append(y)
                 all_xs.append(x_meaned)
 
-                y, x = np.histogram(drvs.abundancy, bins=binrange)
-                #                 print(y)
-                all_drvs_or.append(y.copy())
-                y = [y_ / float(w_) for y_, w_ in zip(y.tolist(), list(widths(x)))]
-                #                 print(y)
-                all_drvs.append(y)
+                if not neutral:
+                    y, x = np.histogram(drvs.abundancy, bins=binrange)
+                    all_drvs_or.append(y.copy())
+                    y = [y_ / float(w_) for y_, w_ in zip(y.tolist(), list(widths(x)))]
+                    all_drvs.append(y)
 
             except Exception as e:
                 print 'Could not find file:' + str(replicate_folder) + ' ' + str(e)
@@ -327,7 +331,7 @@ def freq_plot(ax, mappings, colors_ = [RED, GREEN, BLUE], labels_ = ['No Turnove
         y = np.mean(np.array(all_muts), axis=0)
         y2 = np.mean(np.array(all_drvs), axis=0)
         y_or = np.mean(np.array(all_muts_or), axis=0)
-        y2_or = np.mean(np.array(all_drvs_or), axis=0)
+        if not neutral: y2_or = np.mean(np.array(all_drvs_or), axis=0)
         x_meaned = np.mean(np.array(all_xs), axis=0)
 
         y_keep = y != 0
@@ -341,16 +345,17 @@ def freq_plot(ax, mappings, colors_ = [RED, GREEN, BLUE], labels_ = ['No Turnove
 
         print model_name + ':'
         f_sum = np.around(np.sum(y_or), decimals=2)
-        d_sum = np.around(np.sum(y2_or), decimals=2)
+        if not neutral: d_sum = np.around(np.sum(y2_or), decimals=2)
         print 'FREQ_SUM:' + str(f_sum)
-        print 'DRV_SUM:' + str(d_sum)
+        if not neutral: print 'DRV_SUM:' + str(d_sum)
         print 'PROP DRV:' + str(d_sum / f_sum)
 
         lines += ax.plot(y1_x_plt, y1_plt, 'o', color=color, alpha=1, label=str(model_name) + ' $S$=' + str(f_sum))
         labels += [str(model_name) + ' $S$=' + str(f_sum)]
-        lines += ax.plot(y2_x_plt, y2_plt, '^', color=color, alpha=0.8,
-                         label=str(model_name) + ' (Drivers) $S_d$=' + str(d_sum), markersize=10)
-        labels += [str(model_name) + ' (Drivers) $S_d$=' + str(d_sum)]
+        if not neutral:
+            lines += ax.plot(y2_x_plt, y2_plt, '^', color=color, alpha=0.8,
+                             label=str(model_name) + ' (Drivers) $S_d$=' + str(d_sum), markersize=10)
+            labels += [str(model_name) + ' (Drivers) $S_d$=' + str(d_sum)]
         ax.plot(np.log10(np.ones(40) * 0.0001), np.linspace(0, 10, num=40), '--', color='gray')
 
     return lines, labels
