@@ -15,7 +15,6 @@ from figtools import *
 
 def alternating_power_plot(power_plots, ax):
     cmapa = create_colormap()
-    HUGE_KEYS_ = ['powhuge100', 'powhuge1000', 'powhuge10000']
     KEYS_ = ['pow_S_000', 'pow_S_001', 'pow_S_010']
     COLORS_ = [cmapa(4), cmapa(9), cmapa(14)]
     LABELS_ = ['f>0%', 'f>1%', 'f>10%']
