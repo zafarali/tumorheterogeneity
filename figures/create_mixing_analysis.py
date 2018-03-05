@@ -37,6 +37,7 @@ def plot_diffs(root_folder, seeds, k=0.01, pts=100, cutoff='00'):
 
     plot_it(to_plot, ax)
     plot_it(Turnover, ax, '--')
+    ax.set_title('d=0.05')
     ax.set_xlabel('Distance from COM of Tumor')
     ax.set_ylabel('S')
     Turnover = data_to_plot(folder, seeds, yaxis='S_list_ordered', mode=2, d='01')
@@ -50,6 +51,7 @@ def plot_diffs(root_folder, seeds, k=0.01, pts=100, cutoff='00'):
     plot_it(to_plot, ax)
     plot_it(Turnover, ax, '--')
     ax.set_xlabel('Distance from COM of Tumor')
+    ax.set_title('d=0.1')
     ax.set_ylabel('S')
     ax = fig.add_subplot(133)
     Turnover = data_to_plot(folder, seeds, yaxis='S_list_ordered', mode=2, d='02')
@@ -61,9 +63,10 @@ def plot_diffs(root_folder, seeds, k=0.01, pts=100, cutoff='00'):
 
     plot_it(to_plot, ax)
     plot_it(Turnover, ax, '--')
+    ax.set_title('d=0.2')
     ax.set_xlabel('Distance from COM of Tumor')
     ax.set_ylabel('S')
-
+    fig.tight_layout(h_pad=1)
     return fig
 
 plot_diffs('../model/experiments/u0.01875/',ALL_SEEDS).savefig('./Splot-fanning.pdf')
