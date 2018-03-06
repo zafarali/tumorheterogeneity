@@ -93,7 +93,7 @@ def plot_ranked_mixing_analysis(root_folder, label, ax, to_plot, color='r', sort
                 ax.set_xlabel('Distance from \nCluster Center')
             ax.legend()
         fig.tight_layout(h_pad=1)
-        fig.savefig('./ranked_mixing_{}_{}_{}.pdf'.format(label, to_plot, sort))
+        fig.savefig(root_folder+'./ranked_mixing_{}_{}_{}.pdf'.format(label, to_plot, sort))
         break
 
 
