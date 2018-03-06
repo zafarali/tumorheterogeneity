@@ -87,8 +87,10 @@ def plot_ranked_mixing_analysis(root_folder, label, ax, to_plot, color='r', sort
                 ax.set_ylabel('S(n)')
                 ax.set_title(' distance: {:3g}'.format(distance_to_tumor_COM))
 
-
-            ax.set_xlabel('Ranked Distance \nfrom Cluster center')
+            if sort:
+                ax.set_xlabel('Ranked Distance \nfrom Cluster center')
+            else:
+                ax.set_xlabel('Distance from \nCluster Center')
             ax.legend()
         fig.tight_layout(h_pad=1)
         fig.savefig('./ranked_mixing_{}_{}_{}.pdf'.format(label, to_plot, sort))
