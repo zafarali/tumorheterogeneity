@@ -34,8 +34,14 @@ small_c, med_c, big_c, biggest_c = ALTERNATE_COLORS
 HCC = pd.read_csv('./empirical/HCtumordata.csv')
 HCC = HCC.sort(columns='r')
 
-SELECTED_1_0_0  = '../model/experiments/u0.01875/1_0_0_outs_10/Mar1pipe_out_Fri_Mar__2_20_42_31_2018'
-SELECTED_1_0_02 = '../model/experiments/u0.01875/1_0_02_outs_10/Mar1pipe_out_Fri_Mar__2_21_18_46_2018'
+# REPLICATE 1
+# SELECTED_1_0_0  = '../model/experiments/u0.01875/1_0_0_outs_10/Mar1pipe_out_Fri_Mar__2_20_42_31_2018'
+# SELECTED_1_0_02 = '../model/experiments/u0.01875/1_0_02_outs_10/Mar1pipe_out_Fri_Mar__2_21_18_46_2018'
+
+# REPLICATE 2
+SELECTED_1_0_0  = '../model/experiments/u0.01875/1_0_0_outs_99/Mar1pipe_out_Sat_Mar__3_01_01_33_2018'
+SELECTED_1_0_02 = '../model/experiments/u0.01875/1_0_02_outs_99/Mar1pipe_out_Sat_Mar__3_01_44_36_2018'
+
 # S_list_ordered.npy
 def empirical_compare_plot(root_folder, seeds):
     NT_folder = root_folder + '/1_0'
@@ -133,7 +139,7 @@ def empirical_compare_plot(root_folder, seeds):
 Figure comparing empirical and actual tumor estimates
 """
 
-empirical_compare_plot('../model/experiments/u0.01875',seeds=['10']).savefig('fig03.pdf')
+empirical_compare_plot('../model/experiments/u0.01875',seeds=['99']).savefig('fig03.pdf')
 
 """
 Supplementary figure with power analysis for no turnover model
