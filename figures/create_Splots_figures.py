@@ -145,7 +145,7 @@ def empirical_compare_plot(root_folder, seeds):
 Figure comparing empirical and actual tumor estimates
 """
 
-empirical_compare_plot('../model/experiments/u0.01875',seeds=SPECIAL_SEED).savefig('fig03.pdf')
+empirical_compare_plot('../model/experiments/u0.01875',seeds=[SPECIAL_SEED]).savefig('fig03.pdf')
 
 """
 Supplementary figure with power analysis for no turnover model
