@@ -44,7 +44,8 @@ def create_trees(root_folder, seed, Title):
             tree.resolve()
             tree.plot(1, 0, ax=ax)
             ax.set_title('distance:{:3g}'.format(distance_from_COM))
-
+        fig.tight_layout()
+        fig.suptitle(Title)
         fig.savefig('./tree_plots_{}_{}.pdf'.format(Title, z))
 
 PATH, SEED, Title = sys.argv[1], sys.argv[2], sys.argv[3]
