@@ -47,7 +47,7 @@ def create_trees(root_folder, seed):
 
         fig.savefig(root_folder+'_outs_'+seed+'/tree_plots_{}.pdf'.format(z))
 
-# PATH, SEED = sys.argv[1], sys.argv[2]
+PATH, SEED = sys.argv[1], sys.argv[2]
 create_trees(PATH, SEED)
 # create_trees('../model/no_death', '1')
 
