@@ -20,7 +20,7 @@ from analysis.newick import loads
 Trees
 """
 
-def create_trees(root_folder, seed):
+def create_trees(root_folder, seed, Title):
     cluster_search = root_folder +'_outs_'+seed+'/Mar*/cluster_data.json'
     mixing_search = root_folder +'_outs_'+seed+'/Mar*/mixing_analysis.npy'
     print('looking in:',cluster_search, mixing_search)
@@ -45,10 +45,10 @@ def create_trees(root_folder, seed):
             tree.plot(1, 0, ax=ax)
             ax.set_title('distance:{:3g}'.format(distance_from_COM))
 
-        fig.savefig(root_folder+'_outs_'+seed+'/tree_plots_{}.pdf'.format(z))
+        fig.savefig('./tree_plots_{}_{}.pdf'.format(Title, z))
 
-PATH, SEED = sys.argv[1], sys.argv[2]
-create_trees(PATH, SEED)
+PATH, SEED, Title = sys.argv[1], sys.argv[2], sys.argv[3]
+create_trees(PATH, SEED, Title)
 # create_trees('../model/no_death', '1')
 
 
