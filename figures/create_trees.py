@@ -49,7 +49,7 @@ def create_trees(root_folder, seed, title, fig, total_rows=1, row_to_start=0):
 
     return fig
 
-PATH, SEED, Title = sys.argv[1], sys.argv[2], sys.argv[3]
+PATH, SEED = sys.argv[1], sys.argv[2]
 create_trees(PATH, SEED, Title)
 # create_trees('../model/no_death', '1')
 fig = plt.figure(figsize=(14,10))
