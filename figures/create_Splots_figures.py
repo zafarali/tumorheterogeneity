@@ -129,7 +129,7 @@ def empirical_compare_plot(root_folder, seeds, frequency_threshold='00', frequen
 
     ax = f.add_subplot(222)
     alternating_power_plot(json.load(open('./turnover_power_02.json', 'r')), ax, frequency_threshold)
-    ax.set_title('(b) Power Analysis \n (d=0.2, p<0.01, >'+frequency_title+' frequency)')
+    ax.set_title('(b) Power Analysis \n (d=0.2, p<0.01)')
 
     f.tight_layout(h_pad=1.0, w_pad=0.7)
     return f
