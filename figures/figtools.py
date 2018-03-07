@@ -357,16 +357,21 @@ def freq_plot(ax, mappings,
     return lines, labels
 
 
-def alternating_power_plot(power_plots, ax):
-    cmapa = create_colormap()
-    HUGE_KEYS_ = ['powhuge100', 'powhuge1000', 'powhuge10000']
-    KEYS_ = ['pow2001', 'pow7001', 'pow12001', 'pow17001', 'pow22001', 'powbig001'] + HUGE_KEYS_
-    COLORS_ = [YELLOW, cmapa(4), cmapa(9), cmapa(14), cmapa(20), cmapa(24), small_c, big_c, biggest_c]
-    LABELS_ = ['size=1', 'size=(2,7)', 'size=(8,12)', 'size=(13,17)', 'size=(18,22)', 'size=(23,30)', 'size=100',
-               'size=1000', 'size=10000']
 
-    for k, color, label in zip(KEYS_, COLORS_, LABELS_):
-        x_ = power_plots['x_h'] if k in HUGE_KEYS_ else power_plots['x']
+CTC_sizes = [(1,1), (2,7), (8,12), (13,17), (18, 22), (23, 30)]
+
+
+def alternating_power_plot(power_plots, ax, frequency_threshold='00'):
+    cmapa = create_colormap()
+    HUGE_KEYS_ = [ 'power_'+s+'_'+frequency_threshold  for s in ['100', '1000', '10000', '20000']]
+    CTC_KEYS_ = [ 'power_'+str(ctc_min_size)+'_'+str(ctc_max_size) for (ctc_min_size, ctc_max_size) in CTC_sizes ]
+    ALL_KEYS = CTC_KEYS_ + HUGE_KEYS_
+    COLORS_ = [YELLOW, cmapa(4), cmapa(9), cmapa(14), cmapa(20), cmapa(24), small_c, med_c, big_c, biggest_c]
+    LABELS_ = ['1', '(2,7)', '(8,12)', '(13,17)', '(18,22)', '(23,30)', '100',
+               '1000', '10000', '20000']
+
+    for k, color, label in zip(ALL_KEYS, COLORS_, LABELS_):
+        x_ = power_plots['x_biopsy_'+frequency_threshold] if k in HUGE_KEYS_ else power_plots['x_small']
 
         pos = np.array(power_plots[k]['pos'])
         neg = np.array(power_plots[k]['neg'])

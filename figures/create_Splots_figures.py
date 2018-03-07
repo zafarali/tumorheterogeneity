@@ -35,18 +35,8 @@ small_c, med_c, big_c, biggest_c = ALTERNATE_COLORS
 HCC = pd.read_csv('./empirical/HCtumordata.csv')
 HCC = HCC.sort(columns='r')
 
-# REPLICATE 1
-# SELECTED_1_0_0  = '../model/experiments/u0.01875/1_0_0_outs_10/Mar1pipe_out_Fri_Mar__2_20_42_31_2018'
-# SELECTED_1_0_02 = '../model/experiments/u0.01875/1_0_02_outs_10/Mar1pipe_out_Fri_Mar__2_21_18_46_2018'
-
-# REPLICATE 2
-# SELECTED_1_0_0  = '../model/experiments/u0.01875/1_0_0_outs_99/Mar1pipe_out_Sat_Mar__3_01_01_33_2018'
-# SELECTED_1_0_02 = '../model/experiments/u0.01875/1_0_02_outs_99/Mar1pipe_out_Sat_Mar__3_01_44_36_2018'
-
-# VARIABLE
-SELECTED_1_0_0 = sys.argv[1]
-SELECTED_1_0_02 = sys.argv[2]
-SPECIAL_SEED = sys.argv[3]
+# the seed for which to look at the empirical plot
+SPECIAL_SEED = sys.argv[1]
 
 # S_list_ordered.npy
 def empirical_compare_plot(root_folder, seeds):
@@ -83,8 +73,9 @@ def empirical_compare_plot(root_folder, seeds):
     ax = f.add_subplot(223)
     plot_density(ax, folder, seeds, d='0')
 
-    S = np.load(SELECTED_1_0_0+'/S_list01_big.npy')[:,3]
-    distances = np.load(SELECTED_1_0_0+'/dist_01_big.npy')[:,3]
+    S = np.load(glob(NT_folder+'_0_outs_'+str(seeds[0])+'/Mar1*/S_list01_big.npy')[0])[:,3]
+    distances = np.load(glob(NT_folder+'_0_outs_'+str(seeds[0])+'/Mar1*/dist_01_big.npy')[0])[:,3]
+
     sampled = random.sample(xrange(0, 100), 23)
     s_sampled = S[sampled]
     dist_sampled = distances[sampled]
@@ -108,8 +99,10 @@ def empirical_compare_plot(root_folder, seeds):
     ax = f.add_subplot(224)
 
     plot_density(ax, folder, seeds, d='02')
-    S = np.load(SELECTED_1_0_02+'/S_list01_big.npy')[:,3]
-    distances = np.load(SELECTED_1_0_02+'/dist_01_big.npy')[:,3]
+
+    S = np.load(glob(T_folder+'_02_outs_'+str(seeds[0])+'/Mar1*/S_list01_big.npy')[0])[:,3]
+    distances = np.load(glob(T_folder+'_02_outs_'+str(seeds[0])+'/Mar1*/dist_01_big.npy')[0])[:,3]
+
     sampled = random.sample(xrange(0, 100), 23)
     s_sampled = S[sampled]
     dist_sampled = distances[sampled]
