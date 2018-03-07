@@ -14,6 +14,7 @@ sns.set_context('paper', font_scale=1.5)
 from glob import glob
 import json
 from figtools import *
+from decimal import Decimal
 
 ALL_SEEDS = ['10','100','102','15','3','3318','33181','33185','33186','34201810','342018101','342018102','8','9','99']
 
@@ -61,7 +62,7 @@ def empirical_compare_plot(root_folder, seeds, frequency_threshold='00', frequen
     results = model.fit()
 
     y = results.predict(sm.add_constant(x))
-    ax.plot(x, y, label='Regression (p=' + str(round(results.pvalues[1], 3)) + ')', color=biggest_c)
+    ax.plot(x, y, label='Regression (p={:.2e})'.format(Decimal(results.pvalues[1])), color=biggest_c)
     ax.scatter(HCC.r, HCC.SNV_corrected, label='Raw Counts', color=biggest_c)
     ax.set_xlim([0, HCC.r.max() + 0.1])
     ax.set_ylim(bottom=0)
@@ -88,7 +89,7 @@ def empirical_compare_plot(root_folder, seeds, frequency_threshold='00', frequen
     results = model.fit()
 
     y = results.predict(sm.add_constant(x))
-    ax.plot(x, y, label='Regression (p=' + str(round(results.pvalues[1], 3)) + ')', color=biggest_c)
+    ax.plot(x, y, label='Regression (p={:.2e})'.format(Decimal(results.pvalues[1])), color=biggest_c)
     ax.set_ylabel('# Somatic Mutations')
     ax.set_xlabel('Distance from Centre of Tumor (cells)')
     ax.set_title('(c) No Turnover (>'+frequency_title+' frequency)\n')
@@ -115,7 +116,7 @@ def empirical_compare_plot(root_folder, seeds, frequency_threshold='00', frequen
     results = model.fit()
 
     y = results.predict(sm.add_constant(x))
-    ax.plot(x, y, label='Regression (p=' + str(round(results.pvalues[1], 3)) + ')', color=biggest_c)
+    ax.plot(x, y, label='Regression (p={:.2e})'.format(Decimal(results.pvalues[1])), color=biggest_c)
     ax.set_xlabel('Distance from Centre of Tumor (cells)')
 
     ax.legend(loc=2)
