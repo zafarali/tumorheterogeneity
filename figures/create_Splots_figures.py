@@ -148,19 +148,20 @@ Supplementary figure with power analysis for no turnover model
 """
 
 def make_subplots_power_analysis(alt_powers, title):
-    f = plt.figure(figsize=(13, 5))
+    f = plt.figure(figsize=(13, 4))
     ax = f.add_subplot(131)
-    alternating_power_plot(alt_powers, ax, '01')
-    ax.set_title(title+' (f>10%)\n Significance Threshold = 0.01')
-
-    ax = f.add_subplot(132)
     alternating_power_plot(alt_powers, ax, '00')
     ax.set_title(title+' (f>0%)\n Significance Threshold = 0.01')
 
-    ax = f.add_subplot(133)
+    ax = f.add_subplot(132)
     alternating_power_plot(alt_powers, ax, '001')
     ax.set_title(title+' (f>1%)\n Significance Threshold = 0.01')
 
+    ax = f.add_subplot(133)
+    alternating_power_plot(alt_powers, ax, '01')
+    ax.set_title(title + ' (f>10%)\n Significance Threshold = 0.01')
+    sns.despine()
+    f.tight_layout(h_pad=1)
     return f
 
 alt_powers = json.load(open('./noturnover_power.json', 'r'))
@@ -175,6 +176,8 @@ make_subplots_power_analysis(alt_powers, 'd=0.05').savefig('./turnover_power005.
 alt_powers = json.load(open('./turnover_power_01.json', 'r'))
 make_subplots_power_analysis(alt_powers, 'd=0.1').savefig('./turnover_power01.pdf')
 
+alt_powers = json.load(open('./turnover_power_02.json', 'r'))
+make_subplots_power_analysis(alt_powers, 'd=0.2').savefig('./turnover_power02.pdf')
 
 """
 Figure 2 with multiple S_plots.
