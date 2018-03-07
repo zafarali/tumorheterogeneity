@@ -167,7 +167,7 @@ class Node(object):
                 midpoint_1 = midpoint - width / 2. + width_1 / 2.  # Find the midpoint of each window
                 midpoint_2 = midpoint + width / 2. - width_1 / 2.  # Find the midpoint of each window
                 # Plot horizontal connector
-                ax.plot([midpoint_1, midpoint_2], [branch_height, branch_height], 'b')
+                ax.plot([midpoint_1, midpoint_2], [branch_height, branch_height], c=color)
                 for i, _ in enumerate(self.genomes):
                     ax.scatter(midpoint_1 + width_1 * i, branch_height, color=color, marker='x')
             else:
