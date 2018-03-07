@@ -73,7 +73,7 @@ def empirical_compare_plot(root_folder, seeds, frequency_threshold='00', frequen
     folder = root_folder + '/1_0'
     ax = f.add_subplot(223)
     plot_density(ax, folder, seeds, d='0')
-
+    print(NT_folder+'_0_outs_'+str(seeds[0])+'/Mar1*/S_list'+frequency_threshold+'_big.npy')
     S = np.load(glob(NT_folder+'_0_outs_'+str(seeds[0])+'/Mar1*/S_list'+frequency_threshold+'_big.npy')[0])[:,3]
     distances = np.load(glob(NT_folder+'_0_outs_'+str(seeds[0])+'/Mar1*/dist_'+frequency_threshold+'_big.npy')[0])[:,3]
 
@@ -128,7 +128,7 @@ def empirical_compare_plot(root_folder, seeds, frequency_threshold='00', frequen
     cmapa = create_colormap()
 
     ax = f.add_subplot(222)
-    alternating_power_plot(json.load(open('./turnover_power02.json', 'r')), ax, frequency_threshold)
+    alternating_power_plot(json.load(open('./turnover_power_02.json', 'r')), ax, frequency_threshold)
     ax.set_title('(b) Power Analysis \n (d=0.2, p<0.01, >'+frequency_title+' frequency)')
 
     f.tight_layout(h_pad=1.0, w_pad=0.7)
@@ -141,7 +141,7 @@ Figure comparing empirical and actual tumor estimates
 
 empirical_compare_plot('../model/experiments/u0.01875',seeds=[SPECIAL_SEED], frequency_threshold='01', frequency_title='10%').savefig('fig03.pdf')
 empirical_compare_plot('../model/experiments/u0.01875',seeds=[SPECIAL_SEED], frequency_threshold='001', frequency_title='1%').savefig('empirical_001.pdf')
-empirical_compare_plot('../model/experiments/u0.01875',seeds=[SPECIAL_SEED], frequency_threshold='0', frequency_title='0%').savefig('empirical_0.pdf')
+empirical_compare_plot('../model/experiments/u0.01875',seeds=[SPECIAL_SEED], frequency_threshold='00', frequency_title='0%').savefig('empirical_0.pdf')
 
 """
 Supplementary figure with power analysis for no turnover model
@@ -155,7 +155,7 @@ def make_subplots_power_analysis(alt_powers, title):
 
     f = plt.figure()
     ax = f.add_subplot(132)
-    alternating_power_plot(alt_powers, ax, '0')
+    alternating_power_plot(alt_powers, ax, '00')
     ax.set_title(title+' (f>0%)\n Significance Threshold = 0.01')
 
     f = plt.figure()
@@ -171,10 +171,10 @@ make_subplots_power_analysis(alt_powers, 'No Turnover').savefig('./noturnover_po
 Supplementary figure with power analysis for other death rates
 """
 
-alt_powers = json.load(open('./noturnover_power.json', 'r'))
+alt_powers = json.load(open('./turnover_power_005.json', 'r'))
 make_subplots_power_analysis(alt_powers, 'd=0.05').savefig('./turnover_power005.pdf')
 
-alt_powers = json.load(open('./noturnover_power.json', 'r'))
+alt_powers = json.load(open('./turnover_power_01.json', 'r'))
 make_subplots_power_analysis(alt_powers, 'd=0.1').savefig('./turnover_power01.pdf')
 
 
