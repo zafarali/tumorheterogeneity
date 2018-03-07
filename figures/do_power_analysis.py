@@ -66,11 +66,14 @@ def calculate_power_graph(distances, S, ctc_min_size=1, ctc_max_size=2, signific
     for n in range(2, total_samples):
         for i in range(100):
             sample_idx = random.sample(xrange(0, total_samples), n)  # select indexes to look at
+            print(sample_idx)
             # select the CTC sizes to look at within the range
             # using ctc_min_size-1 because the 0th column corresponds to the ctc of size 1
             ctc_size_selection_idx = np.random.randint(ctc_min_size - 1, ctc_max_size, size=n)
             sample_S = S[sample_idx, ctc_size_selection_idx].reshape(-1, 1)
             sample_distances = distances[sample_idx].reshape(-1, 1)
+            print('Sample_S',sample_S.shape)
+            print('sample_distances',sample_distances.shape)
 
             # prepare for regression
             sample_distances = sm.add_constant(sample_distances)
@@ -130,9 +133,14 @@ def conduct_power_analysis(root_folder, seed, name_append='', significance_thres
         S = np.load(glob(folder_prepared + '/S_list'+frequency_threshold+'_big.npy'))
         distances = np.load(glob(folder_prepared + '/dist_'+frequency_threshold+'_big.npy'))
 
+        print('S.shape', S.shape)
+        print('distances.shape', distances.shape)
+
         for i, biopsy_size in enumerate(Biopsies):
             S_h = S[:, i] # the ith index corresponds to biopsy of size biopsy_size
             distance_h = distances[:, i]
+            print('S_h', S_h)
+            print('distance_h', distance_h)
             power_plots['power_'+str(biopsy_size)+'_'+str(frequency_threshold)] = calculate_power_graph_big(distance_h, S_h, \
                                                                                                             significance_threshold=significance_threshold)
 
