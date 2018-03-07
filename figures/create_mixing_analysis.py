@@ -22,7 +22,7 @@ Ranked Distance plots
 """
 
 
-def plot_ranked_mixing_analysis(root_folder, label, fig, to_plot, color='r',
+def plot_ranked_mixing_analysis(root_folder, label, fig, to_plot, color='gray',
                                 sort=True, total_rows=1, row_to_start=0, show_labels=False):
     search_folder = root_folder + '*/Mar*/mixing_analysis.npy'
     print('Search foler:', search_folder)
