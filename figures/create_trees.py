@@ -38,6 +38,7 @@ def create_trees(root_folder, seed, title, fig, total_rows=1, row_to_start=0):
 
         for panel_count, idx in enumerate(sorted_idx[:4].tolist() + sorted_idx[-4:].tolist()):
             ax = fig.add_subplot(total_rows, 8, (8 * row_to_start) + panel_count + 1)
+            sns.despine(top=True, bottom=True, left=False, right=True)
             if panel_count == 0: ax.set_ylabel(title)
             distance_from_COM = np.sqrt(np.sum(np.array(data[idx]['COM'])**2))
             data_, all_snps = prepare_snp_data(data[idx]['genotypes'])
@@ -58,7 +59,6 @@ def create_trees(root_folder, seed, title, fig, total_rows=1, row_to_start=0):
 PATH, SEED = sys.argv[1], sys.argv[2]
 # create_trees('../model/no_death', '1')
 fig = plt.figure(figsize=(14,10))
-sns.despine(top=True, bottom=True, left=False, right=True)
 create_trees(PATH+'/1_0_0', SEED, 'No Turnover', fig, total_rows=5, row_to_start=0)
 create_trees(PATH+'/1_0_005', SEED, 'Turnover (d=0.05)', fig, total_rows=5, row_to_start=1)
 create_trees(PATH+'/1_0_01', SEED, 'Turnover (d=0.1)', fig, total_rows=5, row_to_start=2)
@@ -68,7 +68,6 @@ fig.tight_layout(h_pad=1)
 fig.savefig('./trees_selection.pdf')
 
 fig = plt.figure(figsize=(14,10))
-sns.despine(top=True, bottom=True, left=False, right=True)
 create_trees(PATH+'/0_0_0', SEED, 'No Turnover', fig, total_rows=5, row_to_start=0)
 create_trees(PATH+'/0_0_005', SEED, 'Turnover (d=0.05)', fig, total_rows=5, row_to_start=1)
 create_trees(PATH+'/0_0_01', SEED, 'Turnover (d=0.1)', fig, total_rows=5, row_to_start=2)
@@ -78,7 +77,6 @@ fig.tight_layout(h_pad=1)
 fig.savefig('./trees_no_selection.pdf')
 
 fig = plt.figure(figsize=(14,10))
-sns.despine(top=True, bottom=True, left=False, right=True)
 create_trees(PATH+'/10_0_0', SEED, 'No Turnover', fig, total_rows=5, row_to_start=0)
 create_trees(PATH+'/10_0_005', SEED, 'Turnover (d=0.05)', fig, total_rows=5, row_to_start=1)
 create_trees(PATH+'/10_0_01', SEED, 'Turnover (d=0.1)', fig, total_rows=5, row_to_start=2)
