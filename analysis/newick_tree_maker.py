@@ -1,4 +1,13 @@
+import matplotlib
+matplotlib.use('Agg')
+import seaborn
+import matplotlib.pyplot as plt
 from collections import Counter
+
+# collapse genomes into one:
+def collapse(genomes):
+    collapsed = set(genomes)
+    return collapsed
 
 def number_yielder():
     counter = 0
@@ -8,32 +17,34 @@ def number_yielder():
 
 def split(genomes, by):
     """
-    splits the list of genomes by the snp "by"
+    Splits genomes by snp in by
     :param genomes:
     :param by:
     :return:
     """
     L = []
     R = []
-    if len(genomes) == 1:
-        return genomes, R
+    # check if all the subgenomes are unique
+    if len(collapse(genomes)) == 1:
+        return genomes, R, True
     for g in genomes:
         if by in g:
             L.append(g)
         else:
             R.append(g)
-    return L, R
+    return L, R, False
 
 def prepare_snp_data(genomes):
     """
-    Prepares the genomes by removing duplicates
+    Prepares the snps for analysis.
     :param genomes:
     :return:
     """
-    data = set(map(frozenset, [[-1]+g for g in genomes]))
+    data = list(map(frozenset, [[-1]+g for g in genomes]))
     all_snps = Counter()
     [all_snps.update(data_) for data_ in data]
-    return data, all_snps.most_common()
+    return data, all_snps
+
 
 """
 The object will be used to create trees from genomes
@@ -49,7 +60,6 @@ class Node(object):
         self.R = None
         self.descendants = len(genomes)
 
-    #         print('CREATED NEW NODE:', genomes, snp_to_check)
 
     def resolve(self):
         if self.resolved:
@@ -69,9 +79,9 @@ class Node(object):
             else:
                 # increment the snp we are checking
                 self.snp_to_check += 1
-            # print('checking', self.all_snps[self.snp_to_check][0])
+                #             print('checking', self.all_snps[self.snp_to_check][0])
             # attempt to do a split
-            L, R = split(self.genomes, self.all_snps[self.snp_to_check][0])
+            L, R, only_one_unique = split(self.genomes, self.all_snps[self.snp_to_check][0])
             if len(R) == 0 and len(L) != 0:
                 # everyone is on the same branch
                 # just increase the length of this one
@@ -115,22 +125,26 @@ class Node(object):
         return start + self.represent_internals() + end + ':' + str(self.branch_length)
 
     def assign_names(self, name_mapper):
-        if self.L is None and self.R is None and len(self.genomes) == 1:
+        if self.L is None and self.R is None and len(collapse(self.genomes)) == 1:
             self.genomes = name_mapper[self.genomes[0]]
         else:
             self.L.assign_names(name_mapper)
             self.R.assign_names(name_mapper)
 
-    def plot(self, width, midpoint, top_start=0, ax=None):
+    def plot(self, width, midpoint, top_start=0, ax=None, color='k'):
         """ Plots the lineage and all its descending lineages. To avoid overlap when plotting
         multiple lineages, we specify the width and center of the lineage along the x-axis.
         Time is plotted along the y axis, and uses the lineage T0 and T1"""
+        if type(self.genomes) is str:
+            raise TypeError('Warning, you have assigned names. This will no longer work.')
+
         if ax is None:
             fig = plt.figure()
             ax = fig.add_subplot(111)
         branch_height = top_start - self.branch_length - 0.1
-        ax.plot([midpoint, midpoint], [top_start, branch_height], 'b')  # Plot vertical lineage
+        ax.plot([midpoint, midpoint], [top_start, branch_height], c=color)  # Plot vertical lineage
         if not (self.L is None and self.R is None):
+            # we are not at the leaf
             # Assign width proportional to the number of lineages in each sub-lineage
             n1 = self.R.descendants
             n2 = self.L.descendants
@@ -139,7 +153,24 @@ class Node(object):
             midpoint_1 = midpoint - width / 2. + width_1 / 2.  # Find the midpoint of each window
             midpoint_2 = midpoint + width / 2. - width_2 / 2.
             # Plot horizontal connector
-            ax.plot([midpoint_1, midpoint_2], [branch_height, branch_height], 'b')
-            self.L.plot(width_1, midpoint_1, branch_height, ax)  # Plot descending lineages
-            self.R.plot(width_2, midpoint_2, branch_height, ax)
+            ax.plot([midpoint_1, midpoint_2], [branch_height, branch_height], c=color)
+            self.L.plot(width_1, midpoint_1, branch_height, ax, color=color)  # Plot descending lineages
+            self.R.plot(width_2, midpoint_2, branch_height, ax, color=color)
 
+        if len(collapse(self.genomes)) == 1:
+            # we only have one kind of genome here, so let's assume we are at the leaf.
+            # we draw a branch thing here
+            if len(self.genomes) > 1:
+                # only draw lines if there is more than one genome.
+                n1 = self.descendants
+                width_1 = width / n1
+                midpoint_1 = midpoint - width / 2. + width_1 / 2.  # Find the midpoint of each window
+                midpoint_2 = midpoint + width / 2. - width_1 / 2.  # Find the midpoint of each window
+                # Plot horizontal connector
+                ax.plot([midpoint_1, midpoint_2], [branch_height, branch_height], 'b')
+                for i, _ in enumerate(self.genomes):
+                    ax.scatter(midpoint_1 + width_1 * i, branch_height, color=color, marker='x')
+            else:
+                # just draw a single dot, this is probably self evident.
+                ax.scatter(midpoint, branch_height, color=color, marker='x')
+                pass
