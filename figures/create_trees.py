@@ -42,7 +42,7 @@ def create_trees(root_folder, seed, title, fig, total_rows=1, row_to_start=0):
             distance_from_COM = np.sqrt(np.sum(np.array(data[idx]['COM'])**2))
             data_, all_snps = prepare_snp_data(data[idx]['genotypes'])
 
-            tree = Node(data_, all_snps=all_snps)
+            tree = Node(data_, all_snps=all_snps.most_common())
             tree.resolve()
             tree.plot(1, 0, ax=ax)
             ax.set_title('x={:3g}'.format(distance_from_COM))
@@ -50,7 +50,6 @@ def create_trees(root_folder, seed, title, fig, total_rows=1, row_to_start=0):
     return fig
 
 PATH, SEED = sys.argv[1], sys.argv[2]
-create_trees(PATH, SEED, Title)
 # create_trees('../model/no_death', '1')
 fig = plt.figure(figsize=(14,10))
 create_trees(PATH+'/1_0_0', SEED, 'No Turnover', fig, total_rows=5, row_to_start=0)
