@@ -361,7 +361,7 @@ def freq_plot(ax, mappings,
 CTC_sizes = [(1,1), (2,7), (8,12), (13,17), (18, 22), (23, 30)]
 
 
-def alternating_power_plot(power_plots, ax, frequency_threshold='00'):
+def alternating_power_plot(power_plots, ax, frequency_threshold='00', legend=True):
     cmapa = create_colormap()
     HUGE_KEYS_ = [ 'power_'+s+'_'+frequency_threshold  for s in ['100', '1000', '10000', '20000']]
     CTC_KEYS_ = [ 'power_'+str(ctc_min_size)+'_'+str(ctc_max_size) for (ctc_min_size, ctc_max_size) in CTC_sizes ]
@@ -383,9 +383,9 @@ def alternating_power_plot(power_plots, ax, frequency_threshold='00'):
         if np.any(power_plots[k]['neg']) and neg_tot > pos_tot:
             ax.scatter(x_, -np.array(power_plots[k]['neg']), color=color, marker='^', label=label)
 
-    ax.legend(loc=1, labelspacing=0, handlelength=0, frameon=True)
+    if legend: ax.legend(loc=1, labelspacing=0, handlelength=0, frameon=True)
     ax.plot(np.ones(30) * 23, np.linspace(-1.5, 1.5, 30), '--', color='gray')
-    ax.set_xlim([0, 80])
+    ax.set_xlim([0, 60])
     ax.set_ylim([-1.1, 1.1])
     ax.set_xlabel('Number of samples')
     ax.set_ylabel('Signed Proportion of \nSignificant Regressions')

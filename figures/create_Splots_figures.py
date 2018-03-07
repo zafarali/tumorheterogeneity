@@ -68,7 +68,7 @@ def empirical_compare_plot(root_folder, seeds, frequency_threshold='00', frequen
     ax.set_ylim(bottom=0)
     ax.set_ylabel('# Somatic Mutations')
     ax.legend(loc=3)
-    ax.set_title('(a) Somatic Mutations in HCC Patient\n')
+    ax.set_title('(a) HCC Patient (>10% frequency)\n')
 
     folder = root_folder + '/1_0'
     ax = f.add_subplot(223)
@@ -150,15 +150,16 @@ Supplementary figure with power analysis for no turnover model
 def make_subplots_power_analysis(alt_powers, title):
     f = plt.figure(figsize=(13, 4))
     ax = f.add_subplot(131)
-    alternating_power_plot(alt_powers, ax, '00')
+    alternating_power_plot(alt_powers, ax, '00', legend=False)
     ax.set_title(title+' (f>0%)\n Significance Threshold = 0.01')
 
     ax = f.add_subplot(132)
-    alternating_power_plot(alt_powers, ax, '001')
+    alternating_power_plot(alt_powers, ax, '001', legend=False)
     ax.set_title(title+' (f>1%)\n Significance Threshold = 0.01')
 
     ax = f.add_subplot(133)
-    alternating_power_plot(alt_powers, ax, '01')
+    alternating_power_plot(alt_powers, ax, '01', legend=False)
+    ax.legend(labelspacing=0, handlelength=0, frameon=True)
     ax.set_title(title + ' (f>10%)\n Significance Threshold = 0.01')
     sns.despine()
     f.tight_layout(h_pad=1)
