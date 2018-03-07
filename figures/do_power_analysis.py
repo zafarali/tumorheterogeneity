@@ -71,7 +71,7 @@ def calculate_power_graph(distances, S, ctc_min_size=1, ctc_max_size=2, signific
             # using ctc_min_size-1 because the 0th column corresponds to the ctc of size 1
             ctc_size_selection_idx = np.random.randint(ctc_min_size - 1, ctc_max_size, size=n)
             sample_S = S[sample_idx, ctc_size_selection_idx].reshape(-1, 1)
-            sample_distances = distances[sample_idx].reshape(-1, 1)
+            sample_distances = distances[sample_idx, :].reshape(-1, 1)
             print('Sample_S',sample_S.shape)
             print('sample_distances',sample_distances.shape)
 
