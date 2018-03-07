@@ -29,7 +29,7 @@ def alternating_power_plot(power_plots, ax):
 
     ax.legend(loc=1, labelspacing=0, handlelength=0, frameon=True)
 
-    ax.set_xlim([0, 1])
+    ax.set_ylim([0, 1])
     ax.set_xlabel('Number of samples')
     ax.set_ylabel('Proportion of \nSignificant Regressions')
 

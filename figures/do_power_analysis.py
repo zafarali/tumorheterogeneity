@@ -1,12 +1,22 @@
+import sys
 import numpy as np
 from sklearn.linear_model import LinearRegression
 import random
 import statsmodels.api as sm
 import json
 
+# REPLICATE 1
+# NOTURNOVER_FOLDER  = '../model/experiments/u0.01875/1_0_0_outs_10/Mar1pipe_out_Fri_Mar__2_20_42_31_2018/'
+# TURNOVER_FOLDER  = '../model/experiments/u0.01875/1_0_02_outs_10/Mar1pipe_out_Fri_Mar__2_21_18_46_2018/'
 
-NOTURNOVER_FOLDER  = '../model/experiments/u0.01875/1_0_0_outs_10/Mar1pipe_out_Fri_Mar__2_20_42_31_2018/'
-TURNOVER_FOLDER  = '../model/experiments/u0.01875/1_0_02_outs_10/Mar1pipe_out_Fri_Mar__2_21_18_46_2018/'
+# # REPLICATE 2
+# NOTURNOVER_FOLDER  = '../model/experiments/u0.01875/1_0_0_outs_99/Mar1pipe_out_Sat_Mar__3_01_01_33_2018/'
+# TURNOVER_FOLDER = '../model/experiments/u0.01875/1_0_02_outs_99/Mar1pipe_out_Sat_Mar__3_01_44_36_2018/'
+
+# GENERALIZATION
+
+NOTURNOVER_FOLDER = sys.argv[1]
+TURNOVER_FOLDER = sys.argv[2]
 
 FOLDER = TURNOVER_FOLDER
 
@@ -86,8 +96,8 @@ def calculate_power_graph(distances, S, ctc_min_size=1, ctc_max_size=2, signific
     return {'pos': significance_count_pos.tolist(), 'neg': significance_count_neg.tolist()}
 
 
-S = np.load(FOLDER + 'S_list_ordered.npy')
-distances = np.load(FOLDER + 'deltas_ordered.npy')[:, 0]
+S = np.load(FOLDER + '/S_list_ordered.npy')
+distances = np.load(FOLDER + '/deltas_ordered.npy')[:, 0]
 
 
 
@@ -99,7 +109,7 @@ pow22001 = calculate_power_graph(distances,S,18,22,0.01)
 powbig001 = calculate_power_graph(distances,S,23,30,0.01)
 x = range(0,distances.shape[0])
 
-S_h = np.load(FOLDER + 'S_list01_big.npy')[:,3]
+S_h = np.load(FOLDER + '/S_list01_big.npy')[:,3]
 distances_h = np.load(FOLDER + '/dist_01_big.npy')[:,3]
 
 powhuge001 = calculate_power_graph_big(distances_h,S_h,significance_threshold=0.01)
@@ -107,13 +117,13 @@ x_h = range(0,distances_h.shape[0])
 
 powhuge001_10000 = powhuge001
 
-S_h = np.load(FOLDER + 'S_list01_big.npy')[:,1]
-distances_h = np.load(FOLDER + 'dist_01_big.npy')[:,1]
+S_h = np.load(FOLDER + '/S_list01_big.npy')[:,1]
+distances_h = np.load(FOLDER + '/dist_01_big.npy')[:,1]
 
 powhuge001_1000 = calculate_power_graph_big(distances_h,S_h,significance_threshold=0.01)
 
-S_h = np.load(FOLDER + 'S_list01_big.npy')[:,0]
-distances_h = np.load(FOLDER + 'dist_01_big.npy')[:,0]
+S_h = np.load(FOLDER + '/S_list01_big.npy')[:,0]
+distances_h = np.load(FOLDER + '/dist_01_big.npy')[:,0]
 
 powhuge001_100 = calculate_power_graph_big(distances_h,S_h,significance_threshold=0.01)
 
@@ -138,8 +148,8 @@ json.dump(power_plots, open('./turnover_power.json', 'w'))
 
 FOLDER = NOTURNOVER_FOLDER
 
-S = np.load(FOLDER + 'S_list_ordered.npy')
-distances = np.load(FOLDER + 'deltas_ordered.npy')[:, 0]
+S = np.load(FOLDER + '/S_list_ordered.npy')
+distances = np.load(FOLDER + '/deltas_ordered.npy')[:, 0]
 
 
 
@@ -151,7 +161,7 @@ pow22001 = calculate_power_graph(distances,S,18,22,0.01)
 powbig001 = calculate_power_graph(distances,S,23,30,0.01)
 x = range(0,distances.shape[0])
 
-S_h = np.load(FOLDER + 'S_list01_big.npy')[:,3]
+S_h = np.load(FOLDER + '/S_list01_big.npy')[:,3]
 distances_h = np.load(FOLDER + '/dist_01_big.npy')[:,3]
 
 powhuge001 = calculate_power_graph_big(distances_h,S_h,significance_threshold=0.01)
@@ -159,13 +169,13 @@ x_h = range(0,distances_h.shape[0])
 
 powhuge001_10000 = powhuge001
 
-S_h = np.load(FOLDER + 'S_list01_big.npy')[:,1]
-distances_h = np.load(FOLDER + 'dist_01_big.npy')[:,1]
+S_h = np.load(FOLDER + '/S_list01_big.npy')[:,1]
+distances_h = np.load(FOLDER + '/dist_01_big.npy')[:,1]
 
 powhuge001_1000 = calculate_power_graph_big(distances_h,S_h,significance_threshold=0.01)
 
-S_h = np.load(FOLDER + 'S_list01_big.npy')[:,0]
-distances_h = np.load(FOLDER + 'dist_01_big.npy')[:,0]
+S_h = np.load(FOLDER + '/S_list01_big.npy')[:,0]
+distances_h = np.load(FOLDER + '/dist_01_big.npy')[:,0]
 
 powhuge001_100 = calculate_power_graph_big(distances_h,S_h,significance_threshold=0.01)
 
