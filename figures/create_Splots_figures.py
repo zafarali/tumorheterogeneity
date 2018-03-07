@@ -148,17 +148,15 @@ Supplementary figure with power analysis for no turnover model
 """
 
 def make_subplots_power_analysis(alt_powers, title):
-    f = plt.figure()
+    f = plt.figure(figsize=(13, 5))
     ax = f.add_subplot(131)
     alternating_power_plot(alt_powers, ax, '01')
     ax.set_title(title+' (f>10%)\n Significance Threshold = 0.01')
 
-    f = plt.figure()
     ax = f.add_subplot(132)
     alternating_power_plot(alt_powers, ax, '00')
     ax.set_title(title+' (f>0%)\n Significance Threshold = 0.01')
 
-    f = plt.figure()
     ax = f.add_subplot(133)
     alternating_power_plot(alt_powers, ax, '001')
     ax.set_title(title+' (f>1%)\n Significance Threshold = 0.01')
