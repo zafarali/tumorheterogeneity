@@ -115,4 +115,4 @@ plot_ranked_mixing_analysis(PATH+'01_outs_'+SEED, 'Turnover (d=0.1)', fig, thing
 plot_ranked_mixing_analysis(PATH+'02_outs_'+SEED, 'Turnover (d=0.2)', fig, thing_to_plot, sort=False, total_rows=5, row_to_start=3)
 plot_ranked_mixing_analysis(PATH+'065_outs_'+SEED, 'Turnover (d=0.65)', fig, thing_to_plot, sort=False, total_rows=5, row_to_start=4, show_labels=True)
 fig.tight_layout(h_pad=1)
-fig.savefig('./mixing_analys.pdf')
+fig.savefig('./mixing_analysis.pdf')
