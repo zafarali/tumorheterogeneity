@@ -127,8 +127,8 @@ def conduct_power_analysis(root_folder, seed, name_append='', significance_thres
 
     for frequency_threshold in frequency_thresholds:
         # do power analysis for the big biopsies
-        S = np.load(glob(folder_prepared + '/S_list'+frequency_threshold+'_big.npy'))
-        distances = np.load(glob(folder_prepared + '/dist_'+frequency_threshold+'_big.npy'))
+        S = np.load(glob(folder_prepared + '/S_list'+frequency_threshold+'_big.npy')[0])
+        distances = np.load(glob(folder_prepared + '/dist_'+frequency_threshold+'_big.npy')[0])
 
 
         for i, biopsy_size in enumerate(Biopsies):
