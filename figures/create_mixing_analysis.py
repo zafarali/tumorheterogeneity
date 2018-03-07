@@ -12,10 +12,8 @@ sns.set_style('white')
 sns.set_context('paper', font_scale=1.5)
 from glob import glob
 from figtools import *
-from analysis.newick_tree_maker import neighbor_joining_tree
 ALL_SEEDS = ['10','100','102','15','3','3318','33181','33185','33186','34201810','342018101','342018102','8','9','99']
 import json
-from analysis.newick import loads
 from scipy.stats import spearmanr
 from decimal import Decimal
 
