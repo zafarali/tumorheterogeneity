@@ -597,7 +597,7 @@ def big_samples(pipeline):
 	d_010_to_save = []
 
 
-	for k in range(100):
+	for k in range(1000):
 
 		# global coordinate to use for sampling
 		coord = rand_coordinate.next()
