@@ -38,7 +38,6 @@ def create_trees(root_folder, seed, title, fig, total_rows=1, row_to_start=0):
 
         for panel_count, idx in enumerate(sorted_idx[:4].tolist() + sorted_idx[-4:].tolist()):
             ax = fig.add_subplot(total_rows, 8, (8 * row_to_start) + panel_count + 1)
-            sns.despine(top=True, bottom=True, left=False, right=True)
             if panel_count == 0: ax.set_ylabel(title)
             distance_from_COM = np.sqrt(np.sum(np.array(data[idx]['COM'])**2))
             data_, all_snps = prepare_snp_data(data[idx]['genotypes'])
@@ -47,6 +46,7 @@ def create_trees(root_folder, seed, title, fig, total_rows=1, row_to_start=0):
             tree.resolve()
             tree.plot(1, 0, ax=ax)
             ax.set_title('x={:3g}'.format(distance_from_COM))
+            sns.despine(ax=ax, top=True, bottom=True, left=False, right=True)
             ax.tick_params(
                 axis='x',  # changes apply to the x-axis
                 which='both',  # both major and minor ticks are affected
