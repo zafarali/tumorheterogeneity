@@ -31,7 +31,7 @@ def create_trees(root_folder, seed, title, fig, total_rows=1, row_to_start=0):
     for z, (cluster_data_,mixing_data_) in enumerate(zip(cluster_data, mixing_data)):
         data = json.load(open(cluster_data_, 'r'))
         # mixing_data_ = np.load(mixing_data_)
-        distances_ = [ p.sqrt(np.sum(np.array(data_details['COM'])**2)) for data_details in data.values()]
+        distances_ = [ np.sqrt(np.sum(np.array(data_details['COM'])**2)) for data_details in data ]
         sorted_idx = np.argsort(distances_) # get the distances ranked
 
         if fig is None:
