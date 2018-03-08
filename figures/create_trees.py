@@ -56,14 +56,17 @@ def create_trees(root_folder, seed, title, fig, total_rows=1, row_to_start=0):
                 labelbottom='off')
             all_axes.append(ax)
 
-        max_ymax = 0
-        min_ymin = -100
-        for ax in all_axes:
-            ymin, ymax = ax.get_ylim()
-            min_ymin = np.min([ymin, min_ymin])
-            max_ymax = np.max([ymax, max_ymax])
-        for ax in all_axes:
-            ax.set_ylim([min_ymin, max_ymax])
+        if len(all_axes) > 0:
+            max_ymax = 0
+            min_ymin = -100
+            for ax in all_axes:
+                ymin, ymax = ax.get_ylim()
+                print(ymin, ymax)
+                min_ymin = np.min([ymin, min_ymin])
+                print(min_ymin)
+                max_ymax = np.max([ymax, max_ymax])
+            for ax in all_axes:
+                ax.set_ylim([min_ymin, max_ymax])
 
     return fig
 
