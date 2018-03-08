@@ -377,14 +377,14 @@ def alternating_power_plot(power_plots, ax, frequency_threshold='00', legend=Tru
         neg = np.array(power_plots[k]['neg'])
         pos_tot = np.sum(pos)
         neg_tot = np.sum(neg)
-
+        marker = 'o' if k in HUGE_KEYS_ else '^'
         if np.any(power_plots[k]['pos']) and pos_tot > neg_tot:
-            ax.scatter(x_, power_plots[k]['pos'], color=color, marker='o', label=label)
+            ax.scatter(x_, power_plots[k]['pos'], color=color, marker=marker, label=label)
         if np.any(power_plots[k]['neg']) and neg_tot > pos_tot:
-            ax.scatter(x_, -np.array(power_plots[k]['neg']), color=color, marker='^', label=label)
+            ax.scatter(x_, -np.array(power_plots[k]['neg']), color=color, marker=marker, label=label)
 
     if legend: ax.legend(loc=1, labelspacing=0, handlelength=0, frameon=True)
-    ax.plot(np.ones(30) * 23, np.linspace(-1.5, 1.5, 30), '--', color='gray')
+    ax.plot(np.ones(40) * 23, np.linspace(-2, 2, 40), '--', color='gray')
     ax.set_xlim([0, 60])
     ax.set_ylim([-1.1, 1.1])
     ax.set_xlabel('Number of samples')
