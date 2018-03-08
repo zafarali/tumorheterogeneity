@@ -30,12 +30,13 @@ def create_trees(root_folder, seed, title, fig, total_rows=1, row_to_start=0):
 
     for z, (cluster_data_,mixing_data_) in enumerate(zip(cluster_data, mixing_data)):
         data = json.load(open(cluster_data_, 'r'))
-        mixing_data_ = np.load(mixing_data_)
-        sorted_idx = np.argsort(mixing_data_[:, 0, 0]) # get the distances ranked
+        # mixing_data_ = np.load(mixing_data_)
+        distances_ = [ p.sqrt(np.sum(np.array(data_details['COM'])**2)) for data_details in data.values()]
+        sorted_idx = np.argsort(distances_) # get the distances ranked
 
         if fig is None:
             fig = plt.figure(figsize=(13, 3))
-
+        all_axes = []
         for panel_count, idx in enumerate(sorted_idx[:4].tolist() + sorted_idx[-4:].tolist()):
             ax = fig.add_subplot(total_rows, 8, (8 * row_to_start) + panel_count + 1)
             if panel_count == 0: ax.set_ylabel(title)
@@ -53,7 +54,17 @@ def create_trees(root_folder, seed, title, fig, total_rows=1, row_to_start=0):
                 bottom='off',  # ticks along the bottom edge are off
                 top='off',  # ticks along the top edge are off
                 labelbottom='off')
-            
+            all_axes.append(ax)
+
+        max_ymax = 0
+        min_ymin = -100
+        for ax in all_axes:
+            ymin, ymax = ax.get_ylim()
+            min_ymin = np.min([ymin, min_ymin])
+            max_ymax = np.max([ymax, max_ymax])
+        for ax in all_axes:
+            ax.set_ylim([min_ymin, max_ymax])
+
     return fig
 
 PATH, SEED = sys.argv[1], sys.argv[2]
