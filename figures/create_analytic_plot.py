@@ -34,10 +34,10 @@ ax = fig.add_subplot(121)
 
 mappings = [ '../model/experiments/u0.01/0_0_0_outs*']
 colors_ = ['gray']
-labels_ = ['Simulation']
+labels_ = ['Neutral Simulation']
 
 fig = plt.figure(figsize=(14,4))
-f = np.linspace(0.000001,0.21,num=1000)
+f = np.linspace(0.00001,0.21,num=1000)
 
 ax = fig.add_subplot(131)
 
@@ -58,8 +58,7 @@ ax.plot(np.log10(f)[not_nans], np.log10(f**(-1)), '--', label='$f^{-1}$')
 ax.set_xlabel('$log_{10}(f)$')
 ax.set_ylabel('$log_{10}(p(f))$')
 sns.despine()
-ax.legend(loc=(0.7, 0.3))
-ax.plot(-2.5*np.ones(10), np.arange(0, 10), '--', c='gray')
+ax.legend()
 ax.set_title('a='+str(a))
 R = 20
 
@@ -78,9 +77,9 @@ for a in [1, 3, 5, 10]:
 # ax.plot(np.log10(f)[not_nans], np.log10(f**(-1)), '--', label='$f^{-1}$')
 ax.set_xlabel('$log_{10}(f)$')
 ax.set_ylabel('$log_{10}(p(f))$')
-ax.plot(-2.5*np.ones(10), np.arange(0, 10), '--', c='gray')
 sns.despine()
 ax.set_title('R='+str(R))
-ax.legend(loc=(0.2, 0.2))
+ax.legend()
+fig.tight_layout()
 fig.savefig('./Analytic.pdf')
 
