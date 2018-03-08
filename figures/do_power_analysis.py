@@ -4,23 +4,19 @@ from sklearn.linear_model import LinearRegression
 import random
 import statsmodels.api as sm
 import json
+from glob import glob
 
-# REPLICATE 1
-# NOTURNOVER_FOLDER  = '../model/experiments/u0.01875/1_0_0_outs_10/Mar1pipe_out_Fri_Mar__2_20_42_31_2018/'
-# TURNOVER_FOLDER  = '../model/experiments/u0.01875/1_0_02_outs_10/Mar1pipe_out_Fri_Mar__2_21_18_46_2018/'
-
-# # REPLICATE 2
-# NOTURNOVER_FOLDER  = '../model/experiments/u0.01875/1_0_0_outs_99/Mar1pipe_out_Sat_Mar__3_01_01_33_2018/'
-# TURNOVER_FOLDER = '../model/experiments/u0.01875/1_0_02_outs_99/Mar1pipe_out_Sat_Mar__3_01_44_36_2018/'
-
-# GENERALIZATION
-
-NOTURNOVER_FOLDER = sys.argv[1]
-TURNOVER_FOLDER = sys.argv[2]
-
-FOLDER = TURNOVER_FOLDER
-
-def calculate_power_graph_big(distances, S, ctc_min_size=1, ctc_max_size=2, significance_threshold=0.05):
+def calculate_power_graph_big(distances, S, significance_threshold=0.05):
+    """
+    Used to do a power analysis for big clusters
+    of size 100,1000,10000,20000
+    :param distances:
+    :param S:
+    :param ctc_min_size:
+    :param ctc_max_size:
+    :param significance_threshold:
+    :return:
+    """
     total_samples = distances.shape[0]
     significance_count_neg = np.zeros(total_samples)
     significance_count_pos = np.zeros(total_samples)
@@ -53,19 +49,23 @@ def calculate_power_graph_big(distances, S, ctc_min_size=1, ctc_max_size=2, sign
     return {'pos': significance_count_pos.tolist(), 'neg': significance_count_neg.tolist()}
 
 
-# ctc_min_size, ctc_max_size = 2, 7
-# significance_threshold = 0.05
-
-# power_calculation
-
 def calculate_power_graph(distances, S, ctc_min_size=1, ctc_max_size=2, significance_threshold=0.05):
+    """
+    Used to do power analysis for small clusters between sizes ctc_min_size and ctc_max_size
+    :param distances:
+    :param S:
+    :param ctc_min_size:
+    :param ctc_max_size:
+    :param significance_threshold:
+    :return:
+    """
     total_samples = distances.shape[0]
     significance_count_neg = np.zeros(total_samples)
     significance_count_pos = np.zeros(total_samples)
 
     for n in range(2, total_samples):
         for i in range(100):
-            sample_idx = np.random.randint(0, total_samples, size=n)  # select indexes to look at
+            sample_idx = random.sample(xrange(0, total_samples), n)  # select indexes to look at
             # select the CTC sizes to look at within the range
             # using ctc_min_size-1 because the 0th column corresponds to the ctc of size 1
             ctc_size_selection_idx = np.random.randint(ctc_min_size - 1, ctc_max_size, size=n)
@@ -87,8 +87,7 @@ def calculate_power_graph(distances, S, ctc_min_size=1, ctc_max_size=2, signific
 
             except IndexError as e:
                 print('Index error occured...')
-                print
-                results.pvalues
+                print results.pvalues
 
     significance_count_pos /= 100.0
     significance_count_neg /= 100.0
@@ -96,103 +95,65 @@ def calculate_power_graph(distances, S, ctc_min_size=1, ctc_max_size=2, signific
     return {'pos': significance_count_pos.tolist(), 'neg': significance_count_neg.tolist()}
 
 
-S = np.load(FOLDER + '/S_list_ordered.npy')
-distances = np.load(FOLDER + '/deltas_ordered.npy')[:, 0]
+
+CTC_sizes = [(1,1), (2,7), (8,12), (13,17), (18, 22), (23, 30)]
+Biopsies = [100, 1000, 10000, 20000]
+frequency_thresholds = ['00', '001', '01']
+
+def conduct_power_analysis(root_folder, seed, name_append='', significance_threshold=0.01):
+    """
+    Does the actual creation of the json to be dumped
+    :param root_folder:
+    :param seed:
+    :param name_append:
+    :param significance_threshold:
+    :return:
+    """
+
+    power_plots = {}
+    folder_prepared = root_folder+'_outs_'+seed+'/Mar*/'
+
+    # do power analysis for the small CTCs
+    S = np.load(glob(folder_prepared + '/S_list_ordered.npy')[0])
+    distances = np.load(glob(folder_prepared + '/deltas_ordered.npy')[0])[:, 0] # only the 0th element contains the distances
 
 
+    for (ctc_min_size, ctc_max_size) in CTC_sizes:
+        power_plots['power_'+str(ctc_min_size)+'_'+str(ctc_max_size)] = calculate_power_graph(distances,S,\
+                                                                                     ctc_min_size,ctc_max_size,\
+                                                                                     significance_threshold)
 
-pow2001 = calculate_power_graph(distances,S,1,1,0.01)
-pow7001 = calculate_power_graph(distances,S,2,7,0.01)
-pow12001 = calculate_power_graph(distances,S,8,12,0.01)
-pow17001 = calculate_power_graph(distances,S,13,17,0.01)
-pow22001 = calculate_power_graph(distances,S,18,22,0.01)
-powbig001 = calculate_power_graph(distances,S,23,30,0.01)
-x = range(0,distances.shape[0])
+    power_plots['x_small'] = range(0,distances.shape[0])
 
-S_h = np.load(FOLDER + '/S_list01_big.npy')[:,3]
-distances_h = np.load(FOLDER + '/dist_01_big.npy')[:,3]
-
-powhuge001 = calculate_power_graph_big(distances_h,S_h,significance_threshold=0.01)
-x_h = range(0,distances_h.shape[0])
-
-powhuge001_10000 = powhuge001
-
-S_h = np.load(FOLDER + '/S_list01_big.npy')[:,1]
-distances_h = np.load(FOLDER + '/dist_01_big.npy')[:,1]
-
-powhuge001_1000 = calculate_power_graph_big(distances_h,S_h,significance_threshold=0.01)
-
-S_h = np.load(FOLDER + '/S_list01_big.npy')[:,0]
-distances_h = np.load(FOLDER + '/dist_01_big.npy')[:,0]
-
-powhuge001_100 = calculate_power_graph_big(distances_h,S_h,significance_threshold=0.01)
-
-# temporary use 'pos' for backward compatability
-power_plots = {
-    'pow2001':pow2001,
-    'pow7001':pow7001,
-    'pow12001':pow12001,
-    'pow17001':pow17001,
-    'pow22001':pow22001,
-    'powbig001':powbig001,
-    'powhuge10000':powhuge001_10000,
-    'powhuge1000':powhuge001_1000,
-    'powhuge100':powhuge001_100,
-    'x':x,
-    'x_h':x_h
-}
-
-json.dump(power_plots, open('./turnover_power.json', 'w'))
+    for frequency_threshold in frequency_thresholds:
+        # do power analysis for the big biopsies
+        S = np.load(glob(folder_prepared + '/S_list'+frequency_threshold+'_big.npy')[0])
+        distances = np.load(glob(folder_prepared + '/dist_'+frequency_threshold+'_big.npy')[0])
 
 
+        for i, biopsy_size in enumerate(Biopsies):
+            S_h = S[:, i] # the ith index corresponds to biopsy of size biopsy_size
+            distance_h = distances[:, i]
 
-FOLDER = NOTURNOVER_FOLDER
+            power_plots['power_'+str(biopsy_size)+'_'+str(frequency_threshold)] = calculate_power_graph_big(distance_h, S_h, \
+                                                                                                            significance_threshold=significance_threshold)
 
-S = np.load(FOLDER + '/S_list_ordered.npy')
-distances = np.load(FOLDER + '/deltas_ordered.npy')[:, 0]
+        power_plots['x_biopsy_'+str(frequency_threshold)] = range(0,distance_h.shape[0])
 
-
-
-pow2001 = calculate_power_graph(distances,S,1,1,0.01)
-pow7001 = calculate_power_graph(distances,S,2,7,0.01)
-pow12001 = calculate_power_graph(distances,S,8,12,0.01)
-pow17001 = calculate_power_graph(distances,S,13,17,0.01)
-pow22001 = calculate_power_graph(distances,S,18,22,0.01)
-powbig001 = calculate_power_graph(distances,S,23,30,0.01)
-x = range(0,distances.shape[0])
-
-S_h = np.load(FOLDER + '/S_list01_big.npy')[:,3]
-distances_h = np.load(FOLDER + '/dist_01_big.npy')[:,3]
-
-powhuge001 = calculate_power_graph_big(distances_h,S_h,significance_threshold=0.01)
-x_h = range(0,distances_h.shape[0])
-
-powhuge001_10000 = powhuge001
-
-S_h = np.load(FOLDER + '/S_list01_big.npy')[:,1]
-distances_h = np.load(FOLDER + '/dist_01_big.npy')[:,1]
-
-powhuge001_1000 = calculate_power_graph_big(distances_h,S_h,significance_threshold=0.01)
-
-S_h = np.load(FOLDER + '/S_list01_big.npy')[:,0]
-distances_h = np.load(FOLDER + '/dist_01_big.npy')[:,0]
-
-powhuge001_100 = calculate_power_graph_big(distances_h,S_h,significance_threshold=0.01)
+    return power_plots
 
 
-# temporary use 'pos' for backward compatability
-power_plots = {
-    'pow2001':pow2001,
-    'pow7001':pow7001,
-    'pow12001':pow12001,
-    'pow17001':pow17001,
-    'pow22001':pow22001,
-    'powbig001':powbig001,
-    'powhuge10000':powhuge001_10000,
-    'powhuge1000':powhuge001_1000,
-    'powhuge100':powhuge001_100,
-    'x':x,
-    'x_h':x_h
-}
+root_folder = sys.argv[1] # should be the path to the sims
+seed = sys.argv[2] # should be the seed we want to check
 
+# conduct for moderate turnover models:
+power_plots = conduct_power_analysis(root_folder+'/1_0_005', seed)
+json.dump(power_plots, open('./turnover_power_005.json', 'w'))
+power_plots = conduct_power_analysis(root_folder+'/1_0_01', seed)
+json.dump(power_plots, open('./turnover_power_01.json', 'w'))
+power_plots = conduct_power_analysis(root_folder+'/1_0_02', seed)
+json.dump(power_plots, open('./turnover_power_02.json', 'w'))
+
+# conduct for no turnover models
+power_plots = conduct_power_analysis(root_folder+'/1_0_0', seed)
 json.dump(power_plots, open('./noturnover_power.json', 'w'))

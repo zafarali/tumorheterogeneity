@@ -14,6 +14,7 @@ sns.set_context('paper', font_scale=1.5)
 from glob import glob
 import json
 from figtools import *
+from decimal import Decimal
 
 ALL_SEEDS = ['10','100','102','15','3','3318','33181','33185','33186','34201810','342018101','342018102','8','9','99']
 
@@ -35,21 +36,11 @@ small_c, med_c, big_c, biggest_c = ALTERNATE_COLORS
 HCC = pd.read_csv('./empirical/HCtumordata.csv')
 HCC = HCC.sort(columns='r')
 
-# REPLICATE 1
-# SELECTED_1_0_0  = '../model/experiments/u0.01875/1_0_0_outs_10/Mar1pipe_out_Fri_Mar__2_20_42_31_2018'
-# SELECTED_1_0_02 = '../model/experiments/u0.01875/1_0_02_outs_10/Mar1pipe_out_Fri_Mar__2_21_18_46_2018'
-
-# REPLICATE 2
-# SELECTED_1_0_0  = '../model/experiments/u0.01875/1_0_0_outs_99/Mar1pipe_out_Sat_Mar__3_01_01_33_2018'
-# SELECTED_1_0_02 = '../model/experiments/u0.01875/1_0_02_outs_99/Mar1pipe_out_Sat_Mar__3_01_44_36_2018'
-
-# VARIABLE
-SELECTED_1_0_0 = sys.argv[1]
-SELECTED_1_0_02 = sys.argv[2]
-SPECIAL_SEED = sys.argv[3]
+# the seed for which to look at the empirical plot
+SPECIAL_SEED = sys.argv[1]
 
 # S_list_ordered.npy
-def empirical_compare_plot(root_folder, seeds):
+def empirical_compare_plot(root_folder, seeds, frequency_threshold='00', frequency_title='0%'):
     NT_folder = root_folder + '/1_0'
     ST_folder = root_folder + '/1_1'
     T_folder = root_folder + '/1_0'
@@ -71,20 +62,21 @@ def empirical_compare_plot(root_folder, seeds):
     results = model.fit()
 
     y = results.predict(sm.add_constant(x))
-    ax.plot(x, y, label='Regression (p=' + str(round(results.pvalues[1], 3)) + ')', color=biggest_c)
+    ax.plot(x, y, label='Regression (p={:.2e})'.format(Decimal(results.pvalues[1])), color=biggest_c)
     ax.scatter(HCC.r, HCC.SNV_corrected, label='Raw Counts', color=biggest_c)
     ax.set_xlim([0, HCC.r.max() + 0.1])
     ax.set_ylim(bottom=0)
     ax.set_ylabel('# Somatic Mutations')
     ax.legend(loc=3)
-    ax.set_title('(a) Somatic Mutations in HCC Patient\n')
+    ax.set_title('(a) HCC Patient (>10% frequency)\n')
 
     folder = root_folder + '/1_0'
     ax = f.add_subplot(223)
     plot_density(ax, folder, seeds, d='0')
+    print(NT_folder+'_0_outs_'+str(seeds[0])+'/Mar1*/S_list'+frequency_threshold+'_big.npy')
+    S = np.load(glob(NT_folder+'_0_outs_'+str(seeds[0])+'/Mar1*/S_list'+frequency_threshold+'_big.npy')[0])[:,3]
+    distances = np.load(glob(NT_folder+'_0_outs_'+str(seeds[0])+'/Mar1*/dist_'+frequency_threshold+'_big.npy')[0])[:,3]
 
-    S = np.load(SELECTED_1_0_0+'/S_list01_big.npy')[:,3]
-    distances = np.load(SELECTED_1_0_0+'/dist_01_big.npy')[:,3]
     sampled = random.sample(xrange(0, 100), 23)
     s_sampled = S[sampled]
     dist_sampled = distances[sampled]
@@ -97,10 +89,10 @@ def empirical_compare_plot(root_folder, seeds):
     results = model.fit()
 
     y = results.predict(sm.add_constant(x))
-    ax.plot(x, y, label='Regression (p=' + str(round(results.pvalues[1], 3)) + ')', color=biggest_c)
+    ax.plot(x, y, label='Regression (p={:.2e})'.format(Decimal(results.pvalues[1])), color=biggest_c)
     ax.set_ylabel('# Somatic Mutations')
     ax.set_xlabel('Distance from Centre of Tumor (cells)')
-    ax.set_title('(c) No Turnover (>10% frequency)\n')
+    ax.set_title('(c) No Turnover (>'+frequency_title+' frequency)\n')
     ax.set_xlim([0, 325])
     ax.legend(loc=2)
     #     ax.set_ylim([0,60])
@@ -108,8 +100,10 @@ def empirical_compare_plot(root_folder, seeds):
     ax = f.add_subplot(224)
 
     plot_density(ax, folder, seeds, d='02')
-    S = np.load(SELECTED_1_0_02+'/S_list01_big.npy')[:,3]
-    distances = np.load(SELECTED_1_0_02+'/dist_01_big.npy')[:,3]
+
+    S = np.load(glob(T_folder+'_02_outs_'+str(seeds[0])+'/Mar1*/S_list'+frequency_threshold+'_big.npy')[0])[:,3]
+    distances = np.load(glob(T_folder+'_02_outs_'+str(seeds[0])+'/Mar1*/dist_'+frequency_threshold+'_big.npy')[0])[:,3]
+
     sampled = random.sample(xrange(0, 100), 23)
     s_sampled = S[sampled]
     dist_sampled = distances[sampled]
@@ -122,20 +116,20 @@ def empirical_compare_plot(root_folder, seeds):
     results = model.fit()
 
     y = results.predict(sm.add_constant(x))
-    ax.plot(x, y, label='Regression (p=' + str(round(results.pvalues[1], 3)) + ')', color=biggest_c)
+    ax.plot(x, y, label='Regression (p={:.2e})'.format(Decimal(results.pvalues[1])), color=biggest_c)
     ax.set_xlabel('Distance from Centre of Tumor (cells)')
 
     ax.legend(loc=2)
 
     ax.set_xlim([0, 350])
     ax.set_ylabel('# Somatic Mutations')
-    ax.set_title('(d) Turnover (>10% frequency)\n')
+    ax.set_title('(d) Turnover (>'+frequency_title+' frequency)\n')
 
     cmapa = create_colormap()
 
     ax = f.add_subplot(222)
-    alternating_power_plot(json.load(open('./turnover_power.json', 'r')), ax)
-    ax.set_title('(b) Power Analysis \n (p<0.01)')
+    alternating_power_plot(json.load(open('./turnover_power_02.json', 'r')), ax, frequency_threshold)
+    ax.set_title('(b) Power Analysis \n (d=0.2, p<0.01)')
 
     f.tight_layout(h_pad=1.0, w_pad=0.7)
     return f
@@ -145,25 +139,50 @@ def empirical_compare_plot(root_folder, seeds):
 Figure comparing empirical and actual tumor estimates
 """
 
-empirical_compare_plot('../model/experiments/u0.01875',seeds=[SPECIAL_SEED]).savefig('fig03.pdf')
+empirical_compare_plot('../model/experiments/u0.01875',seeds=[SPECIAL_SEED], frequency_threshold='01', frequency_title='10%').savefig('fig03.pdf')
+empirical_compare_plot('../model/experiments/u0.01875',seeds=[SPECIAL_SEED], frequency_threshold='001', frequency_title='1%').savefig('empirical_001.pdf')
+empirical_compare_plot('../model/experiments/u0.01875',seeds=[SPECIAL_SEED], frequency_threshold='00', frequency_title='0%').savefig('empirical_0.pdf')
 
 """
 Supplementary figure with power analysis for no turnover model
 """
-alt_powers = json.load(open('./noturnover_power.json', 'r'))
-f = plt.figure()
-ax = f.add_subplot(111)
-alternating_power_plot(alt_powers, ax)
-ax.set_title('No Turnover (f>10%)\n Significance Threshold = 0.01')
-ax.set_ylim([0,1.01])
-f.savefig('./noturnover_power.pdf')
 
+def make_subplots_power_analysis(alt_powers, title):
+    f = plt.figure(figsize=(13, 4))
+    ax = f.add_subplot(131)
+    alternating_power_plot(alt_powers, ax, '00', legend=False)
+    ax.set_title(title+' (f>0%)\n Significance Threshold = 0.01')
+
+    ax = f.add_subplot(132)
+    alternating_power_plot(alt_powers, ax, '001', legend=False)
+    ax.set_title(title+' (f>1%)\n Significance Threshold = 0.01')
+
+    ax = f.add_subplot(133)
+    alternating_power_plot(alt_powers, ax, '01', legend=False)
+    ax.legend(labelspacing=0, handlelength=0, frameon=True)
+    ax.set_title(title + ' (f>10%)\n Significance Threshold = 0.01')
+    sns.despine()
+    f.tight_layout(h_pad=1)
+    return f
+
+alt_powers = json.load(open('./noturnover_power.json', 'r'))
+make_subplots_power_analysis(alt_powers, 'No Turnover').savefig('./noturnover_power.pdf')
+"""
+Supplementary figure with power analysis for other death rates
+"""
+
+alt_powers = json.load(open('./turnover_power_005.json', 'r'))
+make_subplots_power_analysis(alt_powers, 'd=0.05').savefig('./turnover_power005.pdf')
+
+alt_powers = json.load(open('./turnover_power_01.json', 'r'))
+make_subplots_power_analysis(alt_powers, 'd=0.1').savefig('./turnover_power01.pdf')
+
+alt_powers = json.load(open('./turnover_power_02.json', 'r'))
+make_subplots_power_analysis(alt_powers, 'd=0.2').savefig('./turnover_power02.pdf')
 
 """
 Figure 2 with multiple S_plots.
 """
-
-
 def S_plot_paper(root_folder, seeds, k=0.01, pts=100, cutoff='00'):
     fig = plt.figure(figsize=(13, 3))
 
