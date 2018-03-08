@@ -169,8 +169,8 @@ class Node(object):
                 # Plot horizontal connector
                 ax.plot([midpoint_1, midpoint_2], [branch_height, branch_height], c=color)
                 for i, _ in enumerate(self.genomes):
-                    ax.scatter(midpoint_1 + width_1 * i, branch_height, color=color, marker='x', s=0.7)
+                    ax.scatter(midpoint_1 + width_1 * i, branch_height, color=color, marker='x', s=1)
             else:
                 # just draw a single dot, this is probably self evident.
-                ax.scatter(midpoint, branch_height, color=color, marker='x', s=0.7)
+                ax.scatter(midpoint, branch_height, color=color, marker='x', s=1)
                 pass
