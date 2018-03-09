@@ -22,7 +22,7 @@ sns.set_context('paper', font_scale=1.5)
 
 pi = np.pi
 mu = 0.02
-alpha = 35
+alpha = 32
 
 """
 Allele Frequency Spectra. 
@@ -53,7 +53,7 @@ ax.set_ylim(bottom=0)
 # analytic line
 freq_support = np.linspace(0.000001,0.21,num=1000)
 ax.plot(np.log10(freq_support), np.log10((alpha*mu/(4*np.sqrt(np.pi)))*freq_support**(-2.5)), '--', label='Analytic Result $alpha=$ '+str(alpha))
-ax.legend(fontsize=12,loc=(0.3,0.5))
+ax.legend(fontsize=9,loc=(0.4,0.5))
 death_rate = '065'
 
 mappings = [ root_folder+'1_0_0_*',
@@ -66,7 +66,7 @@ ax.set_xlabel('$log_{10}(frequency)$')
 ax.set_ylabel('$log_{10}(count)$')
 ax.set_xlim([-4.1, 0.05])
 ax.set_ylim(bottom=0)
-ax.legend(fontsize=12,loc=(0.3,0.6))
+ax.legend(fontsize=9,loc=(0.3,0.6))
 sns.despine()
 ax.set_title('(b) d=0.'+death_rate[1:])
 plt.tight_layout(h_pad=1)
