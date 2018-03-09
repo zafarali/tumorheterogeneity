@@ -22,7 +22,7 @@ sns.set_context('paper', font_scale=1.5)
 
 pi = np.pi
 mu = 0.02
-alpha = 40
+alpha = 35
 
 """
 Allele Frequency Spectra. 
@@ -48,7 +48,7 @@ ax.set_ylabel('$log_{10}(count)$')
 ax.set_xlim([-4.1, 0.05])
 sns.despine()
 ax.set_title('(a) d=0.'+death_rate[1:])
-ax.set_ylim(0)
+ax.set_ylim(bottom=0)
 
 # analytic line
 freq_support = np.linspace(0.000001,0.21,num=1000)
@@ -65,7 +65,7 @@ freq_plot(ax, mappings)
 ax.set_xlabel('$log_{10}(frequency)$')
 ax.set_ylabel('$log_{10}(count)$')
 ax.set_xlim([-4.1, 0.05])
-ax.set_ylim(0)
+ax.set_ylim(bottom=0)
 ax.legend(fontsize=12,loc=(0.3,0.6))
 sns.despine()
 ax.set_title('(b) d=0.'+death_rate[1:])
@@ -94,6 +94,7 @@ ax.set_ylabel('$log_{10}(count)$')
 ax.set_xlim([-4.1, 0.05])
 ax.legend(fontsize=10,loc=(0.4,0.5))
 sns.despine()
+ax.set_ylim(bottom=0)
 ax.set_title('d=0.'+death_rate[1:]+'\n')
 # ax.set_title('d=0')
 # ax.savefig('./freqspec'+death_rate+'.pdf')
@@ -109,6 +110,7 @@ ax.set_xlabel('$log_{10}(frequency)$')
 ax.set_ylabel('$log_{10}(count)$')
 ax.set_xlim([-4.1, 0.05])
 ax.legend(fontsize=10,loc=(0.4,0.5))
+ax.set_ylim(bottom=0)
 sns.despine()
 ax.set_title('d=0.'+death_rate[1:]+'\n')
 plt.tight_layout(h_pad=1)
@@ -154,7 +156,7 @@ ax.plot(np.log10(freq_support), np.log10(freq_support**(-2)), '--', label='$f^{-
 
 ax.set_xlim([-4.15, 0.])
 ax.set_ylim(bottom=0)
-ax.legend(fontsize=8,loc=(0.45,0.3))
+ax.legend(fontsize=8,loc=(0.45,0.5))
 sns.despine()
 ax.set_title('(a) No Selection')
 
@@ -181,7 +183,7 @@ ax.plot(np.log10(freq_support), np.log10(freq_support**(-2)), '--', label='$f^-2
 
 ax.set_xlim([-4.15, 0.])
 ax.set_ylim(bottom=0)
-ax.legend(fontsize=8, loc=(0.45,0.3))
+ax.legend(fontsize=8, loc=(0.45,0.5))
 sns.despine()
 ax.set_title('(b) Selection = 1%')
 
@@ -208,7 +210,7 @@ ax.plot(np.log10(freq_support), np.log10(freq_support**(-2)), '--', label='$f^-2
 
 ax.set_xlim([-4.15, 0.])
 ax.set_ylim(bottom=0)
-ax.legend(fontsize=8, loc=(0.45,0.3))
+ax.legend(fontsize=8, loc=(0.45,0.5))
 sns.despine()
 ax.set_title('(c) Selection = 10%')
 fig.tight_layout()
