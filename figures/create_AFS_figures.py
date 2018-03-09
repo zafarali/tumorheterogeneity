@@ -22,7 +22,7 @@ sns.set_context('paper', font_scale=1.5)
 
 pi = np.pi
 mu = 0.02
-alpha = 32
+alpha = 30
 
 """
 Allele Frequency Spectra. 
@@ -66,7 +66,7 @@ ax.set_xlabel('$log_{10}(frequency)$')
 ax.set_ylabel('$log_{10}(count)$')
 ax.set_xlim([-4.1, 0.05])
 ax.set_ylim(bottom=0)
-ax.legend(fontsize=9,loc=(0.3,0.6))
+ax.legend(fontsize=9,loc=(0.4,0.6))
 sns.despine()
 ax.set_title('(b) d=0.'+death_rate[1:])
 plt.tight_layout(h_pad=1)

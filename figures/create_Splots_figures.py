@@ -62,7 +62,7 @@ def empirical_compare_plot(root_folder, seeds, frequency_threshold='00', frequen
     results = model.fit()
 
     y = results.predict(sm.add_constant(x))
-    ax.plot(x, y, label='Regression (p={:.2e})'.format(Decimal(results.pvalues[1])), color=biggest_c)
+    ax.plot(x, y, label='Regression (p={:.3f})'.format(Decimal(results.pvalues[1])), color=biggest_c)
     ax.scatter(HCC.r, HCC.SNV_corrected, label='Raw Counts', color=biggest_c)
     ax.set_xlim([0, HCC.r.max() + 0.1])
     ax.set_ylim(bottom=0)
