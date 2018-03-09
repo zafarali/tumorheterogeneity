@@ -53,7 +53,7 @@ ax.set_ylim(bottom=0)
 # analytic line
 freq_support = np.linspace(0.000001,0.21,num=1000)
 ax.plot(np.log10(freq_support), np.log10((alpha*mu/(4*np.sqrt(np.pi)))*freq_support**(-2.5)), '--', label='Analytic Result $alpha=$ '+str(alpha))
-ax.legend(fontsize=9,loc=(0.4,0.5))
+ax.legend(fontsize=9,loc=(0.4,0.6))
 death_rate = '065'
 
 mappings = [ root_folder+'1_0_0_*',
