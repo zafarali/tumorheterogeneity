@@ -96,7 +96,9 @@ def plot_ranked_mixing_analysis(root_folder, label, fig, to_plot, color='gray',
                 rho, p = spearmanr(distances, cum_S)
             if idx == 0: ax.set_ylabel(label+'\n'+to_plot)
             if show_labels: ax.set_xlabel('Distance from \ncluster COM')
-            ax.set_title('x={:3g},\nrho={:.2g},\np={:.2e}'.format(distance_to_tumor_COM, rho, Decimal(p)))
+
+            p_value_print = 'p={:.2f}'.format(Decimal(p)) if p >= 0.01 else: 'p<0.01'
+            ax.set_title('x={:3g},\nrho={:.3f},\n{}'.format(distance_to_tumor_COM, rho, p_value_print))
             all_axes.append(ax)
             sns.despine()
         # ax.legend()

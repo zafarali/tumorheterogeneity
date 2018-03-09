@@ -352,7 +352,7 @@ def freq_plot(ax, mappings,
             lines += ax.plot(y2_x_plt, y2_plt, '^', color=color, alpha=0.8,
                              label=str(model_name) + ' (Drivers) $S_d$=' + str(d_sum), markersize=10)
             labels += [str(model_name) + ' (Drivers) $S_d$=' + str(d_sum)]
-        ax.plot(np.log10(np.ones(40) * 0.0001), np.linspace(0, 10, num=40), '--', color='gray')
+        ax.plot(np.log10(np.ones(40) * 0.0001), np.linspace(0, 10, num=40), ':', color='gray', linewidth=0.5)
 
     return lines, labels
 

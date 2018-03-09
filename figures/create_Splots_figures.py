@@ -89,7 +89,7 @@ def empirical_compare_plot(root_folder, seeds, frequency_threshold='00', frequen
     results = model.fit()
 
     y = results.predict(sm.add_constant(x))
-    ax.plot(x, y, label='Regression (p={:.2e})'.format(Decimal(results.pvalues[1])), color=biggest_c)
+    ax.plot(x, y, label='Regression (p={:.3f})'.format(Decimal(results.pvalues[1])), color=biggest_c)
     ax.set_ylabel('# Somatic Mutations')
     ax.set_xlabel('Distance from Centre of Tumor (cells)')
     ax.set_title('(c) No Turnover (>'+frequency_title+' frequency)\n')
@@ -116,7 +116,7 @@ def empirical_compare_plot(root_folder, seeds, frequency_threshold='00', frequen
     results = model.fit()
 
     y = results.predict(sm.add_constant(x))
-    ax.plot(x, y, label='Regression (p={:.2e})'.format(Decimal(results.pvalues[1])), color=biggest_c)
+    ax.plot(x, y, label='Regression (p={:.3f})'.format(Decimal(results.pvalues[1])), color=biggest_c)
     ax.set_xlabel('Distance from Centre of Tumor (cells)')
 
     ax.legend(loc=2)
