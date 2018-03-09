@@ -62,6 +62,7 @@ mappings = [ root_folder+'1_0_0_*',
 
 ax = f.add_subplot(122)
 freq_plot(ax, mappings)
+ax.plot(np.log10(freq_support), np.log10((alpha*mu/(4*np.sqrt(np.pi)))*freq_support**(-2.5)), '--', label='Analytic Result $alpha=$ '+str(alpha))
 ax.set_xlabel('$log_{10}(frequency)$')
 ax.set_ylabel('$log_{10}(count)$')
 ax.set_xlim([-4.1, 0.05])
@@ -176,7 +177,7 @@ ax.set_ylabel('$log_{10}($count density)')
 
 ax.plot(np.log10(freq_support), np.log10((mu/(4*np.sqrt(np.pi)))*freq_support**(-2.5)), '--', label='Assuming $E[i^{3/2}]=1$')
 ax.plot(np.log10(freq_support), np.log10((15*mu/(4*np.sqrt(np.pi)))*freq_support**(-2.5)), '--', label='Assuming $E[i^{3/2}]=15$', color=BLUE)
-ax.plot(np.log10(freq_support), np.log10(freq_support**(-2)), '--', label='$f^-2$', color='r')
+ax.plot(np.log10(freq_support), np.log10(freq_support**(-2)), '--', label='$f^{-2}$', color='r')
 
 # ax.plot(np.log10(f), np.log10(f**(-2)*1/(4*np.sqrt(np.pi))), '--', label='f^-2$')
 # ax.plot(np.log10(f), np.log10(1/f*(f+1)), '--', label='1/f(f+1)$')
@@ -206,7 +207,7 @@ freq_support = np.linspace(0.000001,0.21,num=1000)
 
 ax.plot(np.log10(freq_support), np.log10((mu/(4*np.sqrt(np.pi)))*freq_support**(-2.5)), '--', label='Assuming $E[i^{3/2}]=1$')
 ax.plot(np.log10(freq_support), np.log10((15*mu/(4*np.sqrt(np.pi)))*freq_support**(-2.5)), '--', label='Assuming $E[i^{3/2}]=15$', color=BLUE)
-ax.plot(np.log10(freq_support), np.log10(freq_support**(-2)), '--', label='$f^-2$', color='r')
+ax.plot(np.log10(freq_support), np.log10(freq_support**(-2)), '--', label='$f^{-2}$', color='r')
 
 ax.set_xlim([-4.15, 0.])
 ax.set_ylim(bottom=0)
