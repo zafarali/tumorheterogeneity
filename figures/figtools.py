@@ -283,7 +283,8 @@ def freq_plot(ax, mappings,
               colors_ = [RED, GREEN, BLUE],
               labels_ = ['No Turnover', 'Surface Turnover', 'Turnover'],
               neutral=False,
-              calculate_slopes=False):
+              calculate_slopes=False,
+              noS=False):
     lines = []
     labels = []
     for mapping, color, model_name in zip(mappings, colors_,labels_):
@@ -356,7 +357,9 @@ def freq_plot(ax, mappings,
         if not neutral: print 'DRV_SUM:' + str(d_sum)
         if not neutral: print 'PROP DRV:' + str(d_sum / f_sum)
 
-        lines += ax.plot(y1_x_plt, y1_plt, 'o', color=color, alpha=1, label=str(model_name) + ' $S$=' + str(f_sum))
+        label_ = str(model_name)
+        if noS: label_+= ' $S$=' + str(f_sum)
+        lines += ax.plot(y1_x_plt, y1_plt, 'o', color=color, alpha=1, label=label_)
         labels += [str(model_name) + ' $S$=' + str(f_sum)]
         if not neutral:
             lines += ax.plot(y2_x_plt, y2_plt, '^', color=color, alpha=0.8,
