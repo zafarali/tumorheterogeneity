@@ -47,20 +47,17 @@ freq_plot(ax,
           labels_=labels_,
           neutral=True)
 
-for R in [1, 5, 10, 15, 20, 50, 100, 200]:
+for R, R_label in [(1,1), (5, 5), (20, 20), (100, 100), (200, 200), ((10**8)**(1.0/3.0), '$10^{8/3}$')]:
     pdf = pf_3d_(f, R, a)
     not_nans = np.logical_not(np.isnan(np.log10(pdf)))
     ax.plot(np.log10(f)[not_nans], np.log10(pdf)[not_nans], label='R='+str(R))
 
-ax.plot(np.log10(f)[not_nans], np.log10(f**(-2.5)), '--', label='$f^{-2.5}$')
-ax.plot(np.log10(f)[not_nans], np.log10(f**(-2)), '--', label='$f^{-2}$')
-ax.plot(np.log10(f)[not_nans], np.log10(f**(-1)), '--', label='$f^{-1}$')
 ax.set_xlabel('$log_{10}(f)$')
 ax.set_ylabel('$log_{10}(p(f))$')
 sns.despine()
 ax.legend()
-ax.set_title('a='+str(a))
-R = 20
+ax.set_title('(a) a='+str(a))
+R = (10**8)**(1.0/3.0)
 
 ax = fig.add_subplot(122)
 freq_plot(ax,
@@ -68,17 +65,16 @@ freq_plot(ax,
           colors_=colors_,
           labels_=labels_,
           neutral=True)
+
 for a in [1, 3, 5, 10]:
     pdf = pf_3d_(f, R, a)
     not_nans = np.logical_not(np.isnan(np.log10(pdf)))
     ax.plot(np.log10(f)[not_nans], np.log10(pdf)[not_nans], label='a='+str(a))
-# ax.plot(np.log10(f)[not_nans], np.log10(f**(-2.5)), '--', label='$f^{-2.5}$')
-# ax.plot(np.log10(f)[not_nans], np.log10(f**(-2)), '--', label='$f^{-2}$')
-# ax.plot(np.log10(f)[not_nans], np.log10(f**(-1)), '--', label='$f^{-1}$')
+
 ax.set_xlabel('$log_{10}(f)$')
 ax.set_ylabel('$log_{10}(p(f))$')
 sns.despine()
-ax.set_title('R='+str(R))
+ax.set_title('(b) R=$10^{8/3}$')
 ax.legend()
 fig.tight_layout()
 fig.savefig('./Analytic.pdf')
