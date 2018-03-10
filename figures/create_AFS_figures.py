@@ -41,7 +41,7 @@ f = plt.figure(figsize=(12,5))
 
 ax = f.add_subplot(121)
 
-freq_plot(ax, mappings)
+freq_plot(ax, mappings, calculate_slopes=True)
 # plt.title('Frequency Spectra',fontsize=12)
 ax.set_xlabel('$log_{10}(frequency)$')
 ax.set_ylabel('$log_{10}(count)$')

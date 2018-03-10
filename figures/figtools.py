@@ -282,7 +282,8 @@ sns.set_context('paper', font_scale=1.5)
 def freq_plot(ax, mappings,
               colors_ = [RED, GREEN, BLUE],
               labels_ = ['No Turnover', 'Surface Turnover', 'Turnover'],
-              neutral=False):
+              neutral=False,
+              calculate_slopes=False):
     lines = []
     labels = []
     for mapping, color, model_name in zip(mappings, colors_,labels_):
@@ -340,6 +341,15 @@ def freq_plot(ax, mappings,
         if not neutral: y2_plt = np.log10(y2[y2_keep]).astype(np.float)
 
         print model_name + ':'
+
+        if calculate_slopes and not neutral:
+            # prepare for regression
+            y2_x_plt_ = sm.add_constant(y2_x_plt)
+            model = sm.OLS(y2_plt, y2_x_plt_)
+            results = model.fit()
+            print('regression on drivers, coefficients', results.params)
+            print('regression on drivers, p-values',results.pvalues)
+
         f_sum = np.around(np.sum(y_or), decimals=2)
         if not neutral: d_sum = np.around(np.sum(y2_or), decimals=2)
         print 'FREQ_SUM:' + str(f_sum)
@@ -353,6 +363,7 @@ def freq_plot(ax, mappings,
                              label=str(model_name) + ' (Drivers) $S_d$=' + str(d_sum), markersize=10)
             labels += [str(model_name) + ' (Drivers) $S_d$=' + str(d_sum)]
         ax.plot(np.log10(np.ones(40) * 0.0001), np.linspace(0, 10, num=40), ':', color='gray', linewidth=0.5)
+
 
     return lines, labels
 
