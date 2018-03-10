@@ -39,7 +39,7 @@ labels_ = ['Simulation']
 fig = plt.figure(figsize=(14,4))
 f = np.linspace(0.00001,0.21,num=1000)
 
-ax = fig.add_subplot(131)
+ax = fig.add_subplot(121)
 
 freq_plot(ax,
           mappings,
@@ -65,7 +65,8 @@ freq_plot(ax,
           mappings,
           colors_=colors_,
           labels_=labels_,
-          neutral=True)
+          neutral=True,
+          noS=True)
 
 for a in [1, 3, 5, 10]:
     pdf = pf_3d_(f, R, a)

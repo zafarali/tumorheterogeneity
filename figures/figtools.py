@@ -358,7 +358,7 @@ def freq_plot(ax, mappings,
         if not neutral: print 'PROP DRV:' + str(d_sum / f_sum)
 
         label_ = str(model_name)
-        if noS: label_+= ' $S$=' + str(f_sum)
+        if not noS: label_+= ' $S$=' + str(f_sum)
         lines += ax.plot(y1_x_plt, y1_plt, 'o', color=color, alpha=1, label=label_)
         labels += [str(model_name) + ' $S$=' + str(f_sum)]
         if not neutral:
