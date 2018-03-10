@@ -34,7 +34,7 @@ ax = fig.add_subplot(121)
 
 mappings = [ '../model/experiments/u0.01/0_0_0_outs*']
 colors_ = ['gray']
-labels_ = ['Neutral Simulation']
+labels_ = ['Simulation']
 
 fig = plt.figure(figsize=(14,4))
 f = np.linspace(0.00001,0.21,num=1000)
@@ -50,12 +50,12 @@ freq_plot(ax,
 for R, R_label in [(1,1), (5, 5), (20, 20), (100, 100), (200, 200), ((10**8)**(1.0/3.0), '$10^{8/3}$')]:
     pdf = pf_3d_(f, R, a)
     not_nans = np.logical_not(np.isnan(np.log10(pdf)))
-    ax.plot(np.log10(f)[not_nans], np.log10(pdf)[not_nans], label='R='+str(R))
+    ax.plot(np.log10(f)[not_nans], np.log10(pdf)[not_nans], label='R='+str(R_label))
 
 ax.set_xlabel('$log_{10}(f)$')
 ax.set_ylabel('$log_{10}(p(f))$')
 sns.despine()
-ax.legend()
+ax.legend(loc='upper right')
 ax.set_title('(a) a='+str(a))
 R = (10**8)**(1.0/3.0)
 
@@ -75,7 +75,7 @@ ax.set_xlabel('$log_{10}(f)$')
 ax.set_ylabel('$log_{10}(p(f))$')
 sns.despine()
 ax.set_title('(b) R=$10^{8/3}$')
-ax.legend()
+ax.legend(loc='upper right')
 # fig.tight_layout()
 fig.savefig('./Analytic.pdf')
 
