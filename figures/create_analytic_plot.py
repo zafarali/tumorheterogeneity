@@ -76,6 +76,6 @@ ax.set_ylabel('$log_{10}(p(f))$')
 sns.despine()
 ax.set_title('(b) R=$10^{8/3}$')
 ax.legend()
-fig.tight_layout()
+# fig.tight_layout()
 fig.savefig('./Analytic.pdf')
 
