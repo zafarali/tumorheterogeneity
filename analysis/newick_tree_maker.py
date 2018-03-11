@@ -146,16 +146,16 @@ class Node(object):
         if not (self.L is None and self.R is None):
             # we are not at the leaf
             # Assign width proportional to the number of lineages in each sub-lineage
-            n1 = self.L.descendants
-            n2 = self.R.descendants
+            n1 = self.R.descendants
+            n2 = self.L.descendants
             width_1 = n1 * 1. / (n1 + n2) * width
             width_2 = n2 * 1. / (n1 + n2) * width
             midpoint_1 = midpoint - width / 2. + width_1 / 2.  # Find the midpoint of each window
             midpoint_2 = midpoint + width / 2. - width_2 / 2.
             # Plot horizontal connector
             ax.plot([midpoint_1, midpoint_2], [branch_height, branch_height], c=color)
-            self.L.plot(width_1, midpoint_1, branch_height, ax, color=color)  # Plot descending lineages
-            self.R.plot(width_2, midpoint_2, branch_height, ax, color=color)
+            self.R.plot(width_1, midpoint_1, branch_height, ax, color=color)  # Plot descending lineages
+            self.L.plot(width_2, midpoint_2, branch_height, ax, color=color)
 
         if len(collapse(self.genomes)) == 1:
             # we only have one kind of genome here, so let's assume we are at the leaf.
