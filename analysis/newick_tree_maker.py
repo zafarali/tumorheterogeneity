@@ -164,9 +164,9 @@ class Node(object):
             if len(self.genomes) > 1:
                 # only draw lines if there is more than one genome.
                 n1 = len(self.genomes)
-                width_1 = width / float(2*n1)
-                midpoint_1 = midpoint - width / 4  # Find the midpoint of each window
-                midpoint_2 = midpoint + width / 4  # Find the midpoint of each window
+                width_1 = width / float(n1)
+                midpoint_1 = midpoint - width / 2.0 + width_1/2.0  # Find the midpoint of each window
+                midpoint_2 = midpoint + width / 2.0 - width_1/2.0  # Find the midpoint of each window
                 # Plot horizontal connector
                 assert midpoint_2 - midpoint_1 < width
 
