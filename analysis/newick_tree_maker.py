@@ -154,7 +154,6 @@ class Node(object):
             midpoint_2 = midpoint + width / 2. - width_2 / 2.
             # Plot horizontal connector
             assert midpoint_2 - midpoint_1 < width
-            ax.plot([midpoint - width/2.0, midpoint+width/2.0], [branch_height, branch_height], c='r', linewidth=0.5)
             ax.plot([midpoint_1, midpoint_2], [branch_height, branch_height], c=color, linewidth=0.5)
             self.R.plot(width_1, midpoint_1, branch_height, ax, color=color)  # Plot descending lineages
             self.L.plot(width_2, midpoint_2, branch_height, ax, color=color)
