@@ -153,6 +153,8 @@ class Node(object):
             midpoint_1 = midpoint - width / 2. + width_1 / 2.  # Find the midpoint of each window
             midpoint_2 = midpoint + width / 2. - width_2 / 2.
             # Plot horizontal connector
+            assert midpoint_2 - midpoint_1 < width
+
             ax.plot([midpoint_1, midpoint_2], [branch_height, branch_height], c=color)
             self.R.plot(width_1, midpoint_1, branch_height, ax, color=color)  # Plot descending lineages
             self.L.plot(width_2, midpoint_2, branch_height, ax, color=color)
@@ -162,11 +164,13 @@ class Node(object):
             # we draw a branch thing here
             if len(self.genomes) > 1:
                 # only draw lines if there is more than one genome.
-                n1 = self.descendants
-                width_1 = width / float(n1)
-                midpoint_1 = midpoint - width / 2. + width_1 / 2.  # Find the midpoint of each window
-                midpoint_2 = midpoint + width / 2. - width_1 / 2.  # Find the midpoint of each window
+                n1 = len(self.genomes)
+                width_1 = width / float(2*n1)
+                midpoint_1 = midpoint - width / 4  # Find the midpoint of each window
+                midpoint_2 = midpoint + width / 4  # Find the midpoint of each window
                 # Plot horizontal connector
+                assert midpoint_2 - midpoint_1 < width
+
                 ax.plot([midpoint_1, midpoint_2], [branch_height, branch_height], c=color)
                 for i, _ in enumerate(self.genomes):
                     ax.scatter(midpoint_1 + width_1 * i, branch_height, color=color, marker='x', s=1)
