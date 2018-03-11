@@ -71,7 +71,6 @@ def create_trees(root_folder, seed, title, fig, total_rows=1, row_to_start=0):
     return fig
 
 PATH, SEED = sys.argv[1], sys.argv[2]
-create_trees('../model/no_death', '1')
 fig = plt.figure(figsize=(14,10))
 create_trees(PATH+'/1_0_0', SEED, 'No Turnover', fig, total_rows=5, row_to_start=0)
 create_trees(PATH+'/1_0_005', SEED, 'Turnover (d=0.05)', fig, total_rows=5, row_to_start=1)
