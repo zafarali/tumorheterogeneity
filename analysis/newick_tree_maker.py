@@ -141,13 +141,13 @@ class Node(object):
         if ax is None:
             fig = plt.figure()
             ax = fig.add_subplot(111)
-        branch_height = top_start - self.branch_length - 0.1
+        branch_height = top_start - self.branch_length - 0.25
         ax.plot([midpoint, midpoint], [top_start, branch_height], c=color)  # Plot vertical lineage
         if not (self.L is None and self.R is None):
             # we are not at the leaf
             # Assign width proportional to the number of lineages in each sub-lineage
-            n1 = self.R.descendants
-            n2 = self.L.descendants
+            n1 = self.L.descendants
+            n2 = self.R.descendants
             width_1 = n1 * 1. / (n1 + n2) * width
             width_2 = n2 * 1. / (n1 + n2) * width
             midpoint_1 = midpoint - width / 2. + width_1 / 2.  # Find the midpoint of each window
@@ -163,7 +163,7 @@ class Node(object):
             if len(self.genomes) > 1:
                 # only draw lines if there is more than one genome.
                 n1 = self.descendants
-                width_1 = width / n1
+                width_1 = width / float(n1)
                 midpoint_1 = midpoint - width / 2. + width_1 / 2.  # Find the midpoint of each window
                 midpoint_2 = midpoint + width / 2. - width_1 / 2.  # Find the midpoint of each window
                 # Plot horizontal connector
