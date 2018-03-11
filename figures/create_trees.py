@@ -15,7 +15,7 @@ from figtools import *
 from analysis.newick_tree_maker import prepare_snp_data, Node
 import json
 from analysis.newick import loads
-
+import cPickle as pickle
 """
 Trees
 """
@@ -42,7 +42,8 @@ def create_trees(root_folder, seed, title, fig, total_rows=1, row_to_start=0):
             if panel_count == 0: ax.set_ylabel(title)
             distance_from_COM = np.sqrt(np.sum(np.array(data[idx]['COM'])**2))
             data_, all_snps = prepare_snp_data(data[idx]['genotypes'])
-
+            if z == 0 and panel_count == 0:
+                pickle.dump(data[idx]['genotypes'], open('DUMPED.pkl', 'wb'))
             tree = Node(data_, all_snps=all_snps.most_common())
             tree.resolve()
             tree.plot(1, 0, ax=ax)
@@ -70,30 +71,30 @@ def create_trees(root_folder, seed, title, fig, total_rows=1, row_to_start=0):
 
 PATH, SEED = sys.argv[1], sys.argv[2]
 # create_trees('../model/no_death', '1')
-fig = plt.figure(figsize=(14,10))
-create_trees(PATH+'/1_0_0', SEED, 'No Turnover', fig, total_rows=5, row_to_start=0)
-create_trees(PATH+'/1_0_005', SEED, 'Turnover (d=0.05)', fig, total_rows=5, row_to_start=1)
-create_trees(PATH+'/1_0_01', SEED, 'Turnover (d=0.1)', fig, total_rows=5, row_to_start=2)
-create_trees(PATH+'/1_0_02', SEED, 'Turnover (d=0.2)', fig, total_rows=5, row_to_start=3)
-create_trees(PATH+'/1_0_065', SEED, 'Turnover (d=0.65)', fig, total_rows=5, row_to_start=4)
-fig.tight_layout(h_pad=1)
-fig.savefig('./trees_selection.pdf')
+# fig = plt.figure(figsize=(14,10))
+# create_trees(PATH+'/1_0_0', SEED, 'No Turnover', fig, total_rows=5, row_to_start=0)
+# create_trees(PATH+'/1_0_005', SEED, 'Turnover (d=0.05)', fig, total_rows=5, row_to_start=1)
+# create_trees(PATH+'/1_0_01', SEED, 'Turnover (d=0.1)', fig, total_rows=5, row_to_start=2)
+# create_trees(PATH+'/1_0_02', SEED, 'Turnover (d=0.2)', fig, total_rows=5, row_to_start=3)
+# create_trees(PATH+'/1_0_065', SEED, 'Turnover (d=0.65)', fig, total_rows=5, row_to_start=4)
+# fig.tight_layout(h_pad=1)
+# fig.savefig('./trees_selection.pdf')
 
 fig = plt.figure(figsize=(14,10))
 create_trees(PATH+'/0_0_0', SEED, 'No Turnover', fig, total_rows=5, row_to_start=0)
-create_trees(PATH+'/0_0_005', SEED, 'Turnover (d=0.05)', fig, total_rows=5, row_to_start=1)
-create_trees(PATH+'/0_0_01', SEED, 'Turnover (d=0.1)', fig, total_rows=5, row_to_start=2)
-create_trees(PATH+'/0_0_02', SEED, 'Turnover (d=0.2)', fig, total_rows=5, row_to_start=3)
-create_trees(PATH+'/0_0_065', SEED, 'Turnover (d=0.65)', fig, total_rows=5, row_to_start=4)
+# create_trees(PATH+'/0_0_005', SEED, 'Turnover (d=0.05)', fig, total_rows=5, row_to_start=1)
+# create_trees(PATH+'/0_0_01', SEED, 'Turnover (d=0.1)', fig, total_rows=5, row_to_start=2)
+# create_trees(PATH+'/0_0_02', SEED, 'Turnover (d=0.2)', fig, total_rows=5, row_to_start=3)
+# create_trees(PATH+'/0_0_065', SEED, 'Turnover (d=0.65)', fig, total_rows=5, row_to_start=4)
 fig.tight_layout(h_pad=1)
 fig.savefig('./trees_no_selection.pdf')
 
-fig = plt.figure(figsize=(14,10))
-create_trees(PATH+'/10_0_0', SEED, 'No Turnover', fig, total_rows=5, row_to_start=0)
-create_trees(PATH+'/10_0_005', SEED, 'Turnover (d=0.05)', fig, total_rows=5, row_to_start=1)
-create_trees(PATH+'/10_0_01', SEED, 'Turnover (d=0.1)', fig, total_rows=5, row_to_start=2)
-create_trees(PATH+'/10_0_02', SEED, 'Turnover (d=0.2)', fig, total_rows=5, row_to_start=3)
-create_trees(PATH+'/10_0_065', SEED, 'Turnover (d=0.65)', fig, total_rows=5, row_to_start=4)
-fig.tight_layout(h_pad=1)
-fig.savefig('./trees_extreme_selection.pdf')
+# fig = plt.figure(figsize=(14,10))
+# create_trees(PATH+'/10_0_0', SEED, 'No Turnover', fig, total_rows=5, row_to_start=0)
+# create_trees(PATH+'/10_0_005', SEED, 'Turnover (d=0.05)', fig, total_rows=5, row_to_start=1)
+# create_trees(PATH+'/10_0_01', SEED, 'Turnover (d=0.1)', fig, total_rows=5, row_to_start=2)
+# create_trees(PATH+'/10_0_02', SEED, 'Turnover (d=0.2)', fig, total_rows=5, row_to_start=3)
+# create_trees(PATH+'/10_0_065', SEED, 'Turnover (d=0.65)', fig, total_rows=5, row_to_start=4)
+# fig.tight_layout(h_pad=1)
+# fig.savefig('./trees_extreme_selection.pdf')
 
