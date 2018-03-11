@@ -142,7 +142,7 @@ class Node(object):
             fig = plt.figure()
             ax = fig.add_subplot(111)
         branch_height = top_start - self.branch_length - 0.25
-        ax.plot([midpoint, midpoint], [top_start, branch_height], c=color)  # Plot vertical lineage
+        ax.plot([midpoint, midpoint], [top_start, branch_height], c=color,  linewidth=0.5)  # Plot vertical lineage
         if not (self.L is None and self.R is None):
             # we are not at the leaf
             # Assign width proportional to the number of lineages in each sub-lineage
@@ -154,8 +154,8 @@ class Node(object):
             midpoint_2 = midpoint + width / 2. - width_2 / 2.
             # Plot horizontal connector
             assert midpoint_2 - midpoint_1 < width
-
-            ax.plot([midpoint_1, midpoint_2], [branch_height, branch_height], c=color)
+            ax.plot([midpoint - width/2.0, midpoint+width/2.0], [branch_height, branch_height], c='r', linewidth=0.5)
+            ax.plot([midpoint_1, midpoint_2], [branch_height, branch_height], c=color, linewidth=0.5)
             self.R.plot(width_1, midpoint_1, branch_height, ax, color=color)  # Plot descending lineages
             self.L.plot(width_2, midpoint_2, branch_height, ax, color=color)
 
@@ -171,7 +171,7 @@ class Node(object):
                 # Plot horizontal connector
                 assert midpoint_2 - midpoint_1 < width
 
-                ax.plot([midpoint_1, midpoint_2], [branch_height, branch_height], c=color)
+                ax.plot([midpoint_1, midpoint_2], [branch_height, branch_height], c=color, linewidth=0.5)
                 for i, _ in enumerate(self.genomes):
                     ax.scatter(midpoint_1 + width_1 * i, branch_height, color=color, marker='x', s=1)
             else:
