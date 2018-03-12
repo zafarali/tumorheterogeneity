@@ -141,7 +141,7 @@ class Node(object):
         if ax is None:
             fig = plt.figure()
             ax = fig.add_subplot(111)
-        branch_height = top_start - self.branch_length - 0.25
+        branch_height = top_start - self.branch_length
         ax.plot([midpoint, midpoint], [top_start, branch_height], c=color,  linewidth=0.5)  # Plot vertical lineage
         if not (self.L is None and self.R is None):
             # we are not at the leaf
