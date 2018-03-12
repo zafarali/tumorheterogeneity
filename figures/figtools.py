@@ -348,28 +348,34 @@ def freq_plot(ax, mappings,
         if calculate_slopes:
             # calcualte regressions, can probably save some computation by
             # removing log10s everywhere, but ive kept them here for explicitness
-            print(np.log10(y))
-            print(np.log10(x_meaned))
+            truncation_point = np.argmax(np.isinf(np.log10(x_meaned)))
+            x_meaned_truncated_base_10 = np.log10(x_meaned[:truncation_point])
+            y_truncated_base_10 = np.log10(y[:truncation_point])
+            print(x_meaned_truncated_base_10)
+            print(y_truncated_base_10)
             # prepare for regression
-            lt25 = np.log10(x_meaned) < slope_start
-            x_meaned_lt25 = sm.add_constant(np.log10(x_meaned[lt25]))
+            lt25 = x_meaned_truncated_base_10 < slope_start
+            x_meaned_lt25 = sm.add_constant(x_meaned_truncated_base_10[lt25])
 
-            model = sm.OLS(np.log10(y[lt25]), x_meaned_lt25)
+            model = sm.OLS(y_truncated_base_10[lt25], x_meaned_lt25)
             results = model.fit()
             print('x-values:  10^-4 to 10^'+str(slope_start))
             print('regression of passengers, coefficients', results.params)
             print('regression of passengers, p-values', results.pvalues)
-            print('allvalues:', np.log10(y[lt25]), x_meaned_lt25)
+            print('allvalues:', y_truncated_base_10[lt25], x_meaned_lt25)
 
-            gt25 = np.log10(x_meaned) >= slope_start and np.log10(x_meaned) < slope_end
-            x_meaned_gt25 = sm.add_constant(np.log10(x_meaned_gt25))
+            gt25 = x_meaned_truncated_base_10 >= slope_start
+            x_meaned_selected = x_meaned_truncated_base_10[gt25]
+            ltse = x_meaned_selected < slope_end
+            x_meaned_selected = x_meaned_selected[ltse]
+            x_meaned_gt25 = sm.add_constant(x_meaned_selected)
 
-            model = sm.OLS(np.log10(y[gt25]), x_meaned_gt25)
+            model = sm.OLS(y[gt25][ltse], x_meaned_gt25)
             results = model.fit()
             print('x-values: 10^'+str(slope_start)+' to 10^'+str(slope_end))
             print('regression of passengers, coefficients', results.params)
             print('regression of passengers, p-values', results.pvalues)
-            print('allvalues:', np.log10(y[gt25]), x_meaned_gt25)
+            print('allvalues:', y[gt25][ltse], x_meaned_gt25)
 
             if not neutral:
                 y2_x_plt_ = sm.add_constant(y2_x_plt)
