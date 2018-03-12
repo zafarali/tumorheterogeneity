@@ -346,6 +346,8 @@ def freq_plot(ax, mappings,
         print model_name + ':'
 
         if calculate_slopes:
+            print(y)
+            print(x_meaned)
             # prepare for regression
             lt25 = x_meaned < slope_start
             x_meaned_lt25 = sm.add_constant(x_meaned[lt25])
@@ -358,7 +360,7 @@ def freq_plot(ax, mappings,
             print('allvalues:', y[lt25], x_meaned_lt25)
 
             gt25 = x_meaned >= slope_start and x_meaned < slope_end
-            x_meaned_gt25 = sm.add_constant(y1_x_plt[gt25])
+            x_meaned_gt25 = sm.add_constant(x_meaned_gt25)
 
             model = sm.OLS(y[gt25], x_meaned_gt25)
             results = model.fit()
