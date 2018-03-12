@@ -373,7 +373,7 @@ def freq_plot(ax, mappings,
 
             model = sm.OLS(y_truncated_base_10[gt25][ltse], x_meaned_gt25)
             results = model.fit()
-            print('x-values: 10^'+str(slope_start)+' to 10^'+str(slope_end))
+            print('x-values: 10^'+str(slope_start)+' to 10^'+str(x_meaned_selected[-1]))
             print('regression of passengers, coefficients', results.params)
             print('regression of passengers, p-values', results.pvalues)
             print('allvalues:', y_truncated_base_10[gt25][ltse], x_meaned_gt25)
