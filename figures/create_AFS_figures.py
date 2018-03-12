@@ -15,7 +15,7 @@ sns.set_style('white')
 sns.set_context('paper', font_scale=1.5)
 from glob import glob
 from figtools import *
-
+from fusco import SFS
 
 RED, BLUE, GREEN = sns.xkcd_palette(["amber", "dusty purple", "faded green"])
 sns.set_context('paper', font_scale=1.5)
@@ -23,7 +23,8 @@ sns.set_context('paper', font_scale=1.5)
 pi = np.pi
 mu = 0.02
 alpha = 30
-
+fusco_alpha = 0.55
+fusco_beta = 2.3
 """
 Allele Frequency Spectra. 
 Figure 1
@@ -51,6 +52,11 @@ ax.set_title('(a) d=0.'+death_rate[1:])
 ax.set_ylim(bottom=0)
 
 # analytic line
+fusco_support = np.logspace(-4.1, 0, num=1000)
+sfs = SFS(10**8, mu, fusco_alpha, fusco_beta)
+sfs = np.vectorize(sfs)
+ax.plot(np.log10(fusco_support), np.log10(sfs(fusco_support)), '--', label='Fusco et al.')
+
 freq_support = np.linspace(0.000001,0.21,num=1000)
 ax.plot(np.log10(freq_support), np.log10((alpha*mu/(4*np.sqrt(np.pi)))*freq_support**(-2.5)), '--', label='Analytic Result $alpha=$ '+str(alpha))
 ax.legend(fontsize=9,loc=(0.4,0.6))
