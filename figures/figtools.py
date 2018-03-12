@@ -346,28 +346,30 @@ def freq_plot(ax, mappings,
         print model_name + ':'
 
         if calculate_slopes:
-            print(y)
-            print(x_meaned)
+            # calcualte regressions, can probably save some computation by
+            # removing log10s everywhere, but ive kept them here for explicitness
+            print(np.log10(y))
+            print(np.log10(x_meaned))
             # prepare for regression
-            lt25 = x_meaned < slope_start
-            x_meaned_lt25 = sm.add_constant(x_meaned[lt25])
+            lt25 = np.log10(x_meaned) < slope_start
+            x_meaned_lt25 = sm.add_constant(np.log10(x_meaned[lt25]))
 
-            model = sm.OLS(y[lt25], x_meaned_lt25)
+            model = sm.OLS(np.log10(y[lt25]), x_meaned_lt25)
             results = model.fit()
             print('x-values:  10^-4 to 10^'+str(slope_start))
             print('regression of passengers, coefficients', results.params)
             print('regression of passengers, p-values', results.pvalues)
-            print('allvalues:', y[lt25], x_meaned_lt25)
+            print('allvalues:', np.log10(y[lt25]), x_meaned_lt25)
 
-            gt25 = x_meaned >= slope_start and x_meaned < slope_end
-            x_meaned_gt25 = sm.add_constant(x_meaned_gt25)
+            gt25 = np.log10(x_meaned) >= slope_start and np.log10(x_meaned) < slope_end
+            x_meaned_gt25 = sm.add_constant(np.log10(x_meaned_gt25))
 
-            model = sm.OLS(y[gt25], x_meaned_gt25)
+            model = sm.OLS(np.log10(y[gt25]), x_meaned_gt25)
             results = model.fit()
             print('x-values: 10^'+str(slope_start)+' to 10^'+str(slope_end))
             print('regression of passengers, coefficients', results.params)
             print('regression of passengers, p-values', results.pvalues)
-            print('allvalues:', y[gt25], x_meaned_gt25)
+            print('allvalues:', np.log10(y[gt25]), x_meaned_gt25)
 
             if not neutral:
                 y2_x_plt_ = sm.add_constant(y2_x_plt)
