@@ -55,7 +55,7 @@ ax.set_ylim(bottom=0)
 fusco_support = np.logspace(-4.1, 0, num=1000)
 sfs = SFS(10**8, mu, fusco_alpha, fusco_beta)
 sfs = np.vectorize(sfs)
-ax.plot(np.log10(fusco_support), np.log10(sfs(fusco_support)), '--', label='Fusco et al.')
+ax.scatter(np.log10(fusco_support), np.log10(sfs(2*fusco_support)), marker='.', s=1.5, label='Fusco et al.')
 
 freq_support = np.linspace(0.000001,0.21,num=1000)
 ax.plot(np.log10(freq_support), np.log10((alpha*mu/(4*np.sqrt(np.pi)))*freq_support**(-2.5)), '--', label='Analytic Result $alpha=$ '+str(alpha))
