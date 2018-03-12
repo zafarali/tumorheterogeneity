@@ -350,7 +350,7 @@ def freq_plot(ax, mappings,
 
             model = sm.OLS(y1_plt[lt25], y1_x_plt_lt25)
             results = model.fit()
-            print('x-values:', y1_x_plt_lt25)
+            print('x-values:  10^-4 to 10^-2.5')
             print('regression of passengers, coefficients', results.params)
             print('regression of passengers, p-values', results.pvalues)
 
@@ -359,7 +359,7 @@ def freq_plot(ax, mappings,
 
             model = sm.OLS(y1_plt[gt25], y1_x_plt_gt25)
             results = model.fit()
-            print('x-values:', y1_x_plt_gt25)
+            print('x-values: 10^-2.5 to 10^0')
             print('regression of passengers, coefficients', results.params)
             print('regression of passengers, p-values', results.pvalues)
 
