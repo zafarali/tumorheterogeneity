@@ -343,13 +343,32 @@ def freq_plot(ax, mappings,
 
         print model_name + ':'
 
-        if calculate_slopes and not neutral:
+        if calculate_slopes:
             # prepare for regression
-            y2_x_plt_ = sm.add_constant(y2_x_plt)
-            model = sm.OLS(y2_plt, y2_x_plt_)
+            lt25 = y1_x_plt < -2.5
+            y1_x_plt_lt25 = sm.add_constant(y1_x_plt[lt25])
+
+            model = sm.OLS(y1_plt[lt25], y1_x_plt_lt25)
             results = model.fit()
-            print('regression on drivers, coefficients', results.params)
-            print('regression on drivers, p-values',results.pvalues)
+            print('x-values:', y1_x_plt_lt25)
+            print('regression of passengers, coefficients', results.params)
+            print('regression of passengers, p-values', results.pvalues)
+
+            gt25 = y1_x_plt >= -2.5
+            y1_x_plt_gt25 = sm.add_constant(y1_x_plt[gt25])
+
+            model = sm.OLS(y1_plt[gt25], y1_x_plt_gt25)
+            results = model.fit()
+            print('x-values:', y1_x_plt_gt25)
+            print('regression of passengers, coefficients', results.params)
+            print('regression of passengers, p-values', results.pvalues)
+
+            if not neutral:
+                y2_x_plt_ = sm.add_constant(y2_x_plt)
+                model = sm.OLS(y2_plt, y2_x_plt_)
+                results = model.fit()
+                print('regression on drivers, coefficients', results.params)
+                print('regression on drivers, p-values',results.pvalues)
 
         f_sum = np.around(np.sum(y_or), decimals=2)
         if not neutral: d_sum = np.around(np.sum(y2_or), decimals=2)
