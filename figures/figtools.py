@@ -284,7 +284,8 @@ def freq_plot(ax, mappings,
               labels_ = ['No Turnover', 'Surface Turnover', 'Turnover'],
               neutral=False,
               calculate_slopes=False,
-              noS=False):
+              noS=False,
+              slope_start=-2.5):
     lines = []
     labels = []
     for mapping, color, model_name in zip(mappings, colors_,labels_):
@@ -345,7 +346,7 @@ def freq_plot(ax, mappings,
 
         if calculate_slopes:
             # prepare for regression
-            lt25 = y1_x_plt < -2.5
+            lt25 = y1_x_plt < slope_start
             y1_x_plt_lt25 = sm.add_constant(y1_x_plt[lt25])
 
             model = sm.OLS(y1_plt[lt25], y1_x_plt_lt25)
@@ -353,8 +354,9 @@ def freq_plot(ax, mappings,
             print('x-values:  10^-4 to 10^-2.5')
             print('regression of passengers, coefficients', results.params)
             print('regression of passengers, p-values', results.pvalues)
+            print('allvalues:', y1_x_plt_lt25, y1_x_plt[lt25])
 
-            gt25 = y1_x_plt >= -2.5
+            gt25 = y1_x_plt >= slope_start
             y1_x_plt_gt25 = sm.add_constant(y1_x_plt[gt25])
 
             model = sm.OLS(y1_plt[gt25], y1_x_plt_gt25)
@@ -362,7 +364,8 @@ def freq_plot(ax, mappings,
             print('x-values: 10^-2.5 to 10^0')
             print('regression of passengers, coefficients', results.params)
             print('regression of passengers, p-values', results.pvalues)
-
+            print('allvalues:', y1_x_plt_gt25, y1_x_plt[gt25])
+            
             if not neutral:
                 y2_x_plt_ = sm.add_constant(y2_x_plt)
                 model = sm.OLS(y2_plt, y2_x_plt_)

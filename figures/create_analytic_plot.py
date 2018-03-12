@@ -46,7 +46,9 @@ freq_plot(ax,
           colors_=colors_,
           labels_=labels_,
           neutral=True,
-          noS=True)
+          noS=True,
+          calculate_slopes=True,
+          slope_start=-2)
 
 for R, R_label in [(1,1), (5, 5), (20, 20), (100, 100), (200, 200), ((10**8)**(1.0/3.0), '$10^{8/3}$')]:
     pdf = pf_3d_(f, R, a)
