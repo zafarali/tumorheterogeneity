@@ -371,12 +371,12 @@ def freq_plot(ax, mappings,
             x_meaned_selected = x_meaned_selected[ltse]
             x_meaned_gt25 = sm.add_constant(x_meaned_selected)
 
-            model = sm.OLS(y[gt25][ltse], x_meaned_gt25)
+            model = sm.OLS(y_truncated_base_10[gt25][ltse], x_meaned_gt25)
             results = model.fit()
             print('x-values: 10^'+str(slope_start)+' to 10^'+str(slope_end))
             print('regression of passengers, coefficients', results.params)
             print('regression of passengers, p-values', results.pvalues)
-            print('allvalues:', y[gt25][ltse], x_meaned_gt25)
+            print('allvalues:', y_truncated_base_10[gt25][ltse], x_meaned_gt25)
 
             if not neutral:
                 y2_x_plt_ = sm.add_constant(y2_x_plt)
