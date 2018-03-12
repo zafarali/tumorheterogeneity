@@ -348,7 +348,8 @@ def freq_plot(ax, mappings,
         if calculate_slopes:
             # calcualte regressions, can probably save some computation by
             # removing log10s everywhere, but ive kept them here for explicitness
-            truncation_point = np.argmax(np.isinf(np.log10(x_meaned)))
+            truncation_point = np.argmax(np.isinf(np.log10(y)))
+            print(truncation_point)
             x_meaned_truncated_base_10 = np.log10(x_meaned[:truncation_point])
             y_truncated_base_10 = np.log10(y[:truncation_point])
             print(x_meaned_truncated_base_10)
