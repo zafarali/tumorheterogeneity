@@ -15,24 +15,28 @@ def phi_c_fn(N, alpha, beta):
     return N ** (-(alpha * beta - alpha) / (beta - alpha))
 
 
-def dChi_fn(alpha, beta, x_c):
+def dChi_fn(alpha, beta, x_c, x_c_threshold=None):
     """
     Returns a function that calculates the derivative of
     the chi function.
     """
     x_c = float(x_c)
+    if x_c_threshold is None: x_c_threshold = x_c
 
     def dChi_(x):
-        if x / x_c < 1:
+        if x / x_c_threshold < 1:
             return (-alpha / x_c) * (x / x_c) ** (-alpha - 1)
 
-        elif x / x_c > 1:
+        elif x / x_c_threshold > 1:
             return (-beta / x_c) * (x / x_c) ** (-beta - 1)
         else:
             return 0
 
     return dChi_
 
+
+def x_c_prime_fn(alpha, beta, x_c):
+    return x_c * (alpha/beta)**(1/(alpha-beta))
 
 def SFS(N, mu, alpha, beta):
     """
@@ -45,13 +49,12 @@ def SFS(N, mu, alpha, beta):
     N, alpha, beta = float(N), float(alpha), float(beta)
     x_c = x_c_fn(N, alpha, beta)
     phi_c = phi_c_fn(N, alpha, beta)
-    dChi = dChi_fn(alpha, beta, x_c)
-    print(np.log10(phi_c))
-    print(np.log10(x_c))
+    x_c_prime = x_c_prime_fn(alpha, beta, x_c)
+    dChi = dChi_fn(alpha, beta, x_c, x_c_threshold=x_c_prime)
 
     def fn_(x):
         conditional_factor = dChi(x)
         return -phi_c * N * mu * conditional_factor
 
-    return fn_
+    return fn_, x_c_prime
 
