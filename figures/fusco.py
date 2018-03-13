@@ -38,7 +38,7 @@ def dChi_fn(alpha, beta, x_c, x_c_threshold=None):
 def x_c_prime_fn(alpha, beta, x_c):
     return x_c * (alpha/beta)**(1/(alpha-beta))
 
-def SFS(N, mu, alpha, beta):
+def SFS(N, mu, alpha, beta, with_correction=True):
     """
     Calculates the SFS
     :param N: size of the tumor
@@ -49,7 +49,7 @@ def SFS(N, mu, alpha, beta):
     N, alpha, beta = float(N), float(alpha), float(beta)
     x_c = x_c_fn(N, alpha, beta)
     phi_c = phi_c_fn(N, alpha, beta)
-    x_c_prime = x_c_prime_fn(alpha, beta, x_c)
+    x_c_prime = x_c_prime_fn(alpha, beta, x_c) if with_correction else None
     dChi = dChi_fn(alpha, beta, x_c, x_c_threshold=x_c_prime)
 
     def fn_(x):

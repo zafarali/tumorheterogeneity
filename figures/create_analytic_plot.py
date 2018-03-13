@@ -11,35 +11,21 @@ sns.set_style('white')
 sns.set_context('paper', font_scale=1.5)
 from glob import glob
 from figtools import *
+from fusco import SFS
+
 
 pi = np.pi
-a = 1
-R = 10
-# this is what we will use to find the roots of to get the radius
-# for a specific frequency value
-f = np.linspace(0.000001,0.20,num=1000)
-
-r_f = lambda r, f, R, a: f - (a**2/(4*pi))*(1/r**2 - r/R**3)
-r_f_ = np.vectorize(r_f)
-def pf_3d(f, R, a):
-    # find the root
-    r_ = optimize.root(r_f, 1, args=(f, R, a)).x[0]
-    return ((8*pi**2)/a**2)*(r_**5/(1+r_**3/(2*R**3)))
-
-pf_3d_ = np.vectorize(pf_3d)
-
-fig = plt.figure(figsize=(10, 4))
-ax = fig.add_subplot(121)
-
+mu = 0.02
+alpha = 30
+fusco_alpha = 0.55
+fusco_beta = 2.3
 
 mappings = [ '../model/experiments/u0.01/0_0_0_outs*']
 colors_ = ['gray']
 labels_ = ['Simulation']
 
-fig = plt.figure(figsize=(14,4))
+fig = plt.figure()
 f = np.linspace(0.00001,0.21,num=1000)
-
-ax = fig.add_subplot(121)
 
 freq_plot(ax,
           mappings,
@@ -50,35 +36,21 @@ freq_plot(ax,
           calculate_slopes=True,
           slope_start=-2)
 
-for R, R_label in [(1,1), (5, 5), (20, 20), (100, 100), (200, 200), ((10**8)**(1.0/3.0), '$10^{8/3}$')]:
-    pdf = pf_3d_(f, R, a)
-    not_nans = np.logical_not(np.isnan(np.log10(pdf)))
-    ax.plot(np.log10(f)[not_nans], np.log10(pdf)[not_nans], label='R='+str(R_label))
+fusco_support = np.logspace(-4.1, 0, num=1000)
+sfs, x_c_prime = SFS(10**8, mu, fusco_alpha, fusco_beta)
+sfs = np.vectorize(sfs)
+ax.plot(np.log10(fusco_support), np.log10(sfs(2*fusco_support)), '-', label='Fusco et al. (With Correction)')
+sfs, x_c_prime = SFS(10**8, mu, fusco_alpha, fusco_beta, with_correction=False)
+sfs = np.vectorize(sfs)
+ax.plot(np.log10(fusco_support), np.log10(sfs(2*fusco_support)), '-', label='Fusco et al. (Without Correction)')
+
+freq_support = np.logspace(-2.05,0, num=1000)
+qs.plot(np.log10(freq_support), np.log10((alpha*mu/(4*np.sqrt(np.pi)))*freq_support**(-2.5)), '--', label='Deterministic Result')
 
 ax.set_xlabel('$log_{10}(f)$')
 ax.set_ylabel('$log_{10}(p(f))$')
 sns.despine()
-ax.legend(loc='upper right')
-ax.set_title('(a) a='+str(a))
-R = (10**8)**(1.0/3.0)
 
-ax = fig.add_subplot(122)
-freq_plot(ax,
-          mappings,
-          colors_=colors_,
-          labels_=labels_,
-          neutral=True,
-          noS=True)
-
-for a in [1, 3, 5, 10]:
-    pdf = pf_3d_(f, R, a)
-    not_nans = np.logical_not(np.isnan(np.log10(pdf)))
-    ax.plot(np.log10(f)[not_nans], np.log10(pdf)[not_nans], label='a='+str(a))
-
-ax.set_xlabel('$log_{10}(f)$')
-ax.set_ylabel('$log_{10}(p(f))$')
-sns.despine()
-ax.set_title('(b) R=$10^{8/3}$')
 ax.legend(loc='upper right')
 # fig.tight_layout()
 fig.savefig('./Analytic.pdf')
