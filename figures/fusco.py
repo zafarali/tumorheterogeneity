@@ -56,5 +56,5 @@ def SFS(N, mu, alpha, beta, with_correction=True):
         conditional_factor = dChi(x)
         return -phi_c * N * mu * conditional_factor
 
-    return fn_, x_c_prime
+    return fn_, x_c_prime if x_c_prime is not None else x_c
 
