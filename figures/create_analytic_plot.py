@@ -25,8 +25,8 @@ colors_ = ['gray']
 labels_ = ['Simulation']
 
 fig = plt.figure()
-f = np.linspace(0.00001,0.21,num=1000)
 
+ax = fig.add_axes(111)
 freq_plot(ax,
           mappings,
           colors_=colors_,
@@ -45,7 +45,7 @@ sfs = np.vectorize(sfs)
 ax.plot(np.log10(fusco_support), np.log10(sfs(2*fusco_support)), '-', label='Fusco et al. (Without Correction)')
 
 freq_support = np.logspace(-2.05,0, num=1000)
-qs.plot(np.log10(freq_support), np.log10((alpha*mu/(4*np.sqrt(np.pi)))*freq_support**(-2.5)), '--', label='Deterministic Result')
+ax.plot(np.log10(freq_support), np.log10((alpha*mu/(4*np.sqrt(np.pi)))*freq_support**(-2.5)), '--', label='Deterministic Result')
 
 ax.set_xlabel('$log_{10}(f)$')
 ax.set_ylabel('$log_{10}(p(f))$')
