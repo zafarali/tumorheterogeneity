@@ -26,7 +26,7 @@ labels_ = ['Simulation']
 
 fig = plt.figure()
 
-ax = fig.add_axes(111)
+ax = fig.add_subplot('111')
 freq_plot(ax,
           mappings,
           colors_=colors_,
