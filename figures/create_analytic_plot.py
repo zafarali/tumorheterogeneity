@@ -40,13 +40,13 @@ freq_plot(ax,
 sfs, x_c_prime = SFS(10**8, mu, fusco_alpha, fusco_beta, with_correction=False)
 
 sfs = np.vectorize(sfs)
-fusco_support = np.logspace(-4.1, np.log10(x_c_prime)-0.1, num=1000, endpoint=False)
+fusco_support = np.logspace(-4.0, -2.38, num=1000, endpoint=False)
 ax.plot(np.log10(fusco_support), np.log10(sfs(2*fusco_support)), ':b', label='Fusco et al. (Without Correction)')
-fusco_support = np.logspace(np.log10(x_c_prime)+0.1, 0, num=1000, endpoint=False)
+fusco_support = np.logspace(-2.42, 0, num=1000, endpoint=False)
 ax.plot(np.log10(fusco_support), np.log10(sfs(2*fusco_support)), ':b')
 
 
-fusco_support = np.logspace(-4.1, 0, num=1000)
+fusco_support = np.logspace(-4.0, 0, num=1000)
 sfs, x_c_prime = SFS(10**8, mu, fusco_alpha, fusco_beta)
 sfs = np.vectorize(sfs)
 ax.plot(np.log10(fusco_support), np.log10(sfs(2*fusco_support)), '--r', label='Fusco et al. (With Correction)')
