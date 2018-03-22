@@ -99,6 +99,7 @@ def plot_relative_increases(root_folder, seeds):
     ax.set_xlabel('Distance from COM of Tumor')
     ax.set_ylabel('Relative Increase in S(1)')
     ax.legend()
+    ax.semilogy(basey=10)
     fig.tight_layout(h_pad=1)
     return fig
 
