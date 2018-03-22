@@ -57,7 +57,7 @@ sfs, x_c_prime = SFS(10**8, mu, fusco_alpha, fusco_beta)
 sfs = np.vectorize(sfs)
 ax.plot(np.log10(fusco_support), np.log10(sfs(2*fusco_support)), '--', label='Fusco et al.')
 freq_support = np.linspace(x_c_prime,0.21,num=500)
-ax.plot(np.log10(freq_support), np.log10((alpha*mu/(4*np.sqrt(np.pi)))*freq_support**(-2.5)), '--', label='Deterministic Result')
+ax.plot(np.log10(freq_support), np.log10((alpha*mu/(4*np.sqrt(np.pi)))*freq_support**(-2.5)), '--k', label='Deterministic Result')
 
 ax.legend(fontsize=9,loc=(0.4,0.6))
 death_rate = '065'
@@ -69,7 +69,7 @@ mappings = [ root_folder+'1_0_0_*',
 ax = f.add_subplot(122)
 freq_plot(ax, mappings)
 ax.plot(np.log10(fusco_support), np.log10(sfs(2*fusco_support)), '--', label='Fusco et al.')
-ax.plot(np.log10(freq_support), np.log10((alpha*mu/(4*np.sqrt(np.pi)))*freq_support**(-2.5)), '--', label='Deterministic Result')
+ax.plot(np.log10(freq_support), np.log10((alpha*mu/(4*np.sqrt(np.pi)))*freq_support**(-2.5)), '--k', label='Deterministic Result')
 ax.set_xlabel('$log_{10}(frequency)$')
 ax.set_ylabel('$log_{10}(count density)$')
 ax.set_xlim([-4.1, 0.05])
@@ -98,7 +98,7 @@ ax = f.add_subplot(121)
 freq_plot(ax, mappings)
 
 ax.plot(np.log10(fusco_support), np.log10(sfs(2*fusco_support)), '--', label='Fusco et al.')
-ax.plot(np.log10(freq_support), np.log10((alpha*mu/(4*np.sqrt(np.pi)))*freq_support**(-2.5)), '--', label='Deterministic Result')
+ax.plot(np.log10(freq_support), np.log10((alpha*mu/(4*np.sqrt(np.pi)))*freq_support**(-2.5)), '--k', label='Deterministic Result')
 
 
 ax.set_xlabel('$log_{10}(frequency)$')
@@ -119,7 +119,7 @@ mappings = [ root_folder+'1_0_0_*',
 ax = f.add_subplot(122)
 freq_plot(ax, mappings)
 ax.plot(np.log10(fusco_support), np.log10(sfs(2*fusco_support)), '--', label='Fusco et al.')
-ax.plot(np.log10(freq_support), np.log10((alpha*mu/(4*np.sqrt(np.pi)))*freq_support**(-2.5)), '--', label='Deterministic Result')
+ax.plot(np.log10(freq_support), np.log10((alpha*mu/(4*np.sqrt(np.pi)))*freq_support**(-2.5)), '--k', label='Deterministic Result')
 
 ax.set_xlabel('$log_{10}(frequency)$')
 ax.set_ylabel('$log_{10}(count density)$')
@@ -160,7 +160,7 @@ freq_plot(ax,
           colors_=COLORS,labels_=['d=0', 'd=0.05', 'd=0.1', 'd=0.2', 'd=0.65'],
           neutral=True)
 ax.plot(np.log10(fusco_support), np.log10(sfs(2*fusco_support)), '--', label='Fusco et al.')
-ax.plot(np.log10(freq_support), np.log10((alpha*mu/(4*np.sqrt(np.pi)))*freq_support**(-2.5)), '--', label='Deterministic Result')
+ax.plot(np.log10(freq_support), np.log10((alpha*mu/(4*np.sqrt(np.pi)))*freq_support**(-2.5)), '--k', label='Deterministic Result')
 
 ax.set_xlabel('$log_{10}(frequency)$')
 ax.set_ylabel('$log_{10}($count density)')
