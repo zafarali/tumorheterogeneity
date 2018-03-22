@@ -115,7 +115,7 @@ def exponential_mean_function(x_i, y_i, k=1):
     return exponential_mean_at
 
 
-def prepare_data2(folder, yaxis='S_list_ordered', k=0.01, pts=100):
+def prepare_data2(folder, yaxis='S_list_ordered', k=0.01, pts=100, max_dist=None):
     """
         Load data from .npy files
     """
@@ -155,7 +155,7 @@ def prepare_data2(folder, yaxis='S_list_ordered', k=0.01, pts=100):
             y = S[:, slice_range].reshape(1, -1)[0]
 
         minp = 0
-        maxp = distances.max()  # define the maximum tumor size
+        maxp = distances.max() if max_dist is None else max_dist # define the maximum tumor size
         x_av = np.linspace(minp, maxp, pts)
         moving_avg_function = np.vectorize(exponential_mean_function(x, y, k=k))  # returns a function
         y_av = moving_avg_function(x_av)
@@ -191,7 +191,18 @@ def cross_sim_average(samples):
     return to_be_returned
 
 
-def data_to_plot(folder, seeds, yaxis='unique_combos', k=0.01, pts=100, mode=1, d='005'):
+def data_to_plot(folder, seeds, yaxis='unique_combos', k=0.01, pts=100, mode=2, d='005', max_dist=None):
+    """
+    :param folder: The folder to look at
+    :param seeds:  The seeds to consider
+    :param yaxis: The y-axis to plot
+    :param k: the smoothing for the kernel
+    :param pts: The number of points to return
+    :param mode: method to load data (should be 2)
+    :param d: the death rate
+    :param max_dist: the maximum distance to return data for
+    :return:
+    """
     samples = [] # all samples will be held here
     # first prep the data for each seed
 #     print 'DATA_TO_PLOT - FOLDER:'+folder+' SEEDS:'+str(seeds)+' d:'+d
@@ -203,7 +214,7 @@ def data_to_plot(folder, seeds, yaxis='unique_combos', k=0.01, pts=100, mode=1, 
             if mode == 1:
                 raise DeprecationWarning('Cannot use prepare_data1 anymore.')
             else:
-                samples.append(prepare_data2(this_folder, yaxis=yaxis, k=k, pts=pts))
+                samples.append(prepare_data2(this_folder, yaxis=yaxis, k=k, pts=pts, max_dist=max_dist))
         except Exception as e:
             # TODO: there is an error going on here
             print 'data_to_plot Exception:'+str(e)
