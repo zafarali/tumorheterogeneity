@@ -192,7 +192,7 @@ ax.set_ylabel('$log_{10}($count density)')
 
 ax.set_xlim([-4.15, 0.])
 ax.set_ylim(bottom=0)
-ax.legend(fontsize=8, loc=(0.45,0.5))
+ax.legend(fontsize=4, loc=(0.45,0.5))
 sns.despine()
 
 
@@ -218,7 +218,7 @@ ax.set_ylabel('$log_{10}($count density)')
 
 ax.set_xlim([-4.15, 0.])
 ax.set_ylim(bottom=0)
-ax.legend(fontsize=8, loc=(0.45,0.5))
+ax.legend(fontsize=4, loc=(0.45,0.5))
 sns.despine()
 ax.set_title('(c) Selection = 10%')
 fig.tight_layout()
