@@ -137,8 +137,7 @@ plt.savefig('./AFS-d001.pdf')
 how does death rate in no selection simulations change the from the theoretical prediction?
 """
 
-COLORS = sns.color_palette('colorblind', n_colors=5)
-# COLORS = [cmap(1), cmap(4), cmap(9), cmap(14), cmap(19)]
+COLORS = sns.color_palette('GnBu_d', n_colors=5)
 sns.set_context('paper', font_scale=1.5)
 
 pi = np.pi
