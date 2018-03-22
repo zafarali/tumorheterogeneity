@@ -44,13 +44,13 @@ fusco_support = np.logspace(-4.0, -2.38, num=1000, endpoint=False)
 ax.plot(np.log10(fusco_support), np.log10(sfs(2*fusco_support)), ':b', label='Fusco et al. (Without Correction)')
 fusco_support = np.logspace(-2.42, 0, num=1000, endpoint=False)
 ax.plot(np.log10(fusco_support), np.log10(sfs(2*fusco_support)), ':b')
-
+print('Uncorrected x_c_prime 10^{:.2f}'.format(np.log10(x_c_prime)))
 
 fusco_support = np.logspace(-4.0, 0, num=1000)
 sfs, x_c_prime = SFS(10**8, mu, fusco_alpha, fusco_beta)
 sfs = np.vectorize(sfs)
 ax.plot(np.log10(fusco_support), np.log10(sfs(2*fusco_support)), '--r', label='Fusco et al. (With Correction)')
-
+print('Corrected x_c_prime 10^{:.2f}'.format(np.log10(x_c_prime)))
 freq_support = np.logspace(-2.05,0, num=1000)
 ax.plot(np.log10(freq_support), np.log10((alpha*mu/(4*np.sqrt(np.pi)))*freq_support**(-2.5)), '-g', label='Deterministic Result')
 
