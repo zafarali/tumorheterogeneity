@@ -80,9 +80,6 @@ def plot_relative_increases(root_folder, seeds):
     Turnover065 = data_to_plot(folder, seeds, yaxis='S_list_ordered', mode=2, d='065', max_dist=300)
 
 
-    x,y = [No_turnover[(1,)][0], (No_turnover[(1,)][1] - No_turnover[(1,)][1])/(No_turnover[(1,)][1]) ]
-
-    ax.plot(x, y, label='d=0')
     x,y = [No_turnover[(1,)][0], (Turnover005[(1,)][1] - No_turnover[(1,)][1])/(No_turnover[(1,)][1]) ]
 
     ax.plot(x, y, label='d=0.05')
