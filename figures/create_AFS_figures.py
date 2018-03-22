@@ -96,7 +96,11 @@ f = plt.figure(figsize=(12,5))
 ax = f.add_subplot(121)
 
 freq_plot(ax, mappings)
-# plt.title('Frequency Spectra',fontsize=12)
+
+ax.plot(np.log10(fusco_support), np.log10(sfs(2*fusco_support)), '--', label='Fusco et al.')
+ax.plot(np.log10(freq_support), np.log10((alpha*mu/(4*np.sqrt(np.pi)))*freq_support**(-2.5)), '--', label='Deterministic Result')
+
+
 ax.set_xlabel('$log_{10}(frequency)$')
 ax.set_ylabel('$log_{10}(count density)$')
 ax.set_xlim([-4.1, 0.05])
@@ -114,6 +118,9 @@ mappings = [ root_folder+'1_0_0_*',
 
 ax = f.add_subplot(122)
 freq_plot(ax, mappings)
+ax.plot(np.log10(fusco_support), np.log10(sfs(2*fusco_support)), '--', label='Fusco et al.')
+ax.plot(np.log10(freq_support), np.log10((alpha*mu/(4*np.sqrt(np.pi)))*freq_support**(-2.5)), '--', label='Deterministic Result')
+
 ax.set_xlabel('$log_{10}(frequency)$')
 ax.set_ylabel('$log_{10}(count density)$')
 ax.set_xlim([-4.1, 0.05])
@@ -153,13 +160,11 @@ freq_plot(ax,
           mappings,
           colors_=COLORS,labels_=['d=0', 'd=0.05', 'd=0.1', 'd=0.2', 'd=0.65'],
           neutral=True)
+ax.plot(np.log10(fusco_support), np.log10(sfs(2*fusco_support)), '--', label='Fusco et al.')
+ax.plot(np.log10(freq_support), np.log10((alpha*mu/(4*np.sqrt(np.pi)))*freq_support**(-2.5)), '--', label='Deterministic Result')
 
 ax.set_xlabel('$log_{10}(frequency)$')
 ax.set_ylabel('$log_{10}($count density)')
-
-ax.plot(np.log10(freq_support), np.log10((mu/(4*np.sqrt(np.pi)))*freq_support**(-2.5)), '--', label='Assuming $E[i^{3/2}]=1$')
-ax.plot(np.log10(freq_support), np.log10((15*mu/(4*np.sqrt(np.pi)))*freq_support**(-2.5)), '--', label='Assuming $E[i^{3/2}]=15$', color=BLUE)
-ax.plot(np.log10(freq_support), np.log10(freq_support**(-2)), '--', label='$f^{-2}$', color='r')
 
 
 ax.set_xlim([-4.15, 0.])
@@ -177,24 +182,21 @@ mappings = [ root_folder+'1_0_0_*',
 ax = fig.add_subplot(132)
 
 freq_plot(ax, mappings, colors_=COLORS,
-          labels_=['d=0', 'd=0.05', 'd=0.1', 'd=0.2', 'd=0.65'],neutral=True)
+          labels_=['d=0', 'd=0.05', 'd=0.1', 'd=0.2', 'd=0.65'],neutral=False)
+
+ax.plot(np.log10(fusco_support), np.log10(sfs(2*fusco_support)), '--', label='Fusco et al.')
+ax.plot(np.log10(freq_support), np.log10((alpha*mu/(4*np.sqrt(np.pi)))*freq_support**(-2.5)), '--', label='Deterministic Result')
 
 ax.set_xlabel('$log_{10}(frequency)$')
 ax.set_ylabel('$log_{10}($count density)')
-
-ax.plot(np.log10(freq_support), np.log10((mu/(4*np.sqrt(np.pi)))*freq_support**(-2.5)), '--', label='Assuming $E[i^{3/2}]=1$')
-ax.plot(np.log10(freq_support), np.log10((15*mu/(4*np.sqrt(np.pi)))*freq_support**(-2.5)), '--', label='Assuming $E[i^{3/2}]=15$', color=BLUE)
-ax.plot(np.log10(freq_support), np.log10(freq_support**(-2)), '--', label='$f^{-2}$', color='r')
-
-# ax.plot(np.log10(f), np.log10(f**(-2)*1/(4*np.sqrt(np.pi))), '--', label='f^-2$')
-# ax.plot(np.log10(f), np.log10(1/f*(f+1)), '--', label='1/f(f+1)$')
 
 ax.set_xlim([-4.15, 0.])
 ax.set_ylim(bottom=0)
 ax.legend(fontsize=8, loc=(0.45,0.5))
 sns.despine()
-ax.set_title('(b) Selection = 1%')
 
+
+ax.set_title('(b) Selection = 1%')
 
 mappings = [ root_folder+'/10_0_0_outs*',
              root_folder+'/10_0_005_outs*',
@@ -204,17 +206,15 @@ mappings = [ root_folder+'/10_0_0_outs*',
 
 ax = fig.add_subplot(133)
 
-freq_plot(ax, mappings, neutral=True,
+freq_plot(ax, mappings, neutral=False,
           colors_=COLORS,
           labels_=['d=0', 'd=0.05', 'd=0.1', 'd=0.2', 'd=0.65'])
 
+ax.plot(np.log10(fusco_support), np.log10(sfs(2*fusco_support)), '--', label='Fusco et al.')
+ax.plot(np.log10(freq_support), np.log10((alpha*mu/(4*np.sqrt(np.pi)))*freq_support**(-2.5)), '--', label='Deterministic Result')
+
 ax.set_xlabel('$log_{10}(frequency)$')
 ax.set_ylabel('$log_{10}($count density)')
-freq_support = np.linspace(0.000001,0.21,num=1000)
-
-ax.plot(np.log10(freq_support), np.log10((mu/(4*np.sqrt(np.pi)))*freq_support**(-2.5)), '--', label='Assuming $E[i^{3/2}]=1$')
-ax.plot(np.log10(freq_support), np.log10((15*mu/(4*np.sqrt(np.pi)))*freq_support**(-2.5)), '--', label='Assuming $E[i^{3/2}]=15$', color=BLUE)
-ax.plot(np.log10(freq_support), np.log10(freq_support**(-2)), '--', label='$f^{-2}$', color='r')
 
 ax.set_xlim([-4.15, 0.])
 ax.set_ylim(bottom=0)
