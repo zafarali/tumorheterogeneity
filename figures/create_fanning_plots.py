@@ -79,20 +79,20 @@ def plot_relative_increases(root_folder, seeds):
     Turnover02 = data_to_plot(folder, seeds, yaxis='S_list_ordered', mode=2, d='02', max_dist=300)
     Turnover065 = data_to_plot(folder, seeds, yaxis='S_list_ordered', mode=2, d='065', max_dist=300)
 
-    
+
     x,y = [No_turnover[(1,)][0], (No_turnover[(1,)][1] - No_turnover[(1,)][1])/(No_turnover[(1,)][1]) ]
 
     ax.plot(x, y, label='d=0')
     x,y = [No_turnover[(1,)][0], (Turnover005[(1,)][1] - No_turnover[(1,)][1])/(No_turnover[(1,)][1]) ]
 
     ax.plot(x, y, label='d=0.05')
-    to_plot['01'] = [No_turnover[(1,)][0], (Turnover01[(1,)][1] - No_turnover[(1,)][1])/(No_turnover[(1,)][1]) ]
+    x,y = [No_turnover[(1,)][0], (Turnover01[(1,)][1] - No_turnover[(1,)][1])/(No_turnover[(1,)][1]) ]
 
     ax.plot(x, y, label='d=0.1')
-    to_plot['02'] = [No_turnover[(1,)][0], (Turnover02[(1,)][1] - No_turnover[(1,)][1])/(No_turnover[(1,)][1]) ]
+    x,y = [No_turnover[(1,)][0], (Turnover02[(1,)][1] - No_turnover[(1,)][1])/(No_turnover[(1,)][1]) ]
 
     ax.plot(x, y, label='d=0.2')
-    to_plot['065'] = [No_turnover[(1,)][0], (Turnover065[(1,)][1] - No_turnover[(1,)][1])/(No_turnover[(1,)][1]) ]
+    x,y = [No_turnover[(1,)][0], (Turnover065[(1,)][1] - No_turnover[(1,)][1])/(No_turnover[(1,)][1]) ]
 
     ax.plot(x, y, label='d=0.65')
 
