@@ -159,8 +159,8 @@ freq_plot(ax,
           mappings,
           colors_=COLORS,labels_=['d=0', 'd=0.05', 'd=0.1', 'd=0.2', 'd=0.65'],
           neutral=True)
-ax.plot(np.log10(fusco_support), np.log10(sfs(2*fusco_support)), '--', label='Fusco et al.')
-ax.plot(np.log10(freq_support), np.log10((alpha*mu/(4*np.sqrt(np.pi)))*freq_support**(-2.5)), '--k', label='Deterministic Result')
+ax.plot(np.log10(fusco_support), np.log10(sfs(2*fusco_support)), '--r', label='Fusco et al.')
+ax.plot(np.log10(freq_support), np.log10((alpha*mu/(4*np.sqrt(np.pi)))*freq_support**(-2.5)), '--g', label='Deterministic Result')
 
 ax.set_xlabel('$log_{10}(frequency)$')
 ax.set_ylabel('$log_{10}($count density)')
@@ -168,9 +168,9 @@ ax.set_ylabel('$log_{10}($count density)')
 
 ax.set_xlim([-4.15, 0.])
 ax.set_ylim(bottom=0)
-ax.legend(fontsize=6,loc=(0.45,0.5))
+ax.legend(fontsize=7,loc=(0.45,0.5))
 sns.despine()
-ax.set_title('(a) No Selection')
+ax.set_title('(a) No Selection\n')
 
 mappings = [ root_folder+'1_0_0_*',
             root_folder+'1_0_005_*',
@@ -183,19 +183,19 @@ ax = fig.add_subplot(132)
 freq_plot(ax, mappings, colors_=COLORS,
           labels_=['d=0', 'd=0.05', 'd=0.1', 'd=0.2', 'd=0.65'],neutral=False)
 
-ax.plot(np.log10(fusco_support), np.log10(sfs(2*fusco_support)), '--', label='Fusco et al.')
-ax.plot(np.log10(freq_support), np.log10((alpha*mu/(4*np.sqrt(np.pi)))*freq_support**(-2.5)), '--k', label='Deterministic Result')
+ax.plot(np.log10(fusco_support), np.log10(sfs(2*fusco_support)), '--r', label='Fusco et al.')
+ax.plot(np.log10(freq_support), np.log10((alpha*mu/(4*np.sqrt(np.pi)))*freq_support**(-2.5)), '--g', label='Deterministic Result')
 
 ax.set_xlabel('$log_{10}(frequency)$')
 ax.set_ylabel('$log_{10}($count density)')
 
 ax.set_xlim([-4.15, 0.])
 ax.set_ylim(bottom=0)
-ax.legend(fontsize=6, loc=(0.55,0.45), markerscale=0.75)
+ax.legend(fontsize=7, loc=(0.55,0.45), markerscale=0.75)
 sns.despine()
 
 
-ax.set_title('(b) Selection = 1%')
+ax.set_title('(b) Selection = 1%\n')
 
 mappings = [ root_folder+'/10_0_0_outs*',
              root_folder+'/10_0_005_outs*',
@@ -209,17 +209,17 @@ freq_plot(ax, mappings, neutral=False,
           colors_=COLORS,
           labels_=['d=0', 'd=0.05', 'd=0.1', 'd=0.2', 'd=0.65'])
 
-ax.plot(np.log10(fusco_support), np.log10(sfs(2*fusco_support)), '--', label='Fusco et al.')
-ax.plot(np.log10(freq_support), np.log10((alpha*mu/(4*np.sqrt(np.pi)))*freq_support**(-2.5)), '--k', label='Deterministic Result')
+ax.plot(np.log10(fusco_support), np.log10(sfs(2*fusco_support)), '--r', label='Fusco et al.')
+ax.plot(np.log10(freq_support), np.log10((alpha*mu/(4*np.sqrt(np.pi)))*freq_support**(-2.5)), '--g', label='Deterministic Result')
 
 ax.set_xlabel('$log_{10}(frequency)$')
 ax.set_ylabel('$log_{10}($count density)')
 
 ax.set_xlim([-4.15, 0.])
 ax.set_ylim(bottom=0)
-ax.legend(fontsize=6, loc=(0.55,0.45), markerscale=0.75)
+ax.legend(fontsize=7, loc=(0.55,0.40), markerscale=0.75)
 sns.despine()
-ax.set_title('(c) Selection = 10%')
+ax.set_title('(c) Selection = 10%\n')
 fig.tight_layout()
 
 # ax.set_title('No Turnover')
