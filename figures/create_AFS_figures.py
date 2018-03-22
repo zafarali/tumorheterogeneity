@@ -137,7 +137,7 @@ plt.savefig('./AFS-d001.pdf')
 how does death rate in no selection simulations change the from the theoretical prediction?
 """
 
-COLORS = sns.color_palette('GnBu_d', n_colors=5)
+COLORS = sns.color_palette('cubehelix', n_colors=5)
 sns.set_context('paper', font_scale=1.5)
 
 pi = np.pi
@@ -191,7 +191,7 @@ ax.set_ylabel('$log_{10}($count density)')
 
 ax.set_xlim([-4.15, 0.])
 ax.set_ylim(bottom=0)
-ax.legend(fontsize=4, loc=(0.45,0.5))
+ax.legend(fontsize=6, loc=(0.45,0.5), markerscale=1.0)
 sns.despine()
 
 
@@ -217,7 +217,7 @@ ax.set_ylabel('$log_{10}($count density)')
 
 ax.set_xlim([-4.15, 0.])
 ax.set_ylim(bottom=0)
-ax.legend(fontsize=4, loc=(0.45,0.5))
+ax.legend(fontsize=6, loc=(0.45,0.5), markerscale=1.0)
 sns.despine()
 ax.set_title('(c) Selection = 10%')
 fig.tight_layout()
