@@ -67,11 +67,15 @@ plot_diffs('../model/experiments/u0.01875/',ALL_SEEDS).savefig('./Splot-fanning.
 
 
 
+
+"""
+No selection case.
+"""
 def plot_relative_increases(root_folder, seeds, d_append=''):
     fig = plt.figure(figsize=(8, 3))
 
     ax = fig.add_subplot(111)
-    folder = root_folder + '/1_0'
+    folder = root_folder + '/0_0'
 
     No_turnover = data_to_plot(folder, seeds, yaxis='S_list_ordered', mode=2, d='0'+d_append, max_dist=300)
     Turnover005 = data_to_plot(folder, seeds, yaxis='S_list_ordered', mode=2, d='005'+d_append, max_dist=300)
