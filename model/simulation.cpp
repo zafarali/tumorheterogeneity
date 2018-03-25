@@ -960,7 +960,11 @@ int main_proc(int exit_size, int save_size, double max_time, double wait_time)
 #else
   #error inconsistent growth conditions 
 #endif
-        int no_SNPs=poisson() ; // newly produced cell mutants
+
+        int no_SNPs=0;
+        if(cells.size() < stop_mutating_size){
+          no_SNPs=poisson() ; // newly produced cell mutants
+        }
         if (_drand48()>genotypes[cells[n].gen]->m[treatment]) { // make a new cell in the same lesion
           Cell c ; c.x=kn-wx/2 ; c.y=jn-wx/2 ; c.z=in-wx/2 ; c.lesion=cells[n].lesion ;
 #ifndef PUSHING

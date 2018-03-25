@@ -96,6 +96,7 @@ const float timescale=1./log(2.) ; // calculates the timescale factor from the d
 // float death1=/*0.1*/0.99, growth1=0.0 ;   // after treatment
 // if death in volume
 const float death1=0.8, growth1=0.5 ; // after treatment
+const int stop_mutating_size=int(1e4); // stop creating new mutations after reaching this size.
 
 
 const float driver_prob=2e-5 ; // driver probability per haploid genome (should be 2e-5)
@@ -105,9 +106,8 @@ const int driver_mode = 0 ; // 0== drivers affect bd only, 1==drivers affect sim
 
 const float cutoff=0.1 ;
 #ifdef __MAIN
-int max_size=int(1e8) ; // this is ignored when MAKE_TREATMENT_T is defined
+int max_size=int(1e6) ; // this is ignored when MAKE_TREATMENT_T is defined
 float time_to_treat=10*(365./12) ; // this is ignored when MAKE_TREATMENT_N is defined
-
 #endif
 
 const int _resol=1 ; // spatial resolution of sampling [cells]
