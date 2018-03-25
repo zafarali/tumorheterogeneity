@@ -64,10 +64,13 @@ void save_snps(char *name,int *n, int total, int mode, int *most_abund)
   nsnps=0 ;
   
   for (i=0;i<L;i++) {
-    #ifdef CUTOFF_OFF  
-     num[i]=i ; abund[i]=float(1.*n[i]/total) ; nsnps++ ; 
+    #ifdef MODIFIED_CUTOFF
+    if (n[i]>(1e-5)*total) {
+      num[nsnps]=i ; abund[nsnps]=float(1.*n[i]/total)*(1+0.000001*i/L) ; nsnps++ ;
+      // not sure what ^ formula is doing? especially the 0.00001*i/L? seems like it's just adding some noise? confused.
+    }
     #else
-    if (n[i]>(1e-4)*total) { 
+    if (n[i]>(1e-4)*total) {
       num[nsnps]=i ; abund[nsnps]=float(1.*n[i]/total)*(1+0.000001*i/L) ; nsnps++ ; 
       // not sure what ^ formula is doing? especially the 0.00001*i/L? seems like it's just adding some noise? confused.
     }
