@@ -105,6 +105,83 @@ def plot_relative_increases(root_folder, seeds, d_append=''):
     return fig
 
 
+def S_plot_no_selection(root_folder, seeds, d_append=''):
+    fig = plt.figure(figsize=(13, 3))
+
+
+    d = '005'
+    ax = fig.add_subplot(141)
+
+    cmap_ax = ax  # for later use
+
+    folder = root_folder + '/0_0'
+
+    plot_it(data_to_plot(folder, seeds, yaxis='S_list_ordered', mode=2, d=d+d_append), ax)
+    #     plot_it(data_to_plot(folder, seeds, yaxis='S_list'+cutoff+'_big', mode=2, d=d), ax)
+    plot_density(ax, folder, seeds, d=d)
+
+    ax.set_title('(b) Surface Turnover, d=0.' + d[1:])
+    ax.set_xlim([50, 325])
+    ax.set_ylabel('Mean S(n)')
+    ax.set_xlabel('Distance from Centre \n of Tumor (cells)')
+    #     ax.set_ylim([0,1])
+
+    d = '01'
+    ax = fig.add_subplot(142)
+    folder = root_folder + '/0_0'
+    plot_it(data_to_plot(folder, seeds, yaxis='S_list_ordered', mode=2, d=d+d_append), ax)
+    #     plot_it(data_to_plot(folder, seeds, yaxis='S_list'+cutoff+'_big', mode=2, d=d), ax)
+    plot_density(ax, folder, seeds, d=d)
+
+    ax.set_title('(c) Surface Turnover, d=0.' + d[1:])
+    ax.set_ylabel('Mean S(n)')
+    x_max = 350 if d == '02' else 325
+    x_max = 750 if d == '065' else x_max
+    ax.set_xlim([50, x_max])
+    ax.set_xlabel('Distance from Centre \n of Tumor (cells)')
+
+    d = '02'
+    ax = fig.add_subplot(143)
+    folder = root_folder + '/0_0'
+
+    plot_it(data_to_plot(folder, seeds, yaxis='S_list_ordered', mode=2, d=d+d_append), ax)
+    #     plot_it(data_to_plot(folder, seeds, yaxis='S_list'+cutoff+'_big', mode=2, d=d), ax)
+    plot_density(ax, folder, seeds, d=d)
+
+    ax.set_title('(d) Surface Turnover, d=0.' + d[1:])
+    ax.set_ylabel('Mean S(n)')
+    x_max = 350 if d == '02' else 325
+    x_max = 750 if d == '065' else x_max
+    ax.set_xlim([50, x_max])
+    ax.set_xlabel('Distance from Centre \n of Tumor (cells)')
+    #     ax.set_ylim([0,50])
+
+    d = '065'
+    ax = fig.add_subplot(144)
+    folder = root_folder + '/0_0'
+
+    plot_it(data_to_plot(folder, seeds, yaxis='S_list_ordered', mode=2, d=d+d_append), ax)
+    #     plot_it(data_to_plot(folder, seeds, yaxis='S_list'+cutoff+'_big', mode=2, d=d), ax)
+    plot_density(ax, folder, seeds, d=d)
+
+    ax.set_title('(e) Surface Turnover, d=0.' + d[1:])
+    ax.set_ylabel('Mean S(n)')
+    x_max = 350 if d == '02' else 325
+    #     x_max = 750 if d=='065' else x_max
+    ax.set_xlim([50, x_max])
+    ax.set_xlabel('Distance from Centre \n of Tumor (cells)')
+    #     ax.set_ylim([0,50])
+
+    fig.tight_layout(pad=1, w_pad=0.5)
+
+    subaxes = inset_axes(cmap_ax,
+                         width="90%",  # width = 30% of parent_bbox
+                         height=0.15,  # height : 1 inch
+                         loc=2)
+
+    create_colorbar(subaxes, with_yellow=True)
+    return fig
+
 plot_relative_increases('../model/experiments/u0.01/',ALL_SEEDS).savefig('./Splot-relative-increase.pdf')
 
 SMALL_SEEDS = ['1', '2']
@@ -113,16 +190,34 @@ fig = plot_relative_increases('../model/experiments/u0.01small/',SMALL_SEEDS, d_
 fig.suptitle('10^7')
 fig.savefig('./Splot-relative-increase107.pdf')
 
-fig = plot_relative_increases('../model/experiments/u0.01small/',SMALL_SEEDS, d_append='_106')
+fig = S_plot_no_selection('../model/experiments/u0.01small/',SMALL_SEEDS, d_append='_107')
 fig.suptitle('10^7')
+fig.savefig('./Splot-107.pdf')
+
+
+fig = plot_relative_increases('../model/experiments/u0.01small/',SMALL_SEEDS, d_append='_106')
+fig.suptitle('10^6')
 fig.savefig('./Splot-relative-increase106.pdf')
+
+fig = S_plot_no_selection('../model/experiments/u0.01small/',SMALL_SEEDS, d_append='_106')
+fig.suptitle('10^6')
+fig.savefig('./Splot-106.pdf')
 
 
 fig = plot_relative_increases('../model/experiments/u0.01small/',SMALL_SEEDS, d_append='_105')
-fig.suptitle('10^7')
+fig.suptitle('10^5')
 fig.savefig('./Splot-relative-increase105.pdf')
 
 
+fig = S_plot_no_selection('../model/experiments/u0.01small/',SMALL_SEEDS, d_append='_105')
+fig.suptitle('10^5')
+fig.savefig('./Splot-105.pdf')
+
+
 fig = plot_relative_increases('../model/experiments/u0.01small/',SMALL_SEEDS, d_append='_104')
-fig.suptitle('10^7')
+fig.suptitle('10^4')
 fig.savefig('./Splot-relative-increase104.pdf')
+
+fig = S_plot_no_selection('../model/experiments/u0.01small/',SMALL_SEEDS, d_append='_104')
+fig.suptitle('10^4')
+fig.savefig('./Splot-104.pdf')
