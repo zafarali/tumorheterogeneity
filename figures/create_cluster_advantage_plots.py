@@ -124,7 +124,7 @@ mappings = [ root_folder+'1_0_0_outs*',
             root_folder+'1_1_'+death_rate+'_*',
            root_folder+'1_0_'+death_rate+'_*']
 
-f = plt.figure(figsize=(9,3))
+f = plt.figure(figsize=(9,4))
 ax = f.add_subplot(131)
 cluster_adv(ax, mappings)
 ax.legend(loc=(0,0.5),fontsize=11)
@@ -154,5 +154,6 @@ cluster_adv(ax, mappings)
 ax.set_title('d=0.'+death_rate[1:])
 ax.set_xlim([-0.01,  10**2+0.5])
 
+f.tight_layout()
 # plt.title('E[S(n)]/E[S(1)]')
 f.savefig('cluster_advantage_supp.pdf')
