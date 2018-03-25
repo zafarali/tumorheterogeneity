@@ -84,7 +84,7 @@ def S_plot_transition(root_folder, seeds):
     """
     d_append = '_108'
 
-    ax = fig.add_subplot(2, 5, 6 + i)
+    ax = fig.add_subplot(1, 2, 2)
     plot_it(data_to_plot(folder, seeds, yaxis='S_list_ordered', mode=2, d=d + d_append), ax)
     plot_density(ax, folder, seeds, d=d + d_append)
     ax.set_title('(b) $N=10^8, d=0.' + d[1:] + '$')
