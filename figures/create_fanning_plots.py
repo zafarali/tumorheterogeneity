@@ -67,17 +67,17 @@ plot_diffs('../model/experiments/u0.01875/',ALL_SEEDS).savefig('./Splot-fanning.
 
 
 
-def plot_relative_increases(root_folder, seeds):
+def plot_relative_increases(root_folder, seeds, d_append=''):
     fig = plt.figure(figsize=(8, 3))
 
     ax = fig.add_subplot(111)
     folder = root_folder + '/1_0'
 
-    No_turnover = data_to_plot(folder, seeds, yaxis='S_list_ordered', mode=2, d='0', max_dist=300)
-    Turnover005 = data_to_plot(folder, seeds, yaxis='S_list_ordered', mode=2, d='005', max_dist=300)
-    Turnover01 = data_to_plot(folder, seeds, yaxis='S_list_ordered', mode=2, d='01', max_dist=300)
-    Turnover02 = data_to_plot(folder, seeds, yaxis='S_list_ordered', mode=2, d='02', max_dist=300)
-    Turnover065 = data_to_plot(folder, seeds, yaxis='S_list_ordered', mode=2, d='065', max_dist=300)
+    No_turnover = data_to_plot(folder, seeds, yaxis='S_list_ordered', mode=2, d='0'+d_append, max_dist=300)
+    Turnover005 = data_to_plot(folder, seeds, yaxis='S_list_ordered', mode=2, d='005'+d_append, max_dist=300)
+    Turnover01 = data_to_plot(folder, seeds, yaxis='S_list_ordered', mode=2, d='01'+d_append, max_dist=300)
+    Turnover02 = data_to_plot(folder, seeds, yaxis='S_list_ordered', mode=2, d='02'+d_append, max_dist=300)
+    Turnover065 = data_to_plot(folder, seeds, yaxis='S_list_ordered', mode=2, d='065'+d_append, max_dist=300)
 
 
     x,y = [No_turnover[(1,)][0], (Turnover005[(1,)][1] - No_turnover[(1,)][1])/(No_turnover[(1,)][1]) ]
@@ -101,5 +101,22 @@ def plot_relative_increases(root_folder, seeds):
     return fig
 
 
-plot_relative_increases('../model/experiments/u0.01875/',ALL_SEEDS).savefig('./Splot-relative-increase.pdf')
+plot_relative_increases('../model/experiments/u0.01/',ALL_SEEDS).savefig('./Splot-relative-increase.pdf')
 
+fig = plot_relative_increases('../model/experiments/u0.01small/',ALL_SEEDS, d_append='_107')
+fig.suptitle('10^7')
+fig.savefig('./Splot-relative-increase107.pdf')
+
+fig = plot_relative_increases('../model/experiments/u0.01small/',ALL_SEEDS, d_append='_106')
+fig.suptitle('10^7')
+fig.savefig('./Splot-relative-increase106.pdf')
+
+
+fig = plot_relative_increases('../model/experiments/u0.01small/',ALL_SEEDS, d_append='_105')
+fig.suptitle('10^7')
+fig.savefig('./Splot-relative-increase105.pdf')
+
+
+fig = plot_relative_increases('../model/experiments/u0.01small/',ALL_SEEDS, d_append='_104')
+fig.suptitle('10^7')
+fig.savefig('./Splot-relative-increase104.pdf')
