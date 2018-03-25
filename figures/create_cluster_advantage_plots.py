@@ -124,7 +124,7 @@ mappings = [ root_folder+'1_0_0_outs*',
             root_folder+'1_1_'+death_rate+'_*',
            root_folder+'1_0_'+death_rate+'_*']
 
-f = plt.figure(figsize=(8,7))
+f = plt.figure(figsize=(5,7))
 ax = f.add_subplot(131)
 cluster_adv(ax, mappings)
 ax.legend(loc=(0,0.5),fontsize=11)
