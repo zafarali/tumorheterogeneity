@@ -118,7 +118,7 @@ def S_plot_no_selection(root_folder, seeds, d_append=''):
 
     plot_it(data_to_plot(folder, seeds, yaxis='S_list_ordered', mode=2, d=d+d_append), ax)
     #     plot_it(data_to_plot(folder, seeds, yaxis='S_list'+cutoff+'_big', mode=2, d=d), ax)
-    plot_density(ax, folder, seeds, d=d)
+    plot_density(ax, folder, seeds, d=d+d_append)
 
     ax.set_title('(b) Surface Turnover, d=0.' + d[1:])
     ax.set_xlim([50, 325])
@@ -131,7 +131,7 @@ def S_plot_no_selection(root_folder, seeds, d_append=''):
     folder = root_folder + '/0_0'
     plot_it(data_to_plot(folder, seeds, yaxis='S_list_ordered', mode=2, d=d+d_append), ax)
     #     plot_it(data_to_plot(folder, seeds, yaxis='S_list'+cutoff+'_big', mode=2, d=d), ax)
-    plot_density(ax, folder, seeds, d=d)
+    plot_density(ax, folder, seeds, d=d+d_append)
 
     ax.set_title('(c) Surface Turnover, d=0.' + d[1:])
     ax.set_ylabel('Mean S(n)')
@@ -146,7 +146,7 @@ def S_plot_no_selection(root_folder, seeds, d_append=''):
 
     plot_it(data_to_plot(folder, seeds, yaxis='S_list_ordered', mode=2, d=d+d_append), ax)
     #     plot_it(data_to_plot(folder, seeds, yaxis='S_list'+cutoff+'_big', mode=2, d=d), ax)
-    plot_density(ax, folder, seeds, d=d)
+    plot_density(ax, folder, seeds, d=d+d_append)
 
     ax.set_title('(d) Surface Turnover, d=0.' + d[1:])
     ax.set_ylabel('Mean S(n)')
@@ -162,7 +162,7 @@ def S_plot_no_selection(root_folder, seeds, d_append=''):
 
     plot_it(data_to_plot(folder, seeds, yaxis='S_list_ordered', mode=2, d=d+d_append), ax)
     #     plot_it(data_to_plot(folder, seeds, yaxis='S_list'+cutoff+'_big', mode=2, d=d), ax)
-    plot_density(ax, folder, seeds, d=d)
+    plot_density(ax, folder, seeds, d=d+d_append)
 
     ax.set_title('(e) Surface Turnover, d=0.' + d[1:])
     ax.set_ylabel('Mean S(n)')
