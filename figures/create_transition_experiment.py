@@ -35,34 +35,62 @@ def S_plot_transition(root_folder, seeds):
     """
     Small Tumor of Size 10^6
     """
+    #
+    # d_append = '_106'
+    # folder = root_folder + '/0_0'
+    # for i, d in enumerate(['0', '005', '01', '02', '065']):
+    #     ax = fig.add_subplot(2,5,i+1)
+    #     plot_it(data_to_plot(folder, seeds, yaxis='S_list_ordered', mode=2, d=d+d_append), ax)
+    #     plot_density(ax, folder, seeds, d=d+d_append)
+    #     ax.set_title('$N=10^6, d=0.' + d[1:]+'$')
+    #     ax.set_xlim([20, 325])
+    #     ax.set_ylim([0, 30])
+    #     ax.set_ylabel('Mean S(n)')
+    #     ax.set_xlabel('Distance from Centre \n of Tumor (cells)')
+    #
+    #     if i == 0: cmap_ax = ax  # for later use
+    #
+    #
+    # """
+    # Large Tumor of Size 10^8 but no new mutations are introduced after 10^6.
+    # """
+    # d_append = '_108'
+    # for i, d in enumerate(['0', '005', '01', '02', '065']):
+    #     ax = fig.add_subplot(2,5,6+i)
+    #     plot_it(data_to_plot(folder, seeds, yaxis='S_list_ordered', mode=2, d=d+d_append), ax)
+    #     plot_density(ax, folder, seeds, d=d+d_append)
+    #     ax.set_title('$N=10^8, d=0.' + d[1:]+'$')
+    #     ax.set_xlim([20, 325])
+    #     ax.set_ylim([0, 30])
+    #     ax.set_ylabel('Mean S(n)')
 
+    d='01'
     d_append = '_106'
     folder = root_folder + '/0_0'
-    for i, d in enumerate(['0', '005', '01', '02', '065']):
-        ax = fig.add_subplot(2,5,i+1)
-        plot_it(data_to_plot(folder, seeds, yaxis='S_list_ordered', mode=2, d=d+d_append), ax)
-        plot_density(ax, folder, seeds, d=d+d_append)
-        ax.set_title('$N=10^6, d=0.' + d[1:]+'$')
-        ax.set_xlim([20, 325])
-        ax.set_ylim([0, 30])
-        ax.set_ylabel('Mean S(n)')
-        ax.set_xlabel('Distance from Centre \n of Tumor (cells)')
 
-        if i == 0: cmap_ax = ax  # for later use
+    ax = fig.add_subplot(1, 2, 1)
+    plot_it(data_to_plot(folder, seeds, yaxis='S_list_ordered', mode=2, d=d + d_append), ax)
+    plot_density(ax, folder, seeds, d=d + d_append)
+    ax.set_title('(a) $N=10^6, d=0.' + d[1:] + '$')
+    ax.set_xlim([20, 325])
+    ax.set_ylim([0, 30])
+    ax.set_ylabel('Mean S(n)')
+    ax.set_xlabel('Distance from Centre \n of Tumor (cells)')
 
+    cmap_ax = ax  # for later use
 
     """
     Large Tumor of Size 10^8 but no new mutations are introduced after 10^6.
     """
     d_append = '_108'
-    for i, d in enumerate(['0', '005', '01', '02', '065']):
-        ax = fig.add_subplot(2,5,6+i)
-        plot_it(data_to_plot(folder, seeds, yaxis='S_list_ordered', mode=2, d=d+d_append), ax)
-        plot_density(ax, folder, seeds, d=d+d_append)
-        ax.set_title('$N=10^8, d=0.' + d[1:]+'$')
-        ax.set_xlim([20, 325])
-        ax.set_ylim([0, 30])
-        ax.set_ylabel('Mean S(n)')
+
+    ax = fig.add_subplot(2, 5, 6 + i)
+    plot_it(data_to_plot(folder, seeds, yaxis='S_list_ordered', mode=2, d=d + d_append), ax)
+    plot_density(ax, folder, seeds, d=d + d_append)
+    ax.set_title('(b) $N=10^8, d=0.' + d[1:] + '$')
+    ax.set_xlim([20, 325])
+    ax.set_ylim([0, 30])
+    ax.set_ylabel('Mean S(n)')
 
 
     fig.tight_layout(pad=1, w_pad=0.5)
