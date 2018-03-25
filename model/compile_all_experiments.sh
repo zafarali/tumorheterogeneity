@@ -3,6 +3,7 @@ mkdir experiments
 mkdir experiments/u0.01
 mkdir experiments/u0.01small
 mkdir experiments/u0.01875
+mkdir experiments/u0.01lowcutoff
 
 for mutation_rate in "u0.01" "u0.01875" "u0.01small" "u0.01lowcutoff"; do
     for filename in $(echo "./parameter_files/$mutation_rate/*.h" | cut -d ' ' -f 1); do
