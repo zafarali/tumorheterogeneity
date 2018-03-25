@@ -103,20 +103,22 @@ def plot_relative_increases(root_folder, seeds, d_append=''):
 
 plot_relative_increases('../model/experiments/u0.01/',ALL_SEEDS).savefig('./Splot-relative-increase.pdf')
 
-fig = plot_relative_increases('../model/experiments/u0.01small/',ALL_SEEDS, d_append='_107')
+SMALL_SEEDS = ['1', '2']
+
+fig = plot_relative_increases('../model/experiments/u0.01small/',SMALL_SEEDS, d_append='_107')
 fig.suptitle('10^7')
 fig.savefig('./Splot-relative-increase107.pdf')
 
-fig = plot_relative_increases('../model/experiments/u0.01small/',ALL_SEEDS, d_append='_106')
+fig = plot_relative_increases('../model/experiments/u0.01small/',SMALL_SEEDS, d_append='_106')
 fig.suptitle('10^7')
 fig.savefig('./Splot-relative-increase106.pdf')
 
 
-fig = plot_relative_increases('../model/experiments/u0.01small/',ALL_SEEDS, d_append='_105')
+fig = plot_relative_increases('../model/experiments/u0.01small/',SMALL_SEEDS, d_append='_105')
 fig.suptitle('10^7')
 fig.savefig('./Splot-relative-increase105.pdf')
 
 
-fig = plot_relative_increases('../model/experiments/u0.01small/',ALL_SEEDS, d_append='_104')
+fig = plot_relative_increases('../model/experiments/u0.01small/',SMALL_SEEDS, d_append='_104')
 fig.suptitle('10^7')
 fig.savefig('./Splot-relative-increase104.pdf')
