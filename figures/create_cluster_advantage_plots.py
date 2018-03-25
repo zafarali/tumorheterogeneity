@@ -124,8 +124,8 @@ mappings = [ root_folder+'1_0_0_outs*',
             root_folder+'1_1_'+death_rate+'_*',
            root_folder+'1_0_'+death_rate+'_*']
 
-f = plt.figure(figsize=(10,5))
-ax = f.add_subplot(121)
+f = plt.figure(figsize=(8,7))
+ax = f.add_subplot(131)
 cluster_adv(ax, mappings)
 ax.legend(loc=(0,0.5),fontsize=11)
 ax.set_xlim([-0.01,  10**2+0.5])
@@ -136,7 +136,19 @@ mappings = [ root_folder+'1_0_0_outs*',
             root_folder+'1_1_'+death_rate+'_*',
            root_folder+'1_0_'+death_rate+'_*']
 
-ax = f.add_subplot(122)
+ax = f.add_subplot(132)
+cluster_adv(ax, mappings)
+
+ax.set_title('d=0.'+death_rate[1:])
+ax.set_xlim([-0.01,  10**2+0.5])
+
+
+death_rate = '065'
+mappings = [ root_folder+'1_0_0_outs*',
+            root_folder+'1_1_'+death_rate+'_*',
+           root_folder+'1_0_'+death_rate+'_*']
+
+ax = f.add_subplot(133)
 cluster_adv(ax, mappings)
 
 ax.set_title('d=0.'+death_rate[1:])
