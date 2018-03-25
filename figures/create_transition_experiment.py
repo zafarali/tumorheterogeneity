@@ -91,6 +91,7 @@ def S_plot_transition(root_folder, seeds):
     ax.set_xlim([20, 325])
     ax.set_ylim([0, 30])
     ax.set_ylabel('Mean S(n)')
+    ax.set_xlabel('Distance from Centre \n of Tumor (cells)')
 
 
     fig.tight_layout(pad=1, w_pad=0.5)
