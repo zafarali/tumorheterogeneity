@@ -124,10 +124,10 @@ mappings = [ root_folder+'1_0_0_outs*',
             root_folder+'1_1_'+death_rate+'_*',
            root_folder+'1_0_'+death_rate+'_*']
 
-f = plt.figure(figsize=(9,4))
+f = plt.figure(figsize=(10,4))
 ax = f.add_subplot(131)
 cluster_adv(ax, mappings)
-ax.legend(loc=(0,0.5),fontsize=11)
+ax.legend(loc=(0.1,0.5),fontsize=8)
 ax.set_xlim([-0.01,  10**2+0.5])
 ax.set_title('d=0.'+death_rate[1:])
 
