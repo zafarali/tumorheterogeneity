@@ -22,7 +22,7 @@ fusco_beta = 2.3
 
 mappings = [ '../model/experiments/low_cutoff/0_0_0_low_outs*']
 colors_ = ['gray']
-labels_ = ['Neural, $N=10^6, d=0$']
+labels_ = ['Neutral, $N=10^6, d=0$']
 
 fig = plt.figure()
 
