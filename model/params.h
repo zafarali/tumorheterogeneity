@@ -50,7 +50,7 @@
 //            CHANGE THESE WHEN EDITING
 // ------------------------------------------------------------------------------------------------------------------------    
 // #define RESEEDING // defined when need to use seeds.
-//#define CUTOFF_OFF // do not use a cutoff when saving snps.
+#define MODIFIED_CUTOFF // use 10-5 as cutoff for saving snps
 
 // No Turnover: death0 = 0
 // Surface Turnover: death = [0.05, 0.1, 0.2], DEATH_ON_SURFACE
@@ -105,7 +105,7 @@ const int driver_mode = 0 ; // 0== drivers affect bd only, 1==drivers affect sim
 
 const float cutoff=0.1 ;
 #ifdef __MAIN
-int max_size=int(1e8) ; // this is ignored when MAKE_TREATMENT_T is defined
+int max_size=int(1e6) ; // this is ignored when MAKE_TREATMENT_T is defined
 float time_to_treat=10*(365./12) ; // this is ignored when MAKE_TREATMENT_N is defined
 
 #endif

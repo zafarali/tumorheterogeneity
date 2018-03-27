@@ -282,7 +282,6 @@ def neighbour_iterator(arr):
 
 numbins = 50
 
-binrange = np.logspace(np.log10(0.0001), np.log10(1), num=numbins)
 
 # _, GREEN, RED, _, _, BLUE = sns.color_palette('colorblind')
 RED, BLUE, GREEN = sns.xkcd_palette(["amber", "dusty purple", "faded green"])
@@ -297,7 +296,10 @@ def freq_plot(ax, mappings,
               calculate_slopes=False,
               noS=False,
               slope_start=-2.5,
-              slope_end=0):
+              slope_end=0,
+              cutoff_line_at=0.0001):
+    binrange = np.logspace(np.log10(cutoff_line_at), np.log10(1), num=2*numbins)
+
     lines = []
     labels = []
     for mapping, color, model_name in zip(mappings, colors_,labels_):
@@ -410,7 +412,7 @@ def freq_plot(ax, mappings,
             lines += ax.plot(y2_x_plt, y2_plt, '^', color=color, alpha=0.8,
                              label=str(model_name) + ' (Drivers) $S_d$=' + str(d_sum), markersize=8)
             labels += [str(model_name) + ' (Drivers) $S_d$=' + str(d_sum)]
-        ax.plot(np.log10(np.ones(40) * 0.0001), np.linspace(0, 10, num=40), ':', color='gray', linewidth=0.5)
+        ax.plot(np.log10(np.ones(40) * cutoff_line_at), np.linspace(0, 10, num=40), ':', color='gray', linewidth=0.5)
 
 
     return lines, labels

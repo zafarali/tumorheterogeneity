@@ -45,17 +45,17 @@ void save_snps(char *name,int *n, int total, int mode, int *most_abund)
   if (f==NULL) err(name) ;
   int i, j, nsnps=0, nsnpsc=0;
 
-  #ifndef CUTOFF_OFF
-  
+
   for (i=0;i<L;i++) { // go over all the mutations available
-    if (n[i]>(1e-4)*total) nsnps++ ; 
+    #ifdef MODIFIED_CUTOFF
+        if (n[i]>(1e-6)*total) nsnps++ ;
+    #else
+        if (n[i]>(1e-4)*total) nsnps++ ;
+    #endif
     // if the count of this SNP is greater than (1e-4)*total ... fishy
     if (1.*n[i]/total>cutoff) nsnpsc++ ; // <-- this line seems to be useless?
   }
-  #else
-   nsnps = L;
 
-  #endif
   // just creates an array to hold all detected snps. 
 
   float *abund=new float[nsnps], tempd ;
@@ -65,7 +65,7 @@ void save_snps(char *name,int *n, int total, int mode, int *most_abund)
   
   for (i=0;i<L;i++) {
     #ifdef MODIFIED_CUTOFF
-    if (n[i]>(1e-5)*total) {
+    if (n[i]>(1e-6)*total) {
       num[nsnps]=i ; abund[nsnps]=float(1.*n[i]/total)*(1+0.000001*i/L) ; nsnps++ ;
       // not sure what ^ formula is doing? especially the 0.00001*i/L? seems like it's just adding some noise? confused.
     }
