@@ -30,7 +30,7 @@ small_c, med_c, big_c, biggest_c = ALTERNATE_COLORS
 
 def S_plot_transition(root_folder, seeds, d='01', stop_mutants='_106'):
     fig = plt.figure(figsize=(16, 5))
-    folder = root_folder + '/0_0_'
+    folder = root_folder + '/0_0'
 
     """
     SMall tumor of size 10^6
