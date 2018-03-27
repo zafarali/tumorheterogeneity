@@ -28,49 +28,19 @@ ALTERNATE_COLORS = sns.xkcd_palette(["vomit green", "orangish brown", "azure", "
 small_c, med_c, big_c, biggest_c = ALTERNATE_COLORS
 
 
-def S_plot_transition(root_folder, seeds):
-    fig = plt.figure(figsize=(13, 6))
-
+def S_plot_transition(root_folder, seeds, d='01', stop_mutants='_106'):
+    fig = plt.figure(figsize=(16, 5))
+    folder = root_folder + '/0_0_'
 
     """
-    Small Tumor of Size 10^6
+    SMall tumor of size 10^6
     """
-    #
-    # d_append = '_106'
-    # folder = root_folder + '/0_0'
-    # for i, d in enumerate(['0', '005', '01', '02', '065']):
-    #     ax = fig.add_subplot(2,5,i+1)
-    #     plot_it(data_to_plot(folder, seeds, yaxis='S_list_ordered', mode=2, d=d+d_append), ax)
-    #     plot_density(ax, folder, seeds, d=d+d_append)
-    #     ax.set_title('$N=10^6, d=0.' + d[1:]+'$')
-    #     ax.set_xlim([20, 325])
-    #     ax.set_ylim([0, 30])
-    #     ax.set_ylabel('Mean S(n)')
-    #     ax.set_xlabel('Distance from Centre \n of Tumor (cells)')
-    #
-    #     if i == 0: cmap_ax = ax  # for later use
-    #
-    #
-    # """
-    # Large Tumor of Size 10^8 but no new mutations are introduced after 10^6.
-    # """
-    # d_append = '_108'
-    # for i, d in enumerate(['0', '005', '01', '02', '065']):
-    #     ax = fig.add_subplot(2,5,6+i)
-    #     plot_it(data_to_plot(folder, seeds, yaxis='S_list_ordered', mode=2, d=d+d_append), ax)
-    #     plot_density(ax, folder, seeds, d=d+d_append)
-    #     ax.set_title('$N=10^8, d=0.' + d[1:]+'$')
-    #     ax.set_xlim([20, 325])
-    #     ax.set_ylim([0, 30])
-    #     ax.set_ylabel('Mean S(n)')
 
-    d='01'
-    d_append = '_106'
-    folder = root_folder + '/0_0'
+    tumor_size = '_106' # the size of the tumor
 
-    ax = fig.add_subplot(1, 2, 1)
-    plot_it(data_to_plot(folder, seeds, yaxis='S_list_ordered', mode=2, d=d + d_append), ax)
-    plot_density(ax, folder, seeds, d=d + d_append)
+    ax = fig.add_subplot(1, 3, 1)
+    plot_it(data_to_plot(folder, seeds, yaxis='S_list_ordered', mode=2, d=d+tumor_size+stop_mutants), ax)
+    plot_density(ax, folder, seeds, d=d + tumor_size)
     ax.set_title('(a) $N=10^6, d=0.' + d[1:] + '$')
     ax.set_xlim([20, 325])
     ax.set_ylim([0, 30])
@@ -80,13 +50,29 @@ def S_plot_transition(root_folder, seeds):
     cmap_ax = ax  # for later use
 
     """
-    Large Tumor of Size 10^8 but no new mutations are introduced after 10^6.
+    Medium Tumor of size 2.4*10^7 
     """
-    d_append = '_108'
 
-    ax = fig.add_subplot(1, 2, 2)
-    plot_it(data_to_plot(folder, seeds, yaxis='S_list_ordered', mode=2, d=d + d_append), ax)
-    plot_density(ax, folder, seeds, d=d + d_append)
+
+    tumor_size = '_107' # the size of the tumor
+
+    ax = fig.add_subplot(1, 3, 2)
+    plot_it(data_to_plot(folder, seeds, yaxis='S_list_ordered', mode=2, d=d+tumor_size+stop_mutants), ax)
+    plot_density(ax, folder, seeds, d=d + tumor_size)
+    ax.set_title('(a) $N=2.4*10^7, d=0.' + d[1:] + '$')
+    ax.set_xlim([20, 325])
+    ax.set_ylim([0, 30])
+    ax.set_ylabel('Mean S(n)')
+    ax.set_xlabel('Distance from Centre \n of Tumor (cells)')
+
+    """
+    Large Tumor of Size 10^8 
+    """
+    tumor_size = '_108'
+
+    ax = fig.add_subplot(1, 3, 3)
+    plot_it(data_to_plot(folder, seeds, yaxis='S_list_ordered', mode=2, d=d+tumor_size+stop_mutants), ax)
+    plot_density(ax, folder, seeds, d=d+tumor_size+stop_mutants)
     ax.set_title('(b) $N=10^8, d=0.' + d[1:] + '$')
     ax.set_xlim([20, 325])
     ax.set_ylim([0, 30])
@@ -106,5 +92,23 @@ def S_plot_transition(root_folder, seeds):
 
 
 FOLDER_LOCATION = "../model/experiments/u0.01transition"
-SEEDS = ['0', '1', '2', '3', '4', '5']
-S_plot_transition(FOLDER_LOCATION, SEEDS).savefig('S-plot-transitions.pdf')
+
+SEEDS = ['6', '7', '8']
+"""
+With a transition point
+"""
+S_plot_transition(FOLDER_LOCATION, SEEDS, d='01', stop_mutants='_106').savefig('Splot-Transition-d01-106.pdf')
+S_plot_transition(FOLDER_LOCATION, SEEDS, d='0', stop_mutants='_106').savefig('Splot-Transition-d0-106.pdf')
+S_plot_transition(FOLDER_LOCATION, SEEDS, d='005', stop_mutants='_106').savefig('Splot-Transition-d005-106.pdf')
+S_plot_transition(FOLDER_LOCATION, SEEDS, d='02', stop_mutants='_106').savefig('Splot-Transition-d02-106.pdf')
+S_plot_transition(FOLDER_LOCATION, SEEDS, d='065', stop_mutants='_106').savefig('Splot-Transition-d065-106.pdf')
+
+"""
+Without a transition point
+"""
+S_plot_transition(FOLDER_LOCATION, SEEDS, d='01', stop_mutants='_108').savefig('Splot-Transition-d01-108.pdf')
+S_plot_transition(FOLDER_LOCATION, SEEDS, d='0', stop_mutants='_108').savefig('Splot-Transition-d0-108.pdf')
+S_plot_transition(FOLDER_LOCATION, SEEDS, d='005', stop_mutants='_108').savefig('Splot-Transition-d005-108.pdf')
+S_plot_transition(FOLDER_LOCATION, SEEDS, d='02', stop_mutants='_108').savefig('Splot-Transition-d02-108.pdf')
+S_plot_transition(FOLDER_LOCATION, SEEDS, d='065', stop_mutants='_108').savefig('Splot-Transition-d065-108.pdf')
+
