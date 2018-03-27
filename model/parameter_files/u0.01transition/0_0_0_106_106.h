@@ -60,7 +60,7 @@ const float growth0=0.69 ;
 
 // Set this to 0 if you want no turnover model
 // otherwise reasonable values are 0.05, 0.1, 0.2
-const float death0=0.1;
+const float death0=0.0;
 // to reproduce waclaw, set this to 0.95*growth0.
 
 // // remove this comment if you want death on the surface
