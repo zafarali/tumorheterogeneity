@@ -32,6 +32,7 @@ def S_plot_transition(root_folder, seeds, d='01', stop_mutants='_106'):
     fig = plt.figure(figsize=(16, 5))
     folder = root_folder + '/0_0'
 
+    no_new_mutations_appenditure = '\nNo new mutations after $N=10^6$' if stop_mutants == '_106' else ''
     """
     SMall tumor of size 10^6
     """
@@ -41,7 +42,7 @@ def S_plot_transition(root_folder, seeds, d='01', stop_mutants='_106'):
     ax = fig.add_subplot(1, 3, 1)
     plot_it(data_to_plot(folder, seeds, yaxis='S_list_ordered', mode=2, d=d+tumor_size+stop_mutants), ax)
     plot_density(ax, folder, seeds, d=d+tumor_size+stop_mutants)
-    ax.set_title('(a) $N=10^6, d=0.' + d[1:] + '$')
+    ax.set_title('(a) $N=10^6, d=0.' + d[1:] + '$'+no_new_mutations_appenditure)
     ax.set_xlim([20, 325])
     ax.set_ylim([0, 30])
     ax.set_ylabel('Mean S(n)')
@@ -59,7 +60,7 @@ def S_plot_transition(root_folder, seeds, d='01', stop_mutants='_106'):
     ax = fig.add_subplot(1, 3, 2)
     plot_it(data_to_plot(folder, seeds, yaxis='S_list_ordered', mode=2, d=d+tumor_size+stop_mutants), ax)
     plot_density(ax, folder, seeds, d=d+tumor_size+stop_mutants)
-    ax.set_title('(a) $N=2.4*10^7, d=0.' + d[1:] + '$')
+    ax.set_title('(b) $N=2.4*10^7, d=0.' + d[1:] + '$'+no_new_mutations_appenditure)
     ax.set_xlim([20, 325])
     ax.set_ylim([0, 30])
     ax.set_ylabel('Mean S(n)')
@@ -73,7 +74,7 @@ def S_plot_transition(root_folder, seeds, d='01', stop_mutants='_106'):
     ax = fig.add_subplot(1, 3, 3)
     plot_it(data_to_plot(folder, seeds, yaxis='S_list_ordered', mode=2, d=d+tumor_size+stop_mutants), ax)
     plot_density(ax, folder, seeds, d=d+tumor_size+stop_mutants)
-    ax.set_title('(b) $N=10^8, d=0.' + d[1:] + '$')
+    ax.set_title('(c) $N=10^8, d=0.' + d[1:] + '$'+no_new_mutations_appenditure)
     ax.set_xlim([20, 325])
     ax.set_ylim([0, 30])
     ax.set_ylabel('Mean S(n)')
