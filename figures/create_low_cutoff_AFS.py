@@ -20,9 +20,16 @@ alpha = 30
 fusco_alpha = 0.55
 fusco_beta = 2.3
 
-mappings = [ '../model/experiments/low_cutoff/0_0_0_low_outs*']
-colors_ = ['gray']
-labels_ = ['Neutral, $N=10^6, d=0$']
+mappings = [ '../model/experiments/low_cutoff/0_0_0_low_outs*',
+             '../model/experiments/low_cutoff/0_0_01_low_outs*',
+             '../model/experiments/low_cutoff/0_0_02_low_outs*',
+             '../model/experiments/low_cutoff/0_0_065_low_outs*'
+             ]
+colors_ = ['gray', 'black', 'blue', 'green']
+labels_ = ['$s=0, N=10^6, d=0$',
+           '$s=0, N=10^6, d=0.1$',
+           '$s=0, N=10^6, d=0.2$',
+           '$s=0, N=10^6, d=0.65$']
 
 fig = plt.figure()
 
@@ -32,7 +39,7 @@ freq_plot(ax,
           colors_=colors_,
           labels_=labels_,
           neutral=True,
-          noS=True,
+          noS=False,
           calculate_slopes=False,
           cutoff_line_at=0.000001)
 fusco_support = np.logspace(-6.0, 0, num=1000)

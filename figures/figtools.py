@@ -298,14 +298,13 @@ def freq_plot(ax, mappings,
               slope_start=-2.5,
               slope_end=0,
               cutoff_line_at=0.0001):
-    binrange = np.logspace(np.log10(cutoff_line_at), np.log10(1), num=2*numbins)
+    binrange = np.logspace(np.log10(cutoff_line_at), np.log10(1), num=numbins)
 
     lines = []
     labels = []
     for mapping, color, model_name in zip(mappings, colors_,labels_):
 
         replicates = glob(mapping)
-
         all_xs = []
         all_muts = []
         all_drvs = []
