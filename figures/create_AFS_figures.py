@@ -61,6 +61,7 @@ sfs_drivers, _ = SFS(10**8, mu_drivers, fusco_alpha, fusco_beta)
 
 
 sfs = np.vectorize(sfs)
+sfs_drivers = np.vectorize(sfs_drivers)
 ax.plot(np.log10(fusco_support), np.log10(sfs(2*fusco_support)), '--', label='Fusco et al. (Passengers)')
 ax.plot(np.log10(fusco_support), np.log10(sfs_drivers(2*fusco_support)), linestyle='-.', label='Fusco et al. (Drivers)')
 
