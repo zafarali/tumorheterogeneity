@@ -34,6 +34,7 @@ def plot_diffs(root_folder, seeds, k=0.01, pts=100, cutoff='00', gamma=0.5, mu=0
 
     plot_it(to_plot, ax)
     plot_it(Turnover, ax, '--')
+    ax.plot(No_turnover[(1,)][0], No_turnover[(1,)][1], ':k')
     ax.set_title('d=0.05')
     ax.set_xlabel('Distance from COM of Tumor')
     ax.set_ylabel('S')
@@ -47,6 +48,7 @@ def plot_diffs(root_folder, seeds, k=0.01, pts=100, cutoff='00', gamma=0.5, mu=0
 
     plot_it(to_plot, ax)
     plot_it(Turnover, ax, '--')
+    ax.plot(No_turnover[(1,)][0], No_turnover[(1,)][1], ':k')
     ax.set_xlabel('Distance from COM of Tumor')
     ax.set_title('d=0.1')
     ax.set_ylabel('S')
@@ -60,9 +62,16 @@ def plot_diffs(root_folder, seeds, k=0.01, pts=100, cutoff='00', gamma=0.5, mu=0
 
     plot_it(to_plot, ax)
     plot_it(Turnover, ax, '--')
+    ax.plot(No_turnover[(1,)][0], No_turnover[(1,)][1], ':k')
     ax.set_title('d=0.2')
     ax.set_xlabel('Distance from COM of Tumor')
     ax.set_ylabel('S')
+    from matplotlib.lines import Line2D
+
+    custom_lines = [Line2D([0], [0], color='k', linestyle='-'),
+                    Line2D([0], [0], color='k', linestyle='--'),
+                    Line2D([0], [0], color='k', linestyle=':')]
+    ax.legend(custom_lines, ['Prediction', 'Observed', 'S(1), d=0'])
     fig.tight_layout(h_pad=1)
     return fig
 
