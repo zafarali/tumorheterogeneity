@@ -43,7 +43,7 @@ def plot_diffs(root_folder, seeds, k=0.01, pts=100, cutoff='00', gamma=0.5, mu=0
     to_plot = {}
     for k in No_turnover.keys():
         avg = np.mean(k)
-        to_plot[k] = [Turnover[(1,)][0], avg*mu*0.05*(R_f(0.1) - Turnover[(1,)][0])/(gamma * b) + No_turnover[k][1]]
+        to_plot[k] = [Turnover[(1,)][0], avg*mu*0.1*(R_f(0.1) - Turnover[(1,)][0])/(gamma * b) + No_turnover[k][1]]
 
     plot_it(to_plot, ax)
     plot_it(Turnover, ax, '--')
@@ -56,7 +56,7 @@ def plot_diffs(root_folder, seeds, k=0.01, pts=100, cutoff='00', gamma=0.5, mu=0
     to_plot = {}
     for k in No_turnover.keys():
         avg = np.mean(k)
-        to_plot[k] = [Turnover[(1,)][0], avg*mu*0.05*(R_f(0.2) - Turnover[(1,)][0])/(gamma * b) + No_turnover[k][1]]
+        to_plot[k] = [Turnover[(1,)][0], avg*mu*0.2*(R_f(0.2) - Turnover[(1,)][0])/(gamma * b) + No_turnover[k][1]]
 
     plot_it(to_plot, ax)
     plot_it(Turnover, ax, '--')
@@ -66,4 +66,6 @@ def plot_diffs(root_folder, seeds, k=0.01, pts=100, cutoff='00', gamma=0.5, mu=0
     fig.tight_layout(h_pad=1)
     return fig
 
-plot_diffs('../model/experiments/u0.01875/',ALL_SEEDS).savefig('./Splot-fanning.pdf')
+plot_diffs('../model/experiments/u0.01875/',ALL_SEEDS, mu=0.01).savefig('./Splot-fanning-001.pdf')
+plot_diffs('../model/experiments/u0.01875/',ALL_SEEDS).savefig('./Splot-fanning-002.pdf')
+
