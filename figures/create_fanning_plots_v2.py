@@ -17,10 +17,9 @@ Fanning Plots
 
 N = 10**8
 b = 0.69
-mu = 0.02
 
-# plots the "fanning" plots
-def plot(root_folder, seeds, k=0.01, pts=100, cutoff='00', d_append='', gamma=0.5):
+# plots the "fanning_v2" plots
+def plot_fanning_v2(root_folder, seeds, k=0.01, pts=100, cutoff='00', d_append='', gamma=0.5, mu=0.02):
 
     folder = root_folder + '/0_0'
 
@@ -61,7 +60,12 @@ def plot(root_folder, seeds, k=0.01, pts=100, cutoff='00', d_append='', gamma=0.
     # return fig
     return fig
 
-plot_diffs('../model/experiments/u0.01/',ALL_SEEDS).savefig('./Splot-radius-increase-fanning.pdf')
+
+
+
+plot_fanning_v2('../model/experiments/u0.01/',ALL_SEEDS).savefig('./Splot-radius-increase-fanning0.02.pdf')
+plot_fanning_v2('../model/experiments/u0.01/',ALL_SEEDS, mu=0.01).savefig('./Splot-radius-increase-fanning0.01.pdf')
+
 
 
 
