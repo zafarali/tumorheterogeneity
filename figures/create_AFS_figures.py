@@ -170,8 +170,7 @@ freq_plot(ax,
           mappings,
           colors_=COLORS,labels_=['d=0', 'd=0.05', 'd=0.1', 'd=0.2', 'd=0.65'],
           neutral=True)
-ax.plot(np.log10(fusco_support), np.log10(sfs(2*fusco_support)), '--r', label='Fusco et al. (Passengers)')
-ax.plot(np.log10(fusco_support), np.log10(sfs_drivers(2*fusco_support)), linestyle='-.', color='r', label='Fusco et al. (Drivers)')
+ax.plot(np.log10(fusco_support), np.log10(sfs(2*fusco_support)), '--r', label='Fusco et al.')
 ax.plot(np.log10(freq_support), np.log10((alpha*mu/(4*np.sqrt(np.pi)))*freq_support**(-2.5)), '--y', label='Deterministic Result')
 
 ax.set_xlabel('$log_{10}(frequency)$')
