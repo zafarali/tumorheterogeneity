@@ -39,16 +39,16 @@ def plot_fanning_v2(root_folder, seeds, k=0.01, pts=100, cutoff='00', d_append='
     Turnover065 = data_to_plot(folder, seeds, yaxis='S_list_ordered', mode=2, d='065'+d_append, max_dist=300)
 
 
-    x,y = [No_turnover[(1,)][0], No_turnover[(1,)][1] + N*mu*d*(R_f(0.05) - Turnover005[(1,)][0])/(gamma * b) ]
+    x,y = [No_turnover[(1,)][0], No_turnover[(1,)][1] + N*mu*0.05*(R_f(0.05) - Turnover005[(1,)][0])/(gamma * b) ]
 
     ax.plot(x, y, label='d=0.05')
-    x,y = [No_turnover[(1,)][0], No_turnover[(1,)][1] + N*mu*d*(R_f(0.1) - Turnover01[(1,)][0])/(gamma * b) ]
+    x,y = [No_turnover[(1,)][0], No_turnover[(1,)][1] + N*mu*0.1*(R_f(0.1) - Turnover01[(1,)][0])/(gamma * b) ]
 
     ax.plot(x, y, label='d=0.1')
-    x,y = [No_turnover[(1,)][0], No_turnover[(1,)][1] + N*mu*d*(R_f(0.2) - Turnover02[(1,)][0])/(gamma * b) ]
+    x,y = [No_turnover[(1,)][0], No_turnover[(1,)][1] + N*mu*0.2*(R_f(0.2) - Turnover02[(1,)][0])/(gamma * b) ]
 
     ax.plot(x, y, label='d=0.2')
-    x,y = [No_turnover[(1,)][0], No_turnover[(1,)][1] + N*mu*d*(R_f(0.65) - Turnover065[(1,)][0])/(gamma * b) ]
+    x,y = [No_turnover[(1,)][0], No_turnover[(1,)][1] + N*mu*0.65*(R_f(0.65) - Turnover065[(1,)][0])/(gamma * b) ]
 
     ax.plot(x, y, label='d=0.65')
 
