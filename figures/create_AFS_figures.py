@@ -25,6 +25,8 @@ mu = 0.02
 alpha = 30
 fusco_alpha = 0.55
 fusco_beta = 2.3
+mu_drivers = 2*2e-5
+
 """
 Allele Frequency Spectra. 
 Figure 1
@@ -48,18 +50,24 @@ ax.set_xlabel('$log_{10}(frequency)$')
 ax.set_ylabel('$log_{10}(count density)$')
 ax.set_xlim([-4.1, 0.05])
 sns.despine()
-ax.set_title('(a) d=0.'+death_rate[1:])
+ax.set_title('(a) d=0.'+death_rate[1:]+'\n')
 ax.set_ylim(bottom=0)
 
 # analytic line
 fusco_support = np.logspace(-4.1, 0, num=1000)
 sfs, x_c_prime = SFS(10**8, mu, fusco_alpha, fusco_beta)
+sfs_drivers, _ = SFS(10**8, mu_drivers, fusco_alpha, fusco_beta)
+
+
+
 sfs = np.vectorize(sfs)
-ax.plot(np.log10(fusco_support), np.log10(sfs(2*fusco_support)), '--', label='Fusco et al.')
+ax.plot(np.log10(fusco_support), np.log10(sfs(2*fusco_support)), '--', label='Fusco et al. (Passengers)')
+ax.plot(np.log10(fusco_support), np.log10(sfs_drivers(2*fusco_support)), linestyle='-.', label='Fusco et al. (Drivers)')
+
 freq_support = np.linspace(x_c_prime,0.21,num=500)
 ax.plot(np.log10(freq_support), np.log10((alpha*mu/(4*np.sqrt(np.pi)))*freq_support**(-2.5)), '--k', label='Deterministic Result')
 
-ax.legend(fontsize=9,loc=(0.4,0.6))
+ax.legend(fontsize=9,loc=(0.4,0.55))
 death_rate = '065'
 
 mappings = [ root_folder+'1_0_0_*',
@@ -68,15 +76,16 @@ mappings = [ root_folder+'1_0_0_*',
 
 ax = f.add_subplot(122)
 freq_plot(ax, mappings)
-ax.plot(np.log10(fusco_support), np.log10(sfs(2*fusco_support)), '--', label='Fusco et al.')
+ax.plot(np.log10(fusco_support), np.log10(sfs(2*fusco_support)), '--', label='Fusco et al. (Passengers)')
+ax.plot(np.log10(fusco_support), np.log10(sfs_drivers(2*fusco_support)), linestyle='-.', label='Fusco et al. (Drivers)')
 ax.plot(np.log10(freq_support), np.log10((alpha*mu/(4*np.sqrt(np.pi)))*freq_support**(-2.5)), '--k', label='Deterministic Result')
 ax.set_xlabel('$log_{10}(frequency)$')
 ax.set_ylabel('$log_{10}(count density)$')
 ax.set_xlim([-4.1, 0.05])
 ax.set_ylim(bottom=0)
-ax.legend(fontsize=9,loc=(0.4,0.6))
+ax.legend(fontsize=9,loc=(0.4,0.55))
 sns.despine()
-ax.set_title('(b) d=0.'+death_rate[1:])
+ax.set_title('(b) d=0.'+death_rate[1:]+'\n')
 plt.tight_layout(h_pad=1)
 plt.savefig('./freqspec001.pdf')
 
@@ -97,7 +106,8 @@ ax = f.add_subplot(121)
 
 freq_plot(ax, mappings)
 
-ax.plot(np.log10(fusco_support), np.log10(sfs(2*fusco_support)), '--', label='Fusco et al.')
+ax.plot(np.log10(fusco_support), np.log10(sfs(2*fusco_support)), '--', label='Fusco et al. (Passengers)')
+ax.plot(np.log10(fusco_support), np.log10(sfs_drivers(2*fusco_support)), linestyle='-.', label='Fusco et al. (Drivers)')
 ax.plot(np.log10(freq_support), np.log10((alpha*mu/(4*np.sqrt(np.pi)))*freq_support**(-2.5)), '--k', label='Deterministic Result')
 
 
@@ -118,7 +128,8 @@ mappings = [ root_folder+'1_0_0_*',
 
 ax = f.add_subplot(122)
 freq_plot(ax, mappings)
-ax.plot(np.log10(fusco_support), np.log10(sfs(2*fusco_support)), '--', label='Fusco et al.')
+ax.plot(np.log10(fusco_support), np.log10(sfs(2*fusco_support)), '--', label='Fusco et al. (Passengers)')
+ax.plot(np.log10(fusco_support), np.log10(sfs_drivers(2*fusco_support)), linestyle='-.', label='Fusco et al. (Drivers)')
 ax.plot(np.log10(freq_support), np.log10((alpha*mu/(4*np.sqrt(np.pi)))*freq_support**(-2.5)), '--k', label='Deterministic Result')
 
 ax.set_xlabel('$log_{10}(frequency)$')
@@ -159,7 +170,8 @@ freq_plot(ax,
           mappings,
           colors_=COLORS,labels_=['d=0', 'd=0.05', 'd=0.1', 'd=0.2', 'd=0.65'],
           neutral=True)
-ax.plot(np.log10(fusco_support), np.log10(sfs(2*fusco_support)), '--r', label='Fusco et al.')
+ax.plot(np.log10(fusco_support), np.log10(sfs(2*fusco_support)), '--r', label='Fusco et al. (Passengers)')
+ax.plot(np.log10(fusco_support), np.log10(sfs_drivers(2*fusco_support)), linestyle='-.', color='r', label='Fusco et al. (Drivers)')
 ax.plot(np.log10(freq_support), np.log10((alpha*mu/(4*np.sqrt(np.pi)))*freq_support**(-2.5)), '--y', label='Deterministic Result')
 
 ax.set_xlabel('$log_{10}(frequency)$')
@@ -170,7 +182,7 @@ ax.set_xlim([-4.15, 0.])
 ax.set_ylim(bottom=0)
 ax.legend(fontsize=7,loc=(0.45,0.5))
 sns.despine()
-ax.set_title('(a) No Selection\n')
+ax.set_title('(a) No Selection\n\n')
 
 mappings = [ root_folder+'1_0_0_*',
             root_folder+'1_0_005_*',
@@ -183,7 +195,8 @@ ax = fig.add_subplot(132)
 freq_plot(ax, mappings, colors_=COLORS,
           labels_=['d=0', 'd=0.05', 'd=0.1', 'd=0.2', 'd=0.65'],neutral=False)
 
-ax.plot(np.log10(fusco_support), np.log10(sfs(2*fusco_support)), '--r', label='Fusco et al.')
+ax.plot(np.log10(fusco_support), np.log10(sfs(2*fusco_support)), '--r', label='Fusco et al. (Passengers)')
+ax.plot(np.log10(fusco_support), np.log10(sfs_drivers(2*fusco_support)), linestyle='-.', color='r', label='Fusco et al. (Drivers)')
 ax.plot(np.log10(freq_support), np.log10((alpha*mu/(4*np.sqrt(np.pi)))*freq_support**(-2.5)), '--y', label='Deterministic Result')
 
 ax.set_xlabel('$log_{10}(frequency)$')
@@ -195,7 +208,7 @@ ax.legend(fontsize=7, loc=(0.55,0.45), markerscale=0.75)
 sns.despine()
 
 
-ax.set_title('(b) Selection = 1%\n')
+ax.set_title('(b) Selection = 1%\n\n')
 
 mappings = [ root_folder+'/10_0_0_outs*',
              root_folder+'/10_0_005_outs*',
@@ -209,7 +222,8 @@ freq_plot(ax, mappings, neutral=False,
           colors_=COLORS,
           labels_=['d=0', 'd=0.05', 'd=0.1', 'd=0.2', 'd=0.65'])
 
-ax.plot(np.log10(fusco_support), np.log10(sfs(2*fusco_support)), '--r', label='Fusco et al.')
+ax.plot(np.log10(fusco_support), np.log10(sfs(2*fusco_support)), '--r', label='Fusco et al. (Passengers)')
+ax.plot(np.log10(fusco_support), np.log10(sfs_drivers(2*fusco_support)), linestyle='-.', color='r', label='Fusco et al. (Drivers)')
 ax.plot(np.log10(freq_support), np.log10((alpha*mu/(4*np.sqrt(np.pi)))*freq_support**(-2.5)), '--y', label='Deterministic Result')
 
 ax.set_xlabel('$log_{10}(frequency)$')
@@ -219,7 +233,7 @@ ax.set_xlim([-4.15, 0.])
 ax.set_ylim(bottom=0)
 ax.legend(fontsize=7, loc=(0.55,0.40), markerscale=0.75)
 sns.despine()
-ax.set_title('(c) Selection = 10%\n')
+ax.set_title('(c) Selection = 10%\n\n')
 fig.tight_layout()
 
 # ax.set_title('No Turnover')
