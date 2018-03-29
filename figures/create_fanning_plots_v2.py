@@ -66,6 +66,6 @@ def plot_diffs(root_folder, seeds, k=0.01, pts=100, cutoff='00', gamma=0.5, mu=0
     fig.tight_layout(h_pad=1)
     return fig
 
-plot_diffs('../model/experiments/u0.01875/',ALL_SEEDS, mu=0.01).savefig('./Splot-fanning-001.pdf')
-plot_diffs('../model/experiments/u0.01875/',ALL_SEEDS).savefig('./Splot-fanning-002.pdf')
+plot_diffs('../model/experiments/u0.01/',ALL_SEEDS, mu=0.01).savefig('./Splot-fanning-001.pdf')
+plot_diffs('../model/experiments/u0.01/',ALL_SEEDS).savefig('./Splot-fanning-002.pdf')
 
