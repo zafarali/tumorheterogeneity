@@ -20,7 +20,7 @@ R_f = lambda d: (3 * N / (4. * np.pi * (1 - d / b))) ** (1.0 / 3.0)
 
 # plots the "fanning" plots
 def plot_diffs(root_folder, seeds, k=0.01, pts=100, cutoff='00', gamma=0.5, mu=0.02):
-    fig = plt.figure(figsize=(13, 3))
+    fig = plt.figure(figsize=(10, 3))
 
     ax = fig.add_subplot(131)
     folder = root_folder + '/0_0'
@@ -31,10 +31,10 @@ def plot_diffs(root_folder, seeds, k=0.01, pts=100, cutoff='00', gamma=0.5, mu=0
     d = 0.05
     for k in No_turnover.keys():
         avg = np.mean(k)
-        to_plot[k] = [Turnover[(1,)][0], avg*mu*d*(R_f(d) - Turnover[(1,)][0])/(gamma * b) + (1/float(1-d/b)) * No_turnover[k][1]]
+        to_plot[k] = [Turnover[(1,)][0], avg*mu*d*(R_f(d) - Turnover[(1,)][0])/(gamma * b) + (1+d) * No_turnover[k][1]]
 
-    plot_it(to_plot, ax)
-    plot_it(Turnover, ax, '--')
+    plot_it(to_plot, ax, '--')
+    plot_it(Turnover, ax)
     ax.plot(No_turnover[(1,)][0], No_turnover[(1,)][1], ':k')
     ax.set_title('d=0.05')
     ax.set_xlabel('Distance from COM of Tumor')
@@ -46,10 +46,10 @@ def plot_diffs(root_folder, seeds, k=0.01, pts=100, cutoff='00', gamma=0.5, mu=0
     d = 0.1
     for k in No_turnover.keys():
         avg = np.mean(k)
-        to_plot[k] = [Turnover[(1,)][0], avg*mu*d*(R_f(d) - Turnover[(1,)][0])/(gamma * b) + (1/float(1-d/b)) * No_turnover[k][1]]
+        to_plot[k] = [Turnover[(1,)][0], avg*mu*d*(R_f(d) - Turnover[(1,)][0])/(gamma * b) + (1+d) * No_turnover[k][1]]
 
-    plot_it(to_plot, ax)
-    plot_it(Turnover, ax, '--')
+    plot_it(to_plot, ax, '--')
+    plot_it(Turnover, ax)
     ax.plot(No_turnover[(1,)][0], No_turnover[(1,)][1], ':k')
     ax.set_xlabel('Distance from COM of Tumor')
     ax.set_title('d=0.1')
@@ -61,18 +61,18 @@ def plot_diffs(root_folder, seeds, k=0.01, pts=100, cutoff='00', gamma=0.5, mu=0
     d=0.2
     for k in No_turnover.keys():
         avg = np.mean(k)
-        to_plot[k] = [Turnover[(1,)][0], avg*mu*d*(R_f(d) - Turnover[(1,)][0])/(gamma * b) + (1/float(1-d/b)) * No_turnover[k][1]]
+        to_plot[k] = [Turnover[(1,)][0], avg*mu*d*(R_f(d) - Turnover[(1,)][0])/(gamma * b) + (1+d) * No_turnover[k][1]]
 
-    plot_it(to_plot, ax)
-    plot_it(Turnover, ax, '--')
+    plot_it(to_plot, ax, '--')
+    plot_it(Turnover, ax)
     ax.plot(No_turnover[(1,)][0], No_turnover[(1,)][1], ':k')
     ax.set_title('d=0.2')
     ax.set_xlabel('Distance from COM of Tumor')
     ax.set_ylabel('S')
     from matplotlib.lines import Line2D
 
-    custom_lines = [Line2D([0], [0], color='k', linestyle='-'),
-                    Line2D([0], [0], color='k', linestyle='--'),
+    custom_lines = [Line2D([0], [0], color='k', linestyle='--'),
+                    Line2D([0], [0], color='k', linestyle='-'),
                     Line2D([0], [0], color='k', linestyle=':')]
     ax.legend(custom_lines, ['Prediction', 'Observed', 'S(1), d=0'])
     fig.tight_layout(h_pad=1)
