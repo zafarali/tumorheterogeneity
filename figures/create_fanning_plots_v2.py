@@ -31,7 +31,7 @@ def plot_diffs(root_folder, seeds, k=0.01, pts=100, cutoff='00', gamma=0.5, mu=0
     d = 0.05
     for k in No_turnover.keys():
         avg = np.mean(k)
-        to_plot[k] = [Turnover[(1,)][0], avg*mu*d*(R_f(d) - Turnover[(1,)][0])/(gamma * b) + (1-d/b) * No_turnover[k][1]]
+        to_plot[k] = [Turnover[(1,)][0], avg*mu*d*(R_f(d) - Turnover[(1,)][0])/(gamma * b) + (1/float(1-d/b)) * No_turnover[k][1]]
 
     plot_it(to_plot, ax)
     plot_it(Turnover, ax, '--')
@@ -46,7 +46,7 @@ def plot_diffs(root_folder, seeds, k=0.01, pts=100, cutoff='00', gamma=0.5, mu=0
     d = 0.1
     for k in No_turnover.keys():
         avg = np.mean(k)
-        to_plot[k] = [Turnover[(1,)][0], avg*mu*d*(R_f(d) - Turnover[(1,)][0])/(gamma * b) + (1-d/b) * No_turnover[k][1]]
+        to_plot[k] = [Turnover[(1,)][0], avg*mu*d*(R_f(d) - Turnover[(1,)][0])/(gamma * b) + (1/float(1-d/b)) * No_turnover[k][1]]
 
     plot_it(to_plot, ax)
     plot_it(Turnover, ax, '--')
@@ -61,7 +61,7 @@ def plot_diffs(root_folder, seeds, k=0.01, pts=100, cutoff='00', gamma=0.5, mu=0
     d=0.2
     for k in No_turnover.keys():
         avg = np.mean(k)
-        to_plot[k] = [Turnover[(1,)][0], avg*mu*d*(R_f(d) - Turnover[(1,)][0])/(gamma * b) + (1-d/b) * No_turnover[k][1]]
+        to_plot[k] = [Turnover[(1,)][0], avg*mu*d*(R_f(d) - Turnover[(1,)][0])/(gamma * b) + (1/float(1-d/b)) * No_turnover[k][1]]
 
     plot_it(to_plot, ax)
     plot_it(Turnover, ax, '--')
