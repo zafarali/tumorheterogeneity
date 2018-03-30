@@ -28,9 +28,10 @@ def plot_diffs(root_folder, seeds, k=0.01, pts=100, cutoff='00', gamma=0.5, mu=0
     No_turnover = data_to_plot(folder, seeds, yaxis='S_list_ordered', mode=2, d=d2)
     Turnover = data_to_plot(folder, seeds, yaxis='S_list_ordered', mode=2, d='005')
     to_plot = {}
+    d = 0.05
     for k in No_turnover.keys():
         avg = np.mean(k)
-        to_plot[k] = [Turnover[(1,)][0], avg*mu*0.05*(R_f(0.05) - Turnover[(1,)][0])/(gamma * b) + No_turnover[k][1]]
+        to_plot[k] = [Turnover[(1,)][0], avg*mu*d*(R_f(d) - Turnover[(1,)][0])/(gamma * b) + (1+d) * No_turnover[k][1]]
 
     plot_it(to_plot, ax)
     plot_it(Turnover, ax, '--')
@@ -42,9 +43,10 @@ def plot_diffs(root_folder, seeds, k=0.01, pts=100, cutoff='00', gamma=0.5, mu=0
 
     ax = fig.add_subplot(132)
     to_plot = {}
+    d = 0.1
     for k in No_turnover.keys():
         avg = np.mean(k)
-        to_plot[k] = [Turnover[(1,)][0], avg*mu*0.1*(R_f(0.1) - Turnover[(1,)][0])/(gamma * b) + No_turnover[k][1]]
+        to_plot[k] = [Turnover[(1,)][0], avg*mu*d*(R_f(d) - Turnover[(1,)][0])/(gamma * b) + (1+d) * No_turnover[k][1]]
 
     plot_it(to_plot, ax)
     plot_it(Turnover, ax, '--')
@@ -56,9 +58,10 @@ def plot_diffs(root_folder, seeds, k=0.01, pts=100, cutoff='00', gamma=0.5, mu=0
     Turnover = data_to_plot(folder, seeds, yaxis='S_list_ordered', mode=2, d='02')
 
     to_plot = {}
+    d=0.2
     for k in No_turnover.keys():
         avg = np.mean(k)
-        to_plot[k] = [Turnover[(1,)][0], avg*mu*0.2*(R_f(0.2) - Turnover[(1,)][0])/(gamma * b) + No_turnover[k][1]]
+        to_plot[k] = [Turnover[(1,)][0], avg*mu*d*(R_f(d) - Turnover[(1,)][0])/(gamma * b) + (1+d) * No_turnover[k][1]]
 
     plot_it(to_plot, ax)
     plot_it(Turnover, ax, '--')
@@ -76,5 +79,5 @@ def plot_diffs(root_folder, seeds, k=0.01, pts=100, cutoff='00', gamma=0.5, mu=0
     return fig
 
 plot_diffs('../model/experiments/u0.01/',ALL_SEEDS, mu=0.01).savefig('./Splot-fanning-001.pdf')
-plot_diffs('../model/experiments/u0.01/',ALL_SEEDS).savefig('./Splot-fanning-002.pdf')
+# plot_diffs('../model/experiments/u0.01/',ALL_SEEDS).savefig('./Splot-fanning-002.pdf')
 
