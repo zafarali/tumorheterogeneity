@@ -279,8 +279,9 @@ def S_plot_paper_supp(root_folder, seeds, k=0.01, pts=100, cutoff='00'):
     #     plot_it(data_to_plot(folder, seeds, yaxis='S_list'+cutoff+'_big', mode=2, d=d), ax)
     plot_density(ax, folder, seeds, d=d)
 
-    ax.set_title('(b) Surface Turnover, d=0.' + d[1:])
+    ax.set_title('(a) Surface Turnover, d=0.' + d[1:])
     ax.set_xlim([50, 325])
+    ax.set_ylim([0, 30])
     ax.set_ylabel('Mean S(n)')
     ax.set_xlabel('Distance from Centre \n of Tumor (cells)')
     #     ax.set_ylim([0,1])
@@ -292,7 +293,7 @@ def S_plot_paper_supp(root_folder, seeds, k=0.01, pts=100, cutoff='00'):
     #     plot_it(data_to_plot(folder, seeds, yaxis='S_list'+cutoff+'_big', mode=2, d=d), ax)
     plot_density(ax, folder, seeds, d=d)
 
-    ax.set_title('(c) Surface Turnover, d=0.' + d[1:])
+    ax.set_title('(b) Surface Turnover, d=0.' + d[1:])
     ax.set_ylabel('Mean S(n)')
     x_max = 350 if d == '02' else 325
     x_max = 750 if d == '065' else x_max
@@ -307,7 +308,7 @@ def S_plot_paper_supp(root_folder, seeds, k=0.01, pts=100, cutoff='00'):
     #     plot_it(data_to_plot(folder, seeds, yaxis='S_list'+cutoff+'_big', mode=2, d=d), ax)
     plot_density(ax, folder, seeds, d=d)
 
-    ax.set_title('(d) Surface Turnover, d=0.' + d[1:])
+    ax.set_title('(c) Surface Turnover, d=0.' + d[1:])
     ax.set_ylabel('Mean S(n)')
     x_max = 350 if d == '02' else 325
     x_max = 750 if d == '065' else x_max
@@ -323,7 +324,7 @@ def S_plot_paper_supp(root_folder, seeds, k=0.01, pts=100, cutoff='00'):
     #     plot_it(data_to_plot(folder, seeds, yaxis='S_list'+cutoff+'_big', mode=2, d=d), ax)
     plot_density(ax, folder, seeds, d=d)
 
-    ax.set_title('(e) Surface Turnover, d=0.' + d[1:])
+    ax.set_title('(d) Surface Turnover, d=0.' + d[1:])
     ax.set_ylabel('Mean S(n)')
     x_max = 350 if d == '02' else 325
     #     x_max = 750 if d=='065' else x_max
