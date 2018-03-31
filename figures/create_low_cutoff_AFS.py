@@ -53,6 +53,6 @@ ax.set_xlim([-6.15, 0.])
 sns.despine()
 
 ax.legend(loc='upper right')
-# fig.tight_layout()
+fig.tight_layout()
 fig.savefig('./low_cutoff.pdf')
 
