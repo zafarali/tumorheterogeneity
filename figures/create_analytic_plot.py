@@ -54,8 +54,8 @@ print('Corrected x_c_prime 10^{:.2f}'.format(np.log10(x_c_prime)))
 freq_support = np.logspace(-2.05,0, num=1000)
 ax.plot(np.log10(freq_support), np.log10((alpha*mu/(4*np.sqrt(np.pi)))*freq_support**(-2.5)), '-g', label='Deterministic Result')
 
-ax.set_xlabel('$log_{10}(f)$')
-ax.set_ylabel('$log_{10}(p(f))$')
+ax.set_xlabel('$log_{10}(frequency)$')
+ax.set_ylabel('$log_{10}($count density)')
 ax.set_ylim(0, 9)
 sns.despine()
 
